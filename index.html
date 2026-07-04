@@ -227,8 +227,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 var SENHA = 'holsa2026';
 var GROQ_KEY = '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';
 var GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-var GH_TOKEN = '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';
-var GH_REPO = 'accrangel/h-dashboard-proj';
+var WORKER_URL = 'https://holsa-notion-proxy.holsa.workers.dev';
 
 var MEETINGS = [
   {id:'1',title:'Teste de integração — Plaud › Notion via Zap',date:'2026-07-03T15:28:00.000Z',project:'TI',status:'Concluída',summary:'Teste de reunião realizado para verificar o funcionamento do sistema Plaud para Notion via Zapier. O locutor validou a identificação de fala e o envio automático para o banco de dados.',actionItems:'Verificar se o conteúdo foi salvo corretamente no Notion pelo Zap.',transcript:'Speaker 1 00:00:01 — Um novo teste de reunião, vamos ver o que vai sair dentro do aplicativo.'},
@@ -407,22 +406,19 @@ function saveEdit(pageId) {
   var project = document.getElementById('edit-project').value;
   if (!status && !project) { showEditMsg('Selecione status ou projeto para salvar.', false); return; }
   showEditMsg('Salvando no Notion...', null);
-  var url = 'https://api.github.com/repos/' + GH_REPO + '/actions/workflows/notion-update.yml/dispatches';
-  var inputs = {page_id: pageId};
-  if (status) inputs.status = status;
-  if (project) inputs.project = project;
-  fetch(url, {
+  fetch(WORKER_URL, {
     method: 'POST',
-    headers: {'Authorization': 'Bearer ' + GH_TOKEN, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json'},
-    body: JSON.stringify({ref: 'main', inputs: inputs})
-  }).then(function(r) {
-    if (r.status === 204) {
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({page_id: pageId, status: status||undefined, project: project||undefined})
+  }).then(function(r){ return r.json(); })
+  .then(function(d) {
+    if (d.success) {
       showEditMsg('✓ Salvo no Notion com sucesso!', true);
       var m = MEETINGS.filter(function(x){return x.id===pageId;})[0];
       if (m) { if(status) m.status=status; if(project) m.project=project; }
       renderMeetings();
     } else {
-      showEditMsg('Erro ao salvar. Tente novamente.', false);
+      showEditMsg('Erro: ' + JSON.stringify(d.error), false);
     }
   }).catch(function(e){ showEditMsg('Erro: ' + e.message, false); });
 }
