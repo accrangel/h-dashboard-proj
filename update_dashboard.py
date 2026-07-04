@@ -234,13 +234,16 @@ def fetch_reunioes(projetos, atividades):
     return reunioes
 
 def main():
-    print('Buscando dados do Notion...')
+    print('Token:', NOTION_TOKEN[:20]+'...')
+    print('Buscando projetos...')
     projetos = fetch_projetos()
-    print(f'  {len(projetos)} projetos')
+    print(f'  {len(projetos)} projetos encontrados')
+    print('Buscando atividades...')
     atividades = fetch_atividades()
-    print(f'  {len(atividades)} atividades')
+    print(f'  {len(atividades)} atividades encontradas')
+    print('Buscando reunioes...')
     reunioes = fetch_reunioes(projetos, atividades)
-    print(f'  {len(reunioes)} reunioes')
+    print(f'  {len(reunioes)} reunioes encontradas')
 
     now = datetime.now(timezone.utc)
     week = 0
