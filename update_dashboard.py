@@ -229,8 +229,8 @@ def main():
     with open('index.html', 'r', encoding='utf-8') as f:
         html = f.read()
 
-    html = re.sub(r'var MEETINGS = \[[\s\S]*?\];', f'var MEETINGS = {reunioes_js};', html)
-    html = re.sub(r'var PROJECTS = \[[\s\S]*?\];', f'var PROJECTS = {projetos_js};', html)
+    html = re.sub(r'var MEETINGS = \[[\s\S]*?\];', lambda m: 'var MEETINGS = ' + reunioes_js + ';', html)
+    html = re.sub(r'var PROJECTS = \[[\s\S]*?\];', lambda m: 'var PROJECTS = ' + projetos_js + ';', html)
     html = re.sub(
         r'(GRUPO HOLSA\s*·\s*Central de Intelig[^\n<]*)',
         f'GRUPO HOLSA · Central de Inteligencia · Atualizado: {updated}',
