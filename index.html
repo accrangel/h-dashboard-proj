@@ -147,6 +147,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ai-send{padding:9px 16px;background:var(--accent);border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:600}
 /* EDIT MSG */
 .edit-msg{font-size:11px;margin-top:8px;min-height:14px}
+/* CHIPS PARTICIPANTES */
+.chip-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:#0d1b2a;border:1px solid var(--bord);border-radius:6px;min-height:38px;cursor:text}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:12px;padding:3px 10px;font-size:11px;font-weight:600;white-space:nowrap}
+.chip-resp{background:#9070e020;color:#9070e0;border:1px solid #9070e040}
+.chip-part{background:#4caf8220;color:#4caf82;border:1px solid #4caf8240}
+.chip-part.pendente{background:#f0c04020;color:#f0c040;border:1px solid #f0c04040}
+.chip-part.atrasado{background:#e05c5c20;color:#e05c5c;border:1px solid #e05c5c40}
+.chip-rm{cursor:pointer;opacity:.6;font-size:13px;line-height:1}
+.chip-rm:hover{opacity:1}
+.chip-input{border:none;background:transparent;color:var(--text);font-size:12px;outline:none;min-width:120px;flex:1}
 /* PROGRESS BAR ATIVIDADES */
 .prog-row{display:flex;align-items:center;gap:8px;margin-top:8px}
 .prog-bg{flex:1;background:#0d1b2a;border-radius:4px;height:5px}
@@ -365,8 +375,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
     <div class="form-group">
-      <label class="form-label">Depende de (atividade anterior)</label>
-      <select class="form-input" id="mt-dep"><option value="">Nenhuma dependência</option></select>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Depende de (atividade anterior)</label>
+          <select class="form-input" id="mt-dep"><option value="">Nenhuma dependência</option></select>
+        </div>
+        <div>
+          <label class="form-label">Sub-atividade de</label>
+          <select class="form-input" id="mt-pai"><option value="">Atividade raiz</option></select>
+        </div>
+      </div>
     </div>
     <div class="form-group" id="mt-ag-group">
       <label class="form-label">O que está aguardando?</label>
@@ -972,11 +990,11 @@ function buildProjectDetail(p,tasks,meetings){
         '<div class="task-status-dot" style="background:'+c+'"></div>'+
         '<div class="task-info">'+
           '<div class="task-name">'+esc(t.nome)+'</div>'+
-          '<div class="task-meta">'+
+          '<div class="task-meta" style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:4px">'+
             '<span class="tag '+taskTagClass[t.status]+'">'+esc(t.status)+'</span>'+
-            (t.responsavel?' &nbsp;👤 '+esc(t.responsavel):'')+
-            (t.prazo?' &nbsp;📅 '+fmtDateShort(t.prazo):'')+
-            (t.participantes?' &nbsp;'+esc(t.participantes):'')+
+            (t.responsavel?'<span class="chip chip-resp">👤 '+esc(t.responsavel)+'</span>':'')+
+            (t.prazo?'<span style="font-size:11px;color:var(--muted)">📅 '+fmtDateShort(t.prazo)+'</span>':'')+
+            renderPartChipsTask(t)+
           '</div>'+
           (overdue?'<div class="task-alert">⚠ Prazo vencido</div>':'')+
           (blocked?'<div class="task-alert">⏸ Parada há '+t.dias_parada+' dias — '+esc(t.aguardando||'motivo não informado')+'</div>':'')+
@@ -1067,15 +1085,32 @@ function openModalTask(taskId,projId){
     document.getElementById('mt-status').value='Não iniciada';
   }
   document.getElementById('modal-task-msg').textContent='';
-  // Preencher select de dependências com atividades do projeto
   var projId2=document.getElementById('mt-proj-id').value;
+  var currentTask=taskId?TASKS.find(function(x){return x.id===taskId;}):null;
+
+  // Participantes como chips
+  _mtParts = currentTask && currentTask.participantes
+    ? currentTask.participantes.split(',').map(function(n){return n.trim();}).filter(Boolean)
+    : [];
+  setTimeout(initChipInput, 50);
+
+  // Select de dependência
   var depSel=document.getElementById('mt-dep');
-  var currentDep=taskId?(TASKS.find(function(x){return x.id===taskId;})||{}).depende_de||'':'';
+  var currentDep=currentTask?currentTask.depende_de||'':'';
   var projTasks=TASKS.filter(function(t){return t.projeto_id===projId2&&t.id!==taskId;});
   depSel.innerHTML='<option value="">Nenhuma dependência</option>'+
     projTasks.map(function(t){
       return '<option value="'+esc(t.nome)+'"'+(currentDep===t.nome?' selected':'')+'>'+esc(t.nome)+' ('+esc(t.status)+')</option>';
     }).join('');
+
+  // Select de atividade pai
+  var paiSel=document.getElementById('mt-pai');
+  var currentPai=currentTask?currentTask.pai_id||'':'';
+  paiSel.innerHTML='<option value="">Atividade raiz (sem pai)</option>'+
+    projTasks.map(function(t){
+      return '<option value="'+t.id+'"'+(currentPai===t.id?' selected':'')+'>'+esc(t.nome)+'</option>';
+    }).join('');
+
   openModal('modal-task');
 }
 
@@ -1091,8 +1126,9 @@ function saveTask(){
     nome:nome, status:status,
     prazo:document.getElementById('mt-prazo').value||undefined,
     responsavel:document.getElementById('mt-resp').value.trim()||undefined,
-    participantes:document.getElementById('mt-part').value.trim()||undefined,
+    participantes:_mtParts.join(',')||undefined,
     depende_de:document.getElementById('mt-dep').value.trim()||undefined,
+    pai_id:document.getElementById('mt-pai').value||undefined,
     aguardando:document.getElementById('mt-ag').value.trim()||undefined,
     observacoes:document.getElementById('mt-obs').value.trim()||undefined,
     projeto_id:document.getElementById('mt-proj-id').value||undefined
@@ -1108,6 +1144,7 @@ function saveTask(){
         existing.responsavel=document.getElementById('mt-resp').value.trim();
         existing.participantes=document.getElementById('mt-part').value.trim();
         existing.depende_de=document.getElementById('mt-dep').value.trim();
+        existing.pai_id=document.getElementById('mt-pai').value||'';
         existing.aguardando=document.getElementById('mt-ag').value.trim();
         existing.observacoes=document.getElementById('mt-obs').value.trim();
       }else if(d.id){
@@ -1153,6 +1190,67 @@ function syncNotion(){
 }
 
 // ─── IA ───────────────────────────────────────────────────────────────
+// ─── CHIPS DE PARTICIPANTES ──────────────────────────────────────────
+var _mtParts = []; // lista de participantes em edição
+
+function getPartStatus(nome, taskId) {
+  // Verificar se o participante tem sub-atividades pendentes/atrasadas nessa atividade
+  var subs = TASKS.filter(function(t) {
+    return t.pai_id === taskId && t.responsavel && t.responsavel.toLowerCase() === nome.toLowerCase();
+  });
+  if (!subs.length) return 'ok';
+  var atrasada = subs.some(function(s) { return s.prazo_vencido || s.status === 'Bloqueada'; });
+  if (atrasada) return 'atrasado';
+  var pendente = subs.some(function(s) { return s.status !== 'Concluída'; });
+  if (pendente) return 'pendente';
+  return 'ok';
+}
+
+function renderPartChipsTask(t) {
+  if (!t.participantes) return '';
+  var names = t.participantes.split(',').map(function(n) { return n.trim(); }).filter(Boolean);
+  return names.map(function(n) {
+    var st = getPartStatus(n, t.id);
+    var cls = 'chip chip-part' + (st !== 'ok' ? ' ' + st : '');
+    var icon = st === 'atrasado' ? '🔴' : st === 'pendente' ? '🟡' : '🟢';
+    return '<span class="' + cls + '" title="' + esc(n) + (st !== 'ok' ? ' — sub-atividade ' + st : '') + '">' + icon + ' ' + esc(n) + '</span>';
+  }).join('');
+}
+
+function initChipInput() {
+  var wrap = document.getElementById('mt-part-chips');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  _mtParts.forEach(function(n, i) {
+    var span = document.createElement('span');
+    span.className = 'chip chip-part';
+    span.innerHTML = '🟢 ' + esc(n) + ' <span class="chip-rm" onclick="_mtParts.splice('+i+',1);initChipInput()">×</span>';
+    wrap.appendChild(span);
+  });
+  var inp = document.createElement('input');
+  inp.id = 'mt-part-input';
+  inp.className = 'chip-input';
+  inp.placeholder = _mtParts.length ? '' : 'Nomes separados por vírgula...';
+  inp.onkeydown = function(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addChips(inp.value);
+    } else if (e.key === 'Backspace' && !inp.value && _mtParts.length) {
+      _mtParts.pop();
+      initChipInput();
+    }
+  };
+  inp.onblur = function() { if (inp.value.trim()) addChips(inp.value); };
+  wrap.appendChild(inp);
+  document.getElementById('mt-part').value = _mtParts.join(',');
+}
+
+function addChips(raw) {
+  var names = raw.split(',').map(function(n) { return n.trim(); }).filter(function(n) { return n && !_mtParts.includes(n); });
+  _mtParts = _mtParts.concat(names);
+  initChipInput();
+}
+
 function getCtx(){
   var ctx='REUNIOES:\n'+MEETINGS.map(function(m){
     var parts=(m.participantes||[]).join(', ');

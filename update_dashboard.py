@@ -135,6 +135,8 @@ def fetch_atividades():
             'observacoes': plain(props.get('Observações')),
             'reunioes_ids': rel_ids(props.get('Reuniões')),
             'dias_parada': dias_parada,
+            'pai_id': rel_ids(props.get('Atividade pai'))[0] if rel_ids(props.get('Atividade pai')) else '',
+            'sub_ids': rel_ids(props.get('Sub-atividades')),
         })
     return atividades
 
