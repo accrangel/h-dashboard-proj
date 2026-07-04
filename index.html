@@ -147,6 +147,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ai-send{padding:9px 16px;background:var(--accent);border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:600}
 /* EDIT MSG */
 .edit-msg{font-size:11px;margin-top:8px;min-height:14px}
+.tree-node{border-bottom:1px solid var(--bord)}
+.tree-node:last-child{border-bottom:none}
+.tree-row{display:flex;align-items:flex-start;gap:8px;padding:10px 0;cursor:pointer}
+.tree-row:hover{background:#ffffff05;border-radius:4px}
+.tree-toggle{width:16px;text-align:center;font-size:10px;color:var(--muted);flex-shrink:0;margin-top:2px;transition:transform .15s;display:inline-block}
+.tree-toggle.open{transform:rotate(90deg)}
+.tree-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.tree-info{flex:1;min-width:0}
+.tree-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.tree-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.tree-alert{font-size:11px;color:var(--red);margin-top:2px}
+.tree-children{padding-left:24px;border-left:1px dashed var(--bord);margin-left:12px}
 /* CHIPS PARTICIPANTES */
 .chip-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:#0d1b2a;border:1px solid var(--bord);border-radius:6px;min-height:38px;cursor:text}
 .chip{display:inline-flex;align-items:center;gap:4px;border-radius:12px;padding:3px 10px;font-size:11px;font-weight:600;white-space:nowrap}
@@ -982,29 +994,7 @@ function buildProjectDetail(p,tasks,meetings){
   if(!tasks.length){
     html+='<div style="color:var(--muted);font-size:13px">Nenhuma atividade cadastrada.</div>';
   }else{
-    html+='<div>';
-    tasks.forEach(function(t){
-      var c=taskColors[t.status]||'#8090a0';
-      var overdue=t.prazo_vencido&&t.status!=='Concluída';
-      var blocked=(t.status==='Bloqueada'||t.status==='Aguardando')&&t.dias_parada!=null&&t.dias_parada>=3;
-      html+='<div class="task-item" onclick="openModalTask(\''+t.id+'\',\''+p.id+'\')" style="cursor:pointer">'+
-        '<div class="task-status-dot" style="background:'+c+'"></div>'+
-        '<div class="task-info">'+
-          '<div class="task-name">'+esc(t.nome)+'</div>'+
-          '<div class="task-meta" style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:4px">'+
-            '<span class="tag '+taskTagClass[t.status]+'">'+esc(t.status)+'</span>'+
-            (t.responsavel?'<span class="chip chip-resp">👤 '+esc(t.responsavel)+'</span>':'')+
-            (t.prazo?'<span style="font-size:11px;color:var(--muted)">📅 '+fmtDateShort(t.prazo)+'</span>':'')+
-            renderPartChipsTask(t)+
-          '</div>'+
-          (overdue?'<div class="task-alert">⚠ Prazo vencido</div>':'')+
-          (blocked?'<div class="task-alert">⏸ Parada há '+t.dias_parada+' dias — '+esc(t.aguardando||'motivo não informado')+'</div>':'')+
-          (t.depende_de?'<div style="font-size:11px;color:var(--muted);margin-top:2px">⏳ Aguardando: '+esc(t.depende_de)+'</div>':'')+
-        '</div>'+
-        '<button class="btn-sm-r" style="font-size:10px;flex-shrink:0" onclick="event.stopPropagation();deleteTask(\''+t.id+'\',\''+p.id+'\')">×</button>'+
-      '</div>';
-    });
-    html+='</div>';
+    html+=renderTaskTree(tasks,'',p.id);
   }
   html+='</div>';
 
@@ -1250,6 +1240,67 @@ function addChips(raw) {
   var names = raw.split(',').map(function(n) { return n.trim(); }).filter(function(n) { return n && !_mtParts.includes(n); });
   _mtParts = _mtParts.concat(names);
   initChipInput();
+}
+
+// ─── ÁRVORE DE ATIVIDADES ────────────────────────────────────────────
+var _treeExp={};
+
+function renderTaskRow(t,hasSubs,projId){
+  var c=taskColors[t.status]||'#8090a0';
+  var exp=_treeExp[t.id]!==false;
+  var overdue=t.prazo_vencido&&t.status!=='Concluída';
+  var blocked=(t.status==='Bloqueada'||t.status==='Aguardando')&&t.dias_parada!=null&&t.dias_parada>=3;
+  var icon=hasSubs?(exp?'&#9660;':'&#9654;'):'&bull;';
+  var toggleCls='tree-toggle'+(hasSubs?(exp?' open':''):'');
+  return '<div class="tree-row" onclick="treeClick(event,\'' +t.id+ '\',\'' +projId+ '\',' +hasSubs+ ')">'+
+    '<span class="'+toggleCls+'" id="ttog-'+t.id+'">'+icon+'</span>'+
+    '<div class="tree-dot" style="background:'+c+'"></div>'+
+    '<div class="tree-info">'+
+      '<div class="tree-name">'+esc(t.nome)+'</div>'+
+      '<div class="tree-meta">'+
+        '<span class="tag '+(taskTagClass[t.status]||'t-ni')+'">'+esc(t.status)+'</span>'+
+        (t.responsavel?'<span class="chip chip-resp">&#128100; '+esc(t.responsavel)+'</span>':'')+
+        (t.prazo?'<span style="font-size:11px;color:var(--muted)">&#128197; '+fmtDateShort(t.prazo)+'</span>':'')+
+        renderPartChipsTask(t)+
+      '</div>'+
+      (overdue?'<div class="tree-alert">&#9888; Prazo vencido</div>':'')+
+      (blocked?'<div class="tree-alert">&#9208; Parada h&aacute; '+t.dias_parada+' dias &mdash; '+esc(t.aguardando||'motivo n&atilde;o informado')+'</div>':'')+
+      (t.depende_de?'<div style="font-size:11px;color:var(--muted);margin-top:2px">&#8987; Aguarda: '+esc(t.depende_de)+'</div>':'')+
+    '</div>'+
+    '<button class="btn-sm-r" style="font-size:10px;flex-shrink:0" onclick="event.stopPropagation();deleteTask(\''+t.id+'\',\''+projId+'\')">&#215;</button>'+
+  '</div>';
+}
+
+function renderTaskTree(allTasks,parentId,projId){
+  var roots=allTasks.filter(function(t){return parentId===''?!t.pai_id:t.pai_id===parentId;});
+  if(!roots.length)return '';
+  var h='<div>';
+  roots.forEach(function(t){
+    var subs=allTasks.filter(function(s){return s.pai_id===t.id;});
+    var hasSubs=subs.length>0;
+    var exp=_treeExp[t.id]!==false;
+    h+='<div class="tree-node" id="tnode-'+t.id+'">'+
+      renderTaskRow(t,hasSubs,projId)+
+      (hasSubs?'<div class="tree-children" id="tch-'+t.id+'" style="display:'+(exp?'block':'none')+'">'+renderTaskTree(allTasks,t.id,projId)+'</div>':'')+
+    '</div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+function treeClick(e,taskId,projId,hasSubs){
+  if(hasSubs&&(e.target.id==='ttog-'+taskId||e.target.closest&&e.target.closest('#ttog-'+taskId))){
+    e.stopPropagation();
+    var ch=document.getElementById('tch-'+taskId);
+    var tog=document.getElementById('ttog-'+taskId);
+    if(!ch)return;
+    var open=ch.style.display!=='none';
+    ch.style.display=open?'none':'block';
+    if(tog){tog.classList.toggle('open',!open);tog.innerHTML=!open?'&#9660;':'&#9654;';}
+    _treeExp[taskId]=!open;
+    return;
+  }
+  openModalTask(taskId,projId);
 }
 
 function getCtx(){
