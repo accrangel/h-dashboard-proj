@@ -219,7 +219,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
 
-    <div class="footer-note">GRUPO HOLSA · Central de Inteligência · Atualizado: 04/07/2026 15:41</div>
+    <div class="footer-note">GRUPO HOLSA · Central de Inteligência · Atualizado: 04/07/2026 15:27</div>
   </div>
 </div>
 
@@ -228,7 +228,7 @@ var SENHA = 'holsa2026';
 var GROQ_KEY = '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';
 var GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 var WORKER_URL = 'https://holsa-notion-proxy.holsa.workers.dev';
-var GH_SYNC_TOKEN = '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';
+var SYNC_SECRET = 'holsa2026sync';
 var GH_REPO = 'accrangel/h-dashboard-proj';
 
 var MEETINGS = [
@@ -270,55 +270,40 @@ function syncNotion() {
   btn.textContent = '⟳ Sincronizando...';
   btn.disabled = true;
   pill.textContent = 'Sincronizando...';
+  pill.style.color = '';
 
-  fetch('https://api.github.com/repos/' + GH_REPO + '/actions/workflows/update-dashboard.yml/dispatches', {
+  fetch(WORKER_URL + '/sync', {
     method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + GH_SYNC_TOKEN,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ref: 'main'})
-  }).then(function(r) {
-    if (r.status === 204) {
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ secret: SYNC_SECRET })
+  }).then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.ok) {
       pill.textContent = 'Sincronização iniciada — aguarde ~30s';
       pill.style.color = '#4caf82';
       setTimeout(function() {
         btn.textContent = '↻ Sincronizar';
         btn.disabled = false;
         pill.style.color = '';
-        checkLastUpdate();
+        pill.textContent = 'Notion sincronizado';
       }, 35000);
     } else {
-      pill.textContent = 'Erro ao sincronizar';
+      pill.textContent = 'Erro ao sincronizar (' + (d.status || '') + ')';
       pill.style.color = '#e05c5c';
       btn.textContent = '↻ Sincronizar';
       btn.disabled = false;
     }
   }).catch(function(e) {
     pill.textContent = 'Erro: ' + e.message;
+    pill.style.color = '#e05c5c';
     btn.textContent = '↻ Sincronizar';
     btn.disabled = false;
   });
 }
 
 function checkLastUpdate() {
-  fetch('https://api.github.com/repos/' + GH_REPO + '/commits?path=index.html&per_page=1', {
-    headers: {'Authorization': 'Bearer ' + GH_SYNC_TOKEN, 'Accept': 'application/vnd.github+json'}
-  }).then(function(r){ return r.json(); })
-  .then(function(d) {
-    if (d && d[0] && d[0].commit) {
-      var date = new Date(d[0].commit.committer.date);
-      var formatted = date.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
-      var msg = d[0].commit.message || '';
-      var pill = document.getElementById('last-sync');
-      if (msg.includes('Auto:') || msg.includes('atualiza dashboard')) {
-        pill.textContent = 'Noção sincronizado · ' + formatted;
-      } else {
-        pill.textContent = 'Atualizado · ' + formatted;
-      }
-    }
-  }).catch(function(){});
+  var pill = document.getElementById('last-sync');
+  if (pill) pill.textContent = 'Notion sincronizado';
 }
 
 function checkPwd() {
