@@ -137,8 +137,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
     <div class="topbar-right">
-      <div class="status-pill"><span class="status-dot"></span> Notion sincronizado</div>
-      <button class="tbtn" onclick="renderMeetings()">&#8635; Atualizar</button>
+      <div class="status-pill"><span class="status-dot"></span> <span id="last-sync">Carregando...</span></div>
+      <button class="tbtn" id="sync-btn" onclick="syncNotion()">&#8635; Sincronizar</button>
       <button class="tbtn-ghost" onclick="logout()">Sair</button>
     </div>
   </div>
@@ -219,7 +219,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
 
-    <div class="footer-note">GRUPO HOLSA · Central de Inteligência · Última atualização: 04/07/2026 15:01</div>
+    <div class="footer-note">GRUPO HOLSA · Central de Inteligência · Uso interno e confidencial</div>
   </div>
 </div>
 
@@ -228,15 +228,74 @@ var SENHA = 'holsa2026';
 var GROQ_KEY = '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';
 var GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 var WORKER_URL = 'https://holsa-notion-proxy.holsa.workers.dev';
+var GH_SYNC_TOKEN = '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';
+var GH_REPO = 'accrangel/h-dashboard-proj';
 
 var MEETINGS = [
-  {id:'39264917ccf1811f963be715ac08e145',title:'2026-07-03 15:28:22',date:'2026-07-03T15:28:00.000+00:00',project:'Infraestrutura',status:'Processando',summary:'A transcrição é breve, não é necessário resumo. A transcrição original do áudio é a seguinte: Speaker 1 00:00:01 Um novo teste de reunião, vamos ver o que vai sair dentro do aplicativo. Eu preciso que ele consiga identificar o que eu falei e colocar dentro do Notion do Zap.',actionItems:'A transcrição é breve, não é necessário resumo. A transcrição original do áudio é a seguinte: Speaker 1 00:00:01 Um novo teste de reunião, vamos ver o que vai sair dentro do aplicativo. Eu preciso que ele consiga identificar o que eu falei e colocar dentro do Notion do Zap.',transcript:'Speaker 1 00:00:01 Um novo teste de reunião, vamos ver o que vai sair dentro do aplicativo. Eu preciso que ele consiga identificar o que eu falei e colocar dentro do Notion do Zap.',url:'https://app.notion.com/p/2026-07-03-15-28-22-39264917ccf1811f963be715ac08e145'},
-  {id:'39264917ccf18103bbc4cffe7fbfd0ba',title:'2026-07-03 15:12:25',date:'2026-07-03T15:12:00.000+00:00',project:'',status:'Concluída',summary:'A transcrição é breve, não é necessário resumo. A transcrição original do áudio é a seguinte: Speaker 1 00:00:08 Teste de áudio, 1, 2, 3, 4, Teste de áudio, parar e salvar.',actionItems:'A transcrição é breve, não é necessário resumo. A transcrição original do áudio é a seguinte: Speaker 1 00:00:08 Teste de áudio, 1, 2, 3, 4, Teste de áudio, parar e salvar.',transcript:'Speaker 1 00:00:08 Teste de áudio, 1, 2, 3, 4, Teste de áudio, parar e salvar.',url:'https://app.notion.com/p/2026-07-03-15-12-25-39264917ccf18103bbc4cffe7fbfd0ba'},
-  {id:'39164917ccf181d7b98bc8977954052e',title:'Steve Jobs & Bill Gates: A Conversation That Shaped Technology',date:'2026-06-16T23:06:00.000+00:00',project:'',status:'Concluída',summary:'## Overview This document consolidates a series of discussions between Steve Jobs and Bill Gates. They reflect on their shared history, from early collaborations and intense rivalry to their modern-day partnership, and discuss their respective contributions to the industry. The conversation covers their differing company philosophies on hardware and software integration, their strategic approaches',actionItems:'## Overview This document consolidates a series of discussions between Steve Jobs and Bill Gates. They reflect on their shared history, from early collaborations and intense rivalry to their modern-day partnership, and discuss their respective contributions to the industry. The conversation covers their differing company philosophies on hardware and software integration, their strategic approaches',transcript:'00:00:01 So, let\'s get started. I wanted to ask. There\'s been a lot of like mano a mano, catfight kind of thing in a lot of the blogs and the press and stuff like that. And we wanted to, the first que',url:'https://app.notion.com/p/Steve-Jobs-Bill-Gates-A-Conversation-That-Shaped-Technology-39164917ccf181d7b98bc8977954052e'}
+  {id:'39264917-ccf1-811f-963b-e715ac08e145',title:'Teste de integração — Plaud › Notion via Zap',date:'2026-07-03T15:28:00.000Z',project:'TI',status:'Concluída',summary:'Teste de reunião realizado para verificar o funcionamento do sistema Plaud para Notion via Zapier. O locutor validou a identificação de fala e o envio automático para o banco de dados.',actionItems:'Verificar se o conteúdo foi salvo corretamente no Notion pelo Zap.',transcript:'Speaker 1 00:00:01 — Um novo teste de reunião, vamos ver o que vai sair dentro do aplicativo.',url:'https://app.notion.com/p/39264917ccf1811f963be715ac08e145'},
+  {id:'39264917-ccf1-8103-bbc4-cffe7fbfd0ba',title:'Validação de áudio — Dispositivo Plaud',date:'2026-07-03T15:12:00.000Z',project:'TI',status:'Concluída',summary:'Primeiro teste de áudio do dispositivo Plaud para validação da integração com o ecossistema HOLSA. Gravação bem-sucedida e sincronização confirmada.',actionItems:'Confirmar funcionamento do AutoFlow e integração com Notion.',transcript:'Speaker 1 00:00:08 — Teste de áudio, 1, 2, 3, 4, Teste de áudio, parar e salvar.',url:'https://app.notion.com/p/39264917ccf18103bbc4cffe7fbfd0ba'},
+  {id:'39164917-ccf1-81d7-b98b-c8977954052e',title:'Steve Jobs e Bill Gates: A Conversation That Shaped Technology',date:'2026-06-16T23:06:00.000Z',project:'',status:'Concluída',summary:'Conversa histórica sobre a trajetória da computação pessoal, filosofias de produto, futuro dos dispositivos e interfaces naturais. Aborda colaboração Apple-Microsoft e visão sobre dispositivos pós-PC.',actionItems:'Nenhum action item identificado — conteúdo de referência e inspiração estratégica.',transcript:'Transcrição completa disponível no Notion.',url:'https://app.notion.com/p/39164917ccf181d7b98bc8977954052e'}
 ];
 
 var sel = null;
 var chatHistory = [];
+
+function syncNotion() {
+  var btn = document.getElementById('sync-btn');
+  var pill = document.getElementById('last-sync');
+  btn.textContent = '⟳ Sincronizando...';
+  btn.disabled = true;
+  pill.textContent = 'Sincronizando...';
+
+  fetch('https://api.github.com/repos/' + GH_REPO + '/actions/workflows/update-dashboard.yml/dispatches', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + GH_SYNC_TOKEN,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ref: 'main'})
+  }).then(function(r) {
+    if (r.status === 204) {
+      pill.textContent = 'Sincronização iniciada — aguarde ~30s';
+      pill.style.color = '#4caf82';
+      setTimeout(function() {
+        btn.textContent = '↻ Sincronizar';
+        btn.disabled = false;
+        pill.style.color = '';
+        checkLastUpdate();
+      }, 35000);
+    } else {
+      pill.textContent = 'Erro ao sincronizar';
+      pill.style.color = '#e05c5c';
+      btn.textContent = '↻ Sincronizar';
+      btn.disabled = false;
+    }
+  }).catch(function(e) {
+    pill.textContent = 'Erro: ' + e.message;
+    btn.textContent = '↻ Sincronizar';
+    btn.disabled = false;
+  });
+}
+
+function checkLastUpdate() {
+  fetch('https://api.github.com/repos/' + GH_REPO + '/commits?path=index.html&per_page=1', {
+    headers: {'Authorization': 'Bearer ' + GH_SYNC_TOKEN, 'Accept': 'application/vnd.github+json'}
+  }).then(function(r){ return r.json(); })
+  .then(function(d) {
+    if (d && d[0] && d[0].commit) {
+      var date = new Date(d[0].commit.committer.date);
+      var formatted = date.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
+      var msg = d[0].commit.message || '';
+      var pill = document.getElementById('last-sync');
+      if (msg.includes('Auto:') || msg.includes('atualiza dashboard')) {
+        pill.textContent = 'Noção sincronizado · ' + formatted;
+      } else {
+        pill.textContent = 'Atualizado · ' + formatted;
+      }
+    }
+  }).catch(function(){});
+}
 
 function checkPwd() {
   var v = document.getElementById('pwd-input').value;
@@ -245,6 +304,7 @@ function checkPwd() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     renderMeetings();
+    checkLastUpdate();
   } else {
     document.getElementById('pwd-error').style.display = 'block';
     document.getElementById('pwd-input').value = '';
