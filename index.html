@@ -6,136 +6,171 @@
 <title>GRUPO HOLSA — Central de Inteligência</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0d1b2a;--surface:#1a2332;--border:#2a3f55;--text:#e8edf2;--muted:#7a9ab5;--accent:#4fa3e0;--green:#4caf82;--yellow:#f0c040;--red:#e05c5c}
+:root{
+  --bg:#0d1b2a;--surf:#1a2332;--surf2:#1f2d3d;--bord:#2a3f55;
+  --text:#e8edf2;--muted:#7a9ab5;--accent:#4fa3e0;
+  --green:#4caf82;--yellow:#f0c040;--red:#e05c5c;--orange:#f08040;--purple:#9070e0
+}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+/* LOGIN */
 #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:40px;width:100%;max-width:360px;text-align:center}
-.login-logo{width:48px;height:48px;background:#1e6fa8;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;margin:0 auto 20px}
-.login-title{font-size:18px;font-weight:600;color:var(--text);letter-spacing:.5px;margin-bottom:4px}
-.login-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:32px}
-.login-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px;text-align:left}
-.login-input{width:100%;padding:10px 14px;background:#0f1923;border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:14px;margin-bottom:8px;letter-spacing:2px}
-.login-input:focus{outline:none;border-color:var(--accent)}
-.login-btn{width:100%;padding:11px;background:#1e6fa8;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:.5px}
-.login-btn:hover{background:#2589cc}
-.login-error{font-size:12px;color:var(--red);margin-top:8px;display:none}
+.lcard{background:var(--surf);border:1px solid var(--bord);border-radius:12px;padding:40px;width:100%;max-width:360px;text-align:center}
+.llogo{width:48px;height:48px;background:#1e6fa8;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;margin:0 auto 20px}
+.ltitle{font-size:18px;font-weight:600;letter-spacing:.5px;margin-bottom:4px}
+.lsub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:32px}
+.llabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px;text-align:left}
+.linput{width:100%;padding:10px 14px;background:#0f1923;border:1px solid var(--bord);border-radius:4px;color:var(--text);font-size:14px;margin-bottom:8px;letter-spacing:2px}
+.linput:focus{outline:none;border-color:var(--accent)}
+.lbtn{width:100%;padding:11px;background:#1e6fa8;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:.5px}
+.lbtn:hover{background:#2589cc}
+.lerr{font-size:12px;color:var(--red);margin-top:8px;display:none}
+/* LAYOUT */
 #dashboard{display:none}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.logo-block{display:flex;align-items:center;gap:12px}
+.topbar{background:var(--surf);border-bottom:1px solid var(--bord);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo-block{display:flex;align-items:center;gap:10px}
 .logo-mark{width:32px;height:32px;background:#1e6fa8;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff}
-.logo-name{font-size:14px;font-weight:600;color:var(--text);letter-spacing:.5px}
+.logo-name{font-size:13px;font-weight:600;letter-spacing:.5px}
 .logo-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
-.topbar-right{display:flex;align-items:center;gap:10px}
-.status-pill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);border-radius:50%;background:#2ecc7122;padding:4px 10px;border-radius:20px}
-.status-dot{width:7px;height:7px;border-radius:50%;background:#2ecc71}
-.tbtn{padding:6px 14px;font-size:11px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:5px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.status-pill{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);background:#2ecc7118;padding:4px 10px;border-radius:20px}
+.sdot{width:7px;height:7px;border-radius:50%;background:#2ecc71}
+.tbtn{padding:5px 12px;font-size:11px;border:1px solid var(--bord);border-radius:4px;background:transparent;color:var(--accent);cursor:pointer}
 .tbtn:hover{background:var(--accent);color:#fff}
-.tbtn-ghost{padding:6px 14px;font-size:11px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--muted);cursor:pointer}
-.tbtn-ghost:hover{border-color:var(--red);color:var(--red)}
-.body{padding:24px;display:flex;flex-direction:column;gap:20px;max-width:1200px;margin:0 auto}
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:#1e6fa8}
-.kpi.gold::before{background:#c8a84b}
-.kpi.green::before{background:#2ecc71}
-.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;min-height:30px}
-.kpi-val{font-size:32px;font-weight:700;color:var(--text);line-height:1}
-.kpi-sub{font-size:11px;color:var(--muted);margin-top:6px}
-.section-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:14px}
-.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.proj-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:border-color .2s}
-.proj-card:hover{border-color:var(--accent)}
-.proj-area{font-size:10px;font-weight:700;border-radius:4px;padding:2px 7px;display:inline-block;margin-bottom:8px}
-.proj-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
-.proj-resp{font-size:11px;color:var(--muted);margin-bottom:8px}
-.proj-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
-.proj-bar-bg{background:#0d1b2a;border-radius:4px;height:4px;overflow:hidden}
-.proj-bar{background:var(--accent);height:100%;transition:width .3s}
-.filters{display:flex;gap:10px;flex-wrap:wrap}
-.fsel{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;cursor:pointer;min-width:150px}
-.mlist{display:flex;flex-direction:column;gap:10px}
-.mcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:border-color .2s}
-.mcard:hover{border-color:var(--accent)}
-.mcard.active{border-color:var(--accent)}
-.mcard.sem-projeto{border-left:3px solid var(--red)}
-.mtitle{font-weight:700;font-size:14px;color:var(--text)}
-.mdate{font-size:11px;color:var(--muted);white-space:nowrap}
-.mpreview{font-size:12px;color:var(--muted);margin:6px 0 10px;line-height:1.5}
-.tags{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.tag{font-size:10px;font-weight:700;border-radius:4px;padding:2px 8px}
-.t-conc{background:#4caf8222;color:#4caf82}
-.t-acomp{background:#4fa3e022;color:#4fa3e0}
-.t-proc{background:#f0c04022;color:#f0c040}
+.tbtn-g{padding:5px 12px;font-size:11px;border:1px solid var(--bord);border-radius:4px;background:transparent;color:var(--muted);cursor:pointer}
+.tbtn-g:hover{border-color:var(--red);color:var(--red)}
+/* TABS */
+.tabs{background:var(--surf);border-bottom:1px solid var(--bord);display:flex;padding:0 24px}
+.tab{padding:12px 18px;font-size:12px;font-weight:600;letter-spacing:.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+.tab-badge{background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:10px;padding:1px 5px;margin-left:5px;vertical-align:middle}
+/* BODY */
+.body{padding:20px 24px;max-width:1300px;margin:0 auto}
+.view{display:none}
+.view.active{display:block}
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.kpi{background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.blue::before{background:var(--accent)}
+.kpi.gold::before{background:var(--yellow)}
+.kpi.green::before{background:var(--green)}
+.kpi.red::before{background:var(--red)}
+.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.kpi-val{font-size:28px;font-weight:700;line-height:1}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px}
+/* CARDS GERAIS */
+.card{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:16px;margin-bottom:10px}
+.card:hover{border-color:var(--accent);cursor:pointer}
+.card.selected{border-color:var(--accent);background:var(--surf2)}
+.card.alert-left{border-left:3px solid var(--red)}
+.card.warn-left{border-left:3px solid var(--yellow)}
+/* SECTION */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted)}
+.btn-sm{padding:4px 12px;font-size:11px;border:1px solid var(--accent);border-radius:4px;background:transparent;color:var(--accent);cursor:pointer}
+.btn-sm:hover{background:var(--accent);color:#fff}
+.btn-sm-r{padding:4px 12px;font-size:11px;border:1px solid var(--red);border-radius:4px;background:transparent;color:var(--red);cursor:pointer}
+/* TAGS */
+.tag{font-size:10px;font-weight:700;border-radius:4px;padding:2px 8px;display:inline-block}
+.t-conc{background:#4caf8220;color:var(--green)}
+.t-acomp{background:#4fa3e020;color:var(--accent)}
+.t-proc{background:#f0c04020;color:var(--yellow)}
+.t-bloc{background:#e05c5c20;color:var(--red)}
+.t-ag{background:#f0804020;color:var(--orange)}
+.t-ni{background:#ffffff15;color:var(--muted)}
 .t-proj{background:#2a3f55;color:var(--muted)}
-.t-alert{background:#e05c5c22;color:var(--red);border:1px solid var(--red);cursor:pointer}
-.detail-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
-.dp-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.dp-title{font-size:16px;font-weight:700;color:var(--text)}
-.dp-meta{font-size:12px;color:var(--muted);margin-bottom:16px;display:flex;gap:16px}
-.dp-section{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;margin-top:16px}
-.dp-text{font-size:13px;color:var(--muted);line-height:1.6}
-.edit-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.edit-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.edit-sel{width:100%;background:#0d1b2a;border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:13px}
-.edit-btns{display:flex;gap:8px;margin-top:12px}
-.dbtn{padding:8px 16px;font-size:12px;border:1px solid var(--accent);border-radius:6px;background:transparent;color:var(--accent);cursor:pointer}
-.dbtn:hover{background:var(--accent);color:#fff}
-.edit-msg{font-size:11px;margin-top:8px}
-.ai-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
-.ai-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.ai-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted)}
-.ai-badge{font-size:10px;background:#1e3a5222;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:2px 8px}
-.ai-shortcuts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.ai-sc{font-size:12px;border:1px solid var(--border);border-radius:6px;padding:5px 12px;color:var(--muted);cursor:pointer;background:transparent}
-.ai-sc:hover{border-color:var(--accent);color:var(--accent)}
-.ai-history{font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.ai-hist-btns{display:flex;gap:6px}
-.ai-hbtn{font-size:10px;border:1px solid var(--border);border-radius:4px;padding:3px 8px;color:var(--muted);cursor:pointer;background:transparent}
-.ai-hbtn:hover{border-color:var(--accent);color:var(--accent)}
-.ai-msgs{max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.t-alert{background:#e05c5c20;color:var(--red);border:1px solid var(--red);cursor:pointer}
+/* ALERT BAR */
+.alert-bar{background:#e05c5c12;border:1px solid var(--red);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--red);margin-bottom:16px}
+/* FILTROS */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.fsel{background:var(--surf);border:1px solid var(--bord);border-radius:6px;padding:7px 12px;color:var(--text);font-size:12px;cursor:pointer}
+.finput{background:var(--surf);border:1px solid var(--bord);border-radius:6px;padding:7px 12px;color:var(--text);font-size:12px;min-width:180px}
+/* DETAIL PANEL */
+.detail{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:20px;margin-top:12px}
+.detail-title-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.detail-title{font-size:16px;font-weight:700;flex:1;cursor:pointer;padding:4px;border-radius:4px}
+.detail-title:hover{background:var(--surf2)}
+.detail-title[contenteditable=true]{outline:1px solid var(--accent);background:var(--surf2);padding:4px 8px}
+.detail-meta{font-size:12px;color:var(--muted);margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap}
+.dsec{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin:14px 0 6px}
+.dtext{font-size:13px;color:var(--muted);line-height:1.6}
+/* PARTICIPANTES */
+.participants-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.participant-chip{display:flex;align-items:center;gap:6px;background:var(--surf2);border:1px solid var(--bord);border-radius:20px;padding:4px 12px;font-size:12px}
+.participant-chip .speaker{font-size:10px;color:var(--muted);margin-left:4px}
+.participant-chip .remove{cursor:pointer;color:var(--muted);font-size:14px;line-height:1}
+.participant-chip .remove:hover{color:var(--red)}
+/* ATIVIDADES */
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bord)}
+.task-item:last-child{border-bottom:none}
+.task-status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.task-info{flex:1;min-width:0}
+.task-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.task-meta{font-size:11px;color:var(--muted)}
+.task-alert{font-size:11px;color:var(--red);margin-top:2px}
+/* PROJETO CARD */
+.proj-card{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:16px;cursor:pointer;transition:border-color .2s}
+.proj-card:hover{border-color:var(--accent)}
+.proj-card.bloqueado{border-left:3px solid var(--red)}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:20px}
+.proj-bar-bg{background:#0d1b2a;border-radius:4px;height:4px;margin-top:10px;overflow:hidden}
+.proj-bar{background:var(--green);height:100%;transition:width .3s}
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-group{margin-bottom:12px}
+.form-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
+.form-input{width:100%;background:#0d1b2a;border:1px solid var(--bord);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px}
+.form-input:focus{outline:none;border-color:var(--accent)}
+.form-textarea{width:100%;background:#0d1b2a;border:1px solid var(--bord);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;height:70px;resize:vertical}
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center}
+.modal{background:var(--surf);border:1px solid var(--bord);border-radius:14px;padding:24px;width:480px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:700;margin-bottom:16px}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.modal-cancel{background:transparent;border:1px solid var(--bord);color:var(--muted);border-radius:6px;padding:7px 16px;cursor:pointer;font-size:12px}
+.modal-save{background:var(--accent);border:none;color:#fff;border-radius:6px;padding:7px 16px;cursor:pointer;font-size:12px;font-weight:600}
+.modal-msg{font-size:12px;margin-top:10px;text-align:center;min-height:16px}
+/* IA */
+.ai-msgs{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
 .msg{display:flex;gap:10px;align-items:flex-start}
-.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
 .av.ai{background:#1e3a52;color:var(--accent)}
 .av.user{background:#1a2836;color:var(--text)}
-.bub{font-size:13px;line-height:1.5;color:var(--muted);background:#0d1b2a;border-radius:8px;padding:10px 14px;max-width:100%}
+.bub{font-size:13px;line-height:1.5;color:var(--muted);background:#0d1b2a;border-radius:8px;padding:8px 12px;max-width:100%}
 .bub.ai{color:var(--text)}
 .ai-input-row{display:flex;gap:8px}
-.ai-inp{flex:1;background:#0d1b2a;border:1px solid var(--border);border-radius:6px;padding:10px;color:var(--text);font-size:13px}
+.ai-inp{flex:1;background:#0d1b2a;border:1px solid var(--bord);border-radius:6px;padding:9px;color:var(--text);font-size:13px}
 .ai-inp:focus{outline:none;border-color:var(--accent)}
-.ai-send{padding:10px 18px;background:var(--accent);border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:600}
-.ai-send:hover{background:#3b8ac4}
-.alert-bar{background:#e05c5c18;border:1px solid var(--red);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--red)}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center}
-.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;width:420px;max-width:95vw}
-.modal-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:18px}
-.modal-sub{font-size:12px;color:var(--muted);margin-bottom:18px}
-.modal-label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
-.modal-input{width:100%;background:#0d1b2a;border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:13px;margin-bottom:12px;box-sizing:border-box}
-.modal-input:focus{outline:none;border-color:var(--accent)}
-.modal-textarea{width:100%;background:#0d1b2a;border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:13px;margin-bottom:18px;height:70px;resize:vertical;box-sizing:border-box}
-.modal-btns{display:flex;gap:10px;justify-content:flex-end}
-.modal-cancel{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px}
-.modal-save{background:var(--accent);border:none;color:#fff;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:600}
-.modal-msg{font-size:12px;margin-top:10px;text-align:center}
-@media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.edit-row{grid-template-columns:1fr}}
+.ai-send{padding:9px 16px;background:var(--accent);border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:600}
+/* EDIT MSG */
+.edit-msg{font-size:11px;margin-top:8px;min-height:14px}
+/* PROGRESS BAR ATIVIDADES */
+.prog-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.prog-bg{flex:1;background:#0d1b2a;border-radius:4px;height:5px}
+.prog-fill{background:var(--green);height:100%;border-radius:4px;transition:width .3s}
+.prog-label{font-size:11px;color:var(--muted);white-space:nowrap}
+@media(max-width:768px){.kpis{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}.proj-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-card">
-    <div class="login-logo">H</div>
-    <div class="login-title">GRUPO HOLSA</div>
-    <div class="login-sub">Central de Inteligência · Acesso Restrito</div>
-    <label class="login-label">Senha de Acesso</label>
-    <input class="login-input" type="password" id="pwd-input" placeholder="••••••••"
-      onkeydown="if(event.key==='Enter')checkPwd()">
-    <button class="login-btn" onclick="checkPwd()">Entrar</button>
-    <div class="login-error" id="pwd-error">Senha incorreta. Tente novamente.</div>
-    <div style="font-size:10px;color:#3a5068;margin-top:24px;letter-spacing:.3px">Acesso exclusivo para colaboradores autorizados do Grupo HOLSA</div>
+  <div class="lcard">
+    <div class="llogo">H</div>
+    <div class="ltitle">GRUPO HOLSA</div>
+    <div class="lsub">Central de Inteligência · Acesso Restrito</div>
+    <label class="llabel">Senha de Acesso</label>
+    <input class="linput" type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPwd()">
+    <button class="lbtn" onclick="checkPwd()">Entrar</button>
+    <div class="lerr" id="pwd-error">Senha incorreta.</div>
   </div>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dashboard">
   <div class="topbar">
     <div class="logo-block">
@@ -146,698 +181,925 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
     <div class="topbar-right">
-      <div class="status-pill"><span class="status-dot"></span><span id="last-sync">Notion sincronizado</span></div>
+      <div class="status-pill"><span class="sdot"></span><span id="last-sync">Notion sincronizado</span></div>
       <button class="tbtn" id="sync-btn" onclick="syncNotion()">&#8635; Sincronizar</button>
-      <button class="tbtn-ghost" onclick="logout()">Sair</button>
+      <button class="tbtn-g" onclick="logout()">Sair</button>
     </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('reunioes')">Reuniões</div>
+    <div class="tab" onclick="showTab('projetos')" id="tab-proj">Projetos</div>
+    <div class="tab" onclick="showTab('ia')">Assistente IA</div>
   </div>
 
   <div class="body">
 
     <!-- KPIs -->
-    <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-label">Total de Reuniões</div><div class="kpi-val" id="k-total">—</div><div class="kpi-sub">no workspace</div></div>
-      <div class="kpi"><div class="kpi-label">Esta Semana</div><div class="kpi-val" id="k-week">—</div><div class="kpi-sub">últimos 7 dias</div></div>
-      <div class="kpi gold"><div class="kpi-label">Projetos Ativos</div><div class="kpi-val" id="k-proj">—</div><div class="kpi-sub" id="k-proj-sub">—</div></div>
-      <div class="kpi green"><div class="kpi-label">Taxa de Conclusão</div><div class="kpi-val" id="k-rate">—</div><div class="kpi-sub" id="k-rate-sub">—</div></div>
+    <div class="kpis">
+      <div class="kpi blue"><div class="kpi-label">Total de Reuniões</div><div class="kpi-val" id="k-total">0</div><div class="kpi-sub">no workspace</div></div>
+      <div class="kpi blue"><div class="kpi-label">Esta Semana</div><div class="kpi-val" id="k-week">0</div><div class="kpi-sub">últimos 7 dias</div></div>
+      <div class="kpi gold"><div class="kpi-label">Projetos Ativos</div><div class="kpi-val" id="k-proj">0</div><div class="kpi-sub" id="k-proj-sub">—</div></div>
+      <div class="kpi green"><div class="kpi-label">Taxa de Conclusão</div><div class="kpi-val" id="k-rate">0%</div><div class="kpi-sub" id="k-rate-sub">0 de 0</div></div>
     </div>
 
-    <!-- Alerta sem projeto -->
-    <div class="alert-bar" id="alert-sem-proj" style="display:none">
-      ⚠️ <span id="alert-sem-proj-txt"></span>
+    <!-- ALERTA GERAL -->
+    <div class="alert-bar" id="alert-global" style="display:none">
+      ⚠️ <span id="alert-global-txt"></span>
     </div>
 
-    <!-- Projetos -->
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-        <div class="section-title">≡ Projetos Ativos</div>
-        <button class="tbtn" onclick="openModalNovoProjeto()" style="font-size:11px">+ Novo Projeto</button>
+    <!-- ABA REUNIÕES -->
+    <div class="view active" id="view-reunioes">
+      <div class="sec-header">
+        <div class="sec-title">≡ Registro de Reuniões</div>
       </div>
-      <div class="proj-grid" id="proj-grid"></div>
-    </div>
-
-    <!-- Reuniões -->
-    <div>
-      <div class="section-title">≡ Registro de Reuniões</div>
-      <div class="filters" style="margin-bottom:14px">
-        <select class="fsel" id="fp" onchange="renderMeetings()">
-          <option value="">Todos os projetos</option>
-        </select>
+      <div class="filters">
+        <select class="fsel" id="fp" onchange="renderMeetings()"><option value="">Todos os projetos</option></select>
         <select class="fsel" id="fs" onchange="renderMeetings()">
           <option value="">Todos os status</option>
-          <option>Concluída</option>
-          <option>Em acompanhamento</option>
-          <option>Processando</option>
+          <option>Concluída</option><option>Em acompanhamento</option><option>Processando</option>
         </select>
-        <input class="fsel" id="fq" placeholder="Buscar reunião..." oninput="renderMeetings()" style="min-width:160px">
+        <input class="finput" id="fq" placeholder="Buscar..." oninput="renderMeetings()">
       </div>
-      <div class="mlist" id="meetings-list"></div>
+      <div id="meetings-list"></div>
+      <div class="detail" id="meeting-detail" style="display:none"></div>
     </div>
 
-    <!-- Detalhe -->
-    <div class="detail-panel" id="detail-panel" style="display:none">
-      <div class="dp-header">
-        <div class="dp-title" id="dp-title"></div>
-        <span class="tag" id="dp-status"></span>
+    <!-- ABA PROJETOS -->
+    <div class="view" id="view-projetos">
+      <div class="sec-header">
+        <div class="sec-title">≡ Projetos</div>
+        <button class="btn-sm" onclick="openModalProjeto()">+ Novo Projeto</button>
       </div>
-      <div class="dp-meta" id="dp-meta"></div>
-      <div class="dp-section">Resumo Executivo</div>
-      <div class="dp-text" id="dp-summary"></div>
-      <div class="dp-section" id="dp-actions-label" style="display:none">Action Items</div>
-      <div class="dp-text" id="dp-actions"></div>
-      <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
-        <div class="section-title" style="margin-bottom:12px">Editar Reunião</div>
-        <div class="edit-row">
-          <div>
-            <div class="edit-label">Status</div>
-            <select class="edit-sel" id="edit-status">
-              <option>Processando</option>
-              <option>Em acompanhamento</option>
-              <option>Concluída</option>
-            </select>
-          </div>
-          <div>
-            <div class="edit-label">Projeto</div>
-            <select class="edit-sel" id="edit-proj"></select>
+      <div class="proj-grid" id="proj-grid"></div>
+      <div id="proj-detail" style="display:none"></div>
+    </div>
+
+    <!-- ABA IA -->
+    <div class="view" id="view-ia">
+      <div class="card" style="cursor:default">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-size:13px;font-weight:700">HOLSA Brain <span style="font-size:11px;color:var(--muted);font-weight:400">· powered by Groq</span></div>
+          <div style="display:flex;gap:6px">
+            <button class="btn-sm" onclick="downloadTXT()" style="font-size:10px">TXT</button>
+            <button class="btn-sm" onclick="clearHistory()" style="border-color:var(--red);color:var(--red);font-size:10px">Limpar</button>
           </div>
         </div>
-        <div class="edit-btns">
-          <button class="dbtn" onclick="saveEdit()">&#10003; Salvar no Notion</button>
-          <button class="dbtn" onclick="quickAsk('Analise a reuniao e sugira proximos passos para o HOLSA')" style="border-color:var(--muted);color:var(--muted)">Analisar com IA</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="tbtn" style="font-size:11px" onclick="quickAsk('Resumo executivo de todas as reunioes')">Resumo executivo</button>
+          <button class="tbtn" style="font-size:11px" onclick="quickAsk('Liste todos os action items pendentes')">Action items</button>
+          <button class="tbtn" style="font-size:11px" onclick="quickAsk('Quais projetos precisam de atencao imediata')">Alertas de projeto</button>
+          <button class="tbtn" style="font-size:11px" onclick="quickAsk('Quais atividades estao bloqueadas ou atrasadas')">Atividades em risco</button>
         </div>
-        <div class="edit-msg" id="edit-msg" style="display:none"></div>
+        <div class="ai-msgs" id="ai-msgs">
+          <div class="msg"><div class="av ai">G</div><div class="bub ai">Olá! Sou o assistente de inteligência do GRUPO HOLSA. Tenho acesso a todas as reuniões, projetos e atividades. Como posso ajudar?</div></div>
+        </div>
+        <div class="ai-input-row">
+          <input class="ai-inp" id="ai-in" placeholder="Digite sua consulta..." onkeydown="if(event.key==='Enter')sendAI()">
+          <button class="ai-send" onclick="sendAI()">&#9658; Enviar</button>
+        </div>
       </div>
     </div>
 
-    <!-- IA -->
-    <div class="ai-panel">
-      <div class="ai-header">
-        <div class="ai-title">★ Assistente de Inteligência</div>
-        <span class="ai-badge">HOLSA BRAIN · Groq · gratuito</span>
-      </div>
-      <div class="ai-shortcuts">
-        <button class="ai-sc" onclick="quickAsk('Resumo executivo de todas as reunioes')">Resumo executivo</button>
-        <button class="ai-sc" onclick="quickAsk('Liste todos os action items pendentes')">Action items</button>
-        <button class="ai-sc" onclick="quickAsk('Identifique padroes e temas recorrentes')">Padrões e temas</button>
-        <button class="ai-sc" onclick="quickAsk('Quais sao as recomendacoes prioritarias')">Recomendações</button>
-        <button class="ai-sc" onclick="quickAsk('Gere um relatorio executivo completo')">Gerar relatório</button>
-      </div>
-      <div class="ai-history">
-        <span>&#9646; Histórico da sessão (<span id="hist-count">0</span> consultas)</span>
-        <div class="ai-hist-btns">
-          <button class="ai-hbtn" onclick="downloadTXT()">&#8595; Baixar TXT</button>
-          <button class="ai-hbtn" onclick="downloadHTML()">&#8595; Baixar Relatório</button>
-          <button class="ai-hbtn" onclick="clearHistory()" style="color:var(--red);border-color:var(--red)">&#10005; Limpar</button>
-        </div>
-      </div>
-      <div class="ai-msgs" id="ai-msgs">
-        <div class="msg"><div class="av ai">G</div><div class="bub ai">Bem-vindo ao HOLSA Brain. Tenho acesso às reuniões registradas. Utilize os atalhos acima ou faça qualquer consulta.</div></div>
-      </div>
-      <div class="ai-input-row">
-        <input class="ai-inp" id="ai-in" placeholder="Digite sua consulta..." onkeydown="if(event.key==='Enter')sendAI()">
-        <button class="ai-send" onclick="sendAI()">&#9658; Enviar</button>
+  </div><!-- /body -->
+</div><!-- /dashboard -->
+
+<!-- MODAL: PARTICIPANTES -->
+<div class="overlay" id="modal-part">
+  <div class="modal">
+    <div class="modal-title">Participantes da Reunião</div>
+    <div class="modal-sub" id="modal-part-sub"></div>
+    <div id="part-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:32px"></div>
+    <div style="margin-bottom:12px">
+      <div class="form-label">Adicionar participante</div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="part-nome" placeholder="Nome do participante" style="flex:1">
+        <select class="form-input" id="part-speaker" style="min-width:130px">
+          <option value="">Sem vínculo</option>
+        </select>
+        <button class="btn-sm" onclick="addParticipant()">Adicionar</button>
       </div>
     </div>
-
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal('modal-part')">Cancelar</button>
+      <button class="modal-save" onclick="saveParticipants()">Salvar no Notion</button>
+    </div>
+    <div class="modal-msg" id="modal-part-msg"></div>
   </div>
 </div>
 
-<!-- Modal: Alocar reunião em projeto -->
-<div class="modal-overlay" id="modal-alocar">
-  <div class="modal-box">
+<!-- MODAL: NOVO/EDITAR PROJETO -->
+<div class="overlay" id="modal-proj">
+  <div class="modal">
+    <div class="modal-title" id="modal-proj-title">Novo Projeto</div>
+    <input type="hidden" id="mp-id">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Nome *</label>
+        <input class="form-input" id="mp-nome" placeholder="Nome do projeto">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Área</label>
+        <select class="form-input" id="mp-area">
+          <option value="">Selecione...</option>
+          <option>TI</option><option>Financeiro</option><option>Comercial</option>
+          <option>RH</option><option>Jurídico</option><option>Operações</option><option>Outro</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Responsável</label>
+        <input class="form-input" id="mp-resp" placeholder="Nome do responsável">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="mp-status">
+          <option>Ativo</option><option>Pausado</option><option>Concluído</option><option>Cancelado</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descrição</label>
+      <textarea class="form-textarea" id="mp-desc" placeholder="Objetivo do projeto..."></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal('modal-proj')">Cancelar</button>
+      <button class="modal-save" onclick="saveProjeto()">Salvar</button>
+    </div>
+    <div class="modal-msg" id="modal-proj-msg"></div>
+  </div>
+</div>
+
+<!-- MODAL: NOVA/EDITAR ATIVIDADE -->
+<div class="overlay" id="modal-task">
+  <div class="modal">
+    <div class="modal-title" id="modal-task-title">Nova Atividade</div>
+    <input type="hidden" id="mt-id">
+    <input type="hidden" id="mt-proj-id">
+    <div class="form-group">
+      <label class="form-label">Nome *</label>
+      <input class="form-input" id="mt-nome" placeholder="Nome da atividade">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="mt-status">
+          <option>Não iniciada</option><option>Em andamento</option>
+          <option>Concluída</option><option>Bloqueada</option><option>Aguardando</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prazo</label>
+        <input class="form-input" type="date" id="mt-prazo">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Responsável</label>
+        <input class="form-input" id="mt-resp" placeholder="Nome do responsável">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Participantes</label>
+        <input class="form-input" id="mt-part" placeholder="Nome1, Nome2...">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Depende de (atividade anterior)</label>
+      <input class="form-input" id="mt-dep" placeholder="Nome da atividade que deve concluir antes">
+    </div>
+    <div class="form-group" id="mt-ag-group">
+      <label class="form-label">O que está aguardando?</label>
+      <input class="form-input" id="mt-ag" placeholder="Ex: Aprovação do financeiro, retorno do fornecedor...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observações</label>
+      <textarea class="form-textarea" id="mt-obs" placeholder="Informações adicionais..."></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal('modal-task')">Cancelar</button>
+      <button class="modal-save" onclick="saveTask()">Salvar</button>
+    </div>
+    <div class="modal-msg" id="modal-task-msg"></div>
+  </div>
+</div>
+
+<!-- MODAL: ALOCAR REUNIÃO -->
+<div class="overlay" id="modal-alocar">
+  <div class="modal" style="width:380px">
     <div class="modal-title">Alocar em Projeto</div>
     <div class="modal-sub" id="modal-alocar-sub"></div>
-    <label class="modal-label">Selecione o projeto:</label>
-    <select class="modal-input" id="modal-alocar-sel"></select>
+    <div class="form-group">
+      <label class="form-label">Projeto</label>
+      <select class="form-input" id="modal-alocar-sel"></select>
+    </div>
     <div class="modal-btns">
-      <button class="modal-cancel" onclick="document.getElementById('modal-alocar').style.display='none'">Cancelar</button>
+      <button class="modal-cancel" onclick="closeModal('modal-alocar')">Cancelar</button>
       <button class="modal-save" onclick="confirmarAlocar()">Salvar</button>
     </div>
     <div class="modal-msg" id="modal-alocar-msg"></div>
   </div>
 </div>
 
-<!-- Modal: Novo projeto -->
-<div class="modal-overlay" id="modal-novo-proj">
-  <div class="modal-box">
-    <div class="modal-title">Novo Projeto</div>
-    <label class="modal-label">Nome *</label>
-    <input class="modal-input" id="np-nome" placeholder="Nome do projeto">
-    <label class="modal-label">Responsável</label>
-    <input class="modal-input" id="np-resp" placeholder="Nome do responsável">
-    <label class="modal-label">Área</label>
-    <select class="modal-input" id="np-area">
-      <option value="">Selecione...</option>
-      <option>TI</option><option>Financeiro</option><option>Comercial</option>
-      <option>RH</option><option>Jurídico</option><option>Operações</option><option>Outro</option>
-    </select>
-    <label class="modal-label">Descrição</label>
-    <textarea class="modal-textarea" id="np-desc" placeholder="Objetivo do projeto..."></textarea>
-    <div class="modal-btns">
-      <button class="modal-cancel" onclick="document.getElementById('modal-novo-proj').style.display='none'">Cancelar</button>
-      <button class="modal-save" onclick="salvarNovoProjeto()">Criar Projeto</button>
-    </div>
-    <div class="modal-msg" id="np-msg"></div>
-  </div>
-</div>
-
 <script>
-var SENHA = 'holsa2026';
-var GROQ_KEY = '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';
-var GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-var WORKER_URL = 'https://holsa-notion-proxy.holsa.workers.dev';
-var SYNC_SECRET = 'holsa2026sync';
+var SENHA='holsa2026';
+var GROQ_KEY='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';
+var GROQ_URL='https://api.groq.com/openai/v1/chat/completions';
+var WORKER_URL='https://holsa-notion-proxy.holsa.workers.dev';
+var SYNC_SECRET='holsa2026sync';
 
-var MEETINGS = [
-  {
-    "id": "39264917-ccf1-811f-963b-e715ac08e145",
-    "title": "2026-07-03 15:28:22",
-    "date": "2026-07-03T15:28:00.000+00:00",
-    "status": "Processando",
-    "projeto_id": "39364917-ccf1-81c8-b73a-dd3c6e92b829",
-    "projeto": "Infraestrutura TI",
-    "summary": "⏱ Gravacao muito curta para gerar resumo.",
-    "actions": "",
-    "sem_projeto": false
-  },
-  {
-    "id": "39264917-ccf1-8103-bbc4-cffe7fbfd0ba",
-    "title": "2026-07-03 15:12:25",
-    "date": "2026-07-03T15:12:00.000+00:00",
-    "status": "Concluída",
-    "projeto_id": "",
-    "projeto": "",
-    "summary": "⏱ Gravacao muito curta para gerar resumo.",
-    "actions": "",
-    "sem_projeto": true
-  },
-  {
-    "id": "39164917-ccf1-81d7-b98b-c8977954052e",
-    "title": "Steve Jobs & Bill Gates: A Conversation That Shaped Technology",
-    "date": "2026-06-16T23:06:00.000+00:00",
-    "status": "Concluída",
-    "projeto_id": "",
-    "projeto": "",
-    "summary": "## Overview This document consolidates a series of discussions between Steve Jobs and Bill Gates. They reflect on their shared history, from early collaborations and intense rivalry to their modern-day partnership, and discuss their respective contributions to the industry. The conversation covers their differing company philosophies on hardware and software integration, their strategic approaches to internet services, and their predictions for the future of computing, including the evolution of the PC, the rise of post-PC devices, and advancements in user interfaces like multi-touch and 3D. They also offer personal reflections on their careers, legacy, and provide advice for entrepreneurs. The discussion touches on broader topics such as technology's role in solving societal problems, its use by an aging population, and the balance between innovation and industry standards. ## History and Contributions of Apple and Microsoft - Bill Gates is credited with building the first major software company and establishing a successful business model before the industry fully understood the importance of software. He was praised for his focus and for building a company that could attract and retain top talent for many years. - Steve Jobs is recognized for his visionary bet on the Apple II as a mass-market computer in 1977. His work on the Macintosh was highlighted as a risky but phenomenal success that he pursued with \"incredible taste and elegance,\" which had a huge impact on the industry. - **Floating Point BASIC for Apple II** - Microsoft provided a Floating Point BASIC for the Apple II after Apple's co-founder, Steve Wozniak, never updated his original fixed-point version. - Apple paid Microsoft $31,000 for the software license. - **The Macintosh Project** - Microsoft was one of the few companies given a prototype of the Macintosh and made a strategic bet on the platform to enter the applications business. - At the time, the PC application market was domi nated by DOS-based products like Lotus 1-2-3 and WordPerfect. Microsoft saw the Mac's graphical interface as the next major paradigm shift. - The teams worked closely together under significant technical constraints, such as the original Mac's 128K of memory. - After Steve Jobs' initial departure from Apple, the company struggled to evolve its product line and differentiate itself from the increasingly popular Windows platform. - The release of Windows 95 in 1995 was a major turning point, making the graphical user interface (GUI) mainstream and ending the industry debate over its viability. - Upon his return to a struggling Apple, Jobs recognized that the \"zero-sum game\" mentality—where Apple could only win if Microsoft lost—was destructive. - He called Bill Gates to \"patch things up,\" acknowledging that Apple needed to focus on its own identity and that Microsoft was a critical software developer for the Mac platform. - The relationship between Microsoft's Mac development team and Apple is now considered one of Apple's best developer relationships. - The companies are competitors in specific markets, such as with the Zune media player versus the iPod. - They also act as partners and customers for one another. - An example provided was Microsoft's Xbox 360 team placing a large order for Mac computers to use as their development platform, as the Xbox 360 initially used the same processor architecture. - The \"I'm a Mac, I'm a PC\" ad campaign was discussed, with the intent clarified as not being mean-spirited, but rather portraying two characters who ultimately like each other. - Both speakers reflected on their long history in the industry, noting that they were once the youngest people in business meetings and are now often the oldest. - Steve Jobs referenced a Beatles song, stating, \"you and I have memories longer than the road that stretches out ahead,\" to describe their shared history. ## Company Philosophies and Strategy - **Apple as a Software Company: ** - Apple views itself as a software company at its core. - Products like the iPod, Mac, and iPhone are primarily defined by their software (e.g., OS X for the Mac), which is then packaged in \"a beautiful box.\" - Steve Jobs quoted Alan Kay: \"people that love software want to do their own hardware,\" explaining Apple's focus on tightly integrating both. - **Microsoft's Ecosystem and Variety Approach:** - Microsoft's strategy focuses on creating software platforms that support a wide variety of hardware from different partners. - This approach is used for PCs, phones (on 140 different hardware types), and the robotics market (over 140 robots using Microsoft software). - The company believes this variety fosters innovation and creativity within the ecosystem. - However, Microsoft does create its own integrated hardware for specific markets, such as Xbox 360, Zune, the Surface, and the Roundtable meeting device. - **Apple's Strategy:** - Apple's strategy is to focus on creating the best consumer device and user experience, and to partner with other companies for back-end services like search and maps. - The company will only build its own services, such as iTunes, when a high-quality alternative does not exist. - It was acknowledged that the .Mac internet service has not been developed enough, with a commitment to \"make up for lost time.\" - **Microsoft's Strategy:** - Microsoft aims to participate in key internet services like search more significantly in the future. - The company's primary role is to be a platform provider, creating tools that enable an ecosystem of partners to build applications, particularly in areas like education. - One speaker expressed admiration for the other's intuitive \"taste\" for people and products, describing it as a \"magical\" quality different from his own engineering-focused mindset. - In contrast, it was acknowledged that Apple was not initially good at partnering with other companies, a sk ill at which Microsoft excelled. This ability to partner would have served Apple well in its earlier decades. ## The Future of Computing and Devices - **The PC is Not Disappearing:** - The idea that everything will migrate to the cloud and make rich personal computers obsolete is dismissed. Past predictions, like the rise of the \"network computer,\" have been wrong. - The future lies in a balance, using the \"rich local functionality\" of a device together with the power of the cloud. - **The Power of Rich Client Applications:** - A native client application can provide a vastly superior user experience compared to a browser-based one, even when using the same cloud data. - An example given was the Google Maps application on the iPhone, which \"blows away\" browser-based or Java-based mobile versions due to the power of the client-side software. - The most powerful solutions involve a \"marriage\" of great client applications with great cloud services. - The personal computer (PC) has proven resilient, evolving from a basic tool to a \"digital hub\" for managing multimedia content like photos and videos. - The PC is expected to continue to exist and morph into various form factors, such as tablets, notebooks, or large desktops. - A new evolution is beginning, where the PC may become more tightly coupled with back-end internet services. - A category of \"post-PC devices\" is emerging, which are more focused on specific functions rather than being general-purpose computers. - Examples of these devices include phones, iPods, and Zunes. - It is believed that this category will see significant innovation and that radical rethinking of user experiences will happen on these devices, as they do not have the legacy constraints of PCs. - Specialized devices for navigation, photography, and communication are converging into a single pocket-sized device. - Despite this convergence, the small screen size will remain a limitation for content creation tasks like editing homework or movies. - These devices will primarily be used for communication and entertainment. The exact functions they will have in five years are unknown, as new popular applications are constantly being invented. - The consensus is that people will not rely on a single device in the future. - Bill Gates predicts a future with multiple form factors: - A full-screen, portable tablet for reading and productivity. - A pocket-sized device combining phone, media, and navigation functions. - A \"10-foot experience\" in the living room for gaming and entertainment. - Interactive surfaces, where desks and other surfaces become displays. ## Future Technology Trends - **3D Interfaces:** 3D is expected to become a more prominent part of the user interface, helping to organize the increasing amount of media information on computers. This could allow users to navigate digital stores in a way that mimics a real-world experience. - **Natural Input:** - Multi-touch technology is seen as a significant development for direct manipulation of on-screen objects. - Vision technology, using cameras to recognize user actions and the environment, is expected to become pervasive and inexpensive. This could enable new gaming experiences and improve video conferencing. - **Pace of Change:** Radical UI changes are more likely to appear on post-PC devices first. Changes to the PC interface must be more tempered to accommodate the large existing user base that is familiar with the current paradigm. - When asked about the future of virtual communication beyond current chat rooms, it was suggested that many concepts from science fiction will become reality in the next decade. - These advancements include virtual presence and virtual worlds that represent both reality and user interests, driven by deep research investments. - Another perspective was that the future is unknown, and that uncertainty is what makes going to work every day exciting. - The internet is becoming th e primary platform for entertainment delivery, enabling more interactivity and community engagement, similar to the Xbox Live experience. - Consumers want to enjoy entertainment when, how, and on the device they choose. This freedom will force entertainment companies to adopt new and varied business models. - The entertainment industry is learning from the music industry's difficult transition and is experimenting with new delivery models. ## The Tech Industry and Society - The current tech landscape is described as \"super healthy\" and a \"great period of invention.\" - There is a lot of activity from young people building new companies with long-term ambitions, rather than just seeking to be acquired. - The presence of significant risk in new ventures is seen as a positive sign that exciting and potentially huge developments are on the horizon. - Technology is considered helpful but not a complete solution for major challenges like education. The greater opportunity for improvement in education lies in institutional practices, teacher measurement, and school design. - Energy dependence is another significant problem where Silicon Valley may be able to play a small role through investment in alternative energy. - A concern was raised that increasing diversity in technology (low-cost microprocessors, memory, and software) could hinder the creation of simplified, convergent devices. - It was argued that some level of \"aggravation\" is an acceptable trade-off for achieving imagination and innovation. - The marketplace is seen as effective at managing diversity, allowing it when beneficial and eliminating it when not. - Powerful standards, such as those for the internet and video formats, have been successfully adopted for mature technologies, allowing innovation to be focused elsewhere. - The idea that tech innovation is only youth-oriented was refuted with examples of how seniors are using technology. - Built-in video cameras in computers have seen an \"off the chart s\" response from seniors, who use them to stay in touch with family and grandchildren. - Apple's retail stores offer a personal training program called \"one-to-one\" for $99 a year, which is now at a run rate of a million one-hour sessions per year and is popular with seniors. - Natural user interfaces are seen as particularly applicable for seniors who may not be as comfortable with keyboards, making navigation easier. ## Personal Reflections and Advice - **Focus on the Future, Not the Past:** - When asked about past regrets or what could have been done differently to increase the Mac's market share, Steve Jobs stated that it \"doesn't matter.\" - He emphasized the importance of focusing on inventing the future rather than worrying about the past. - Upon returning to Apple, he gave the company's museum and old papers to Stanford to \"stop looking backwards\" and focus on what happens tomorrow. - When asked about legacy, one speaker identified the personal computer and the \"magic of software\" as his life's work, viewing his philanthropic work as a fortunate \"second act.\" - The other speaker stated he does not think about legacy much, instead focusing on creating products that people love while working with great people. - He emphasized that finding work you love is a key to happiness and that he never cared much about money after his company's early success. - To build a valuable company, the focus should be on the people and the passion for the product, not primarily on the economic value. - A key challenge is managing people and getting teams with broad skills to work well together. - Passion is critical for entrepreneurs because building a business is so difficult that any rational person would give up without it. - Successful individuals often loved what they did, which allowed them to persevere through tough times. - Being a good talent scout is the second most important factor. An entrepreneur must build a team of great people and develop a n intuition for hiring. ## Open Issues and Risks - The fundamental debate over whether an integrated hardware/software model or a decoupled ecosystem model is superior remains unresolved. It was noted that \"nobody knows the answer\" and the market will decide over the coming years. - It is unclear if a decoupled hardware and software model will ever work as well in the consumer space as it has for Windows PCs. Its potential success in the phone market is uncertain. - The specific form of the PC's next evolution remains unclear. - The development of advanced, flexible roll-out screens is not expected within the next five years. - The discussion on key technology issues to communicate to the next US president was started but not concluded.",
-    "actions": "## Overview This document consolidates a series of discussions between Steve Jobs and Bill Gates. They reflect on their shared history, from early collaborations and intense rivalry to their modern-day partnership, and discuss their respective contributions to the industry. The conversation covers their differing company philosophies on hardware and software integration, their strategic approaches to internet services, and their predictions for the future of computing, including the evolution of the PC, the rise of post-PC devices, and advancements in user interfaces like multi-touch and 3D. They also offer personal reflections on their careers, legacy, and provide advice for entrepreneurs. The discussion touches on broader topics such as technology's role in solving societal problems, its use by an aging population, and the balance between innovation and industry standards. ## History and Contributions of Apple and Microsoft - Bill Gates is credited with building the first major software company and establishing a successful business model before the industry fully understood the importance of software. He was praised for his focus and for building a company that could attract and retain top talent for many years. - Steve Jobs is recognized for his visionary bet on the Apple II as a mass-market computer in 1977. His work on the Macintosh was highlighted as a risky but phenomenal success that he pursued with \"incredible taste and elegance,\" which had a huge impact on the industry. - **Floating Point BASIC for Apple II** - Microsoft provided a Floating Point BASIC for the Apple II after Apple's co-founder, Steve Wozniak, never updated his original fixed-point version. - Apple paid Microsoft $31,000 for the software license. - **The Macintosh Project** - Microsoft was one of the few companies given a prototype of the Macintosh and made a strategic bet on the platform to enter the applications business. - At the time, the PC application market was domi nated by DOS-based products like Lotus 1-2-3 and WordPerfect. Microsoft saw the Mac's graphical interface as the next major paradigm shift. - The teams worked closely together under significant technical constraints, such as the original Mac's 128K of memory. - After Steve Jobs' initial departure from Apple, the company struggled to evolve its product line and differentiate itself from the increasingly popular Windows platform. - The release of Windows 95 in 1995 was a major turning point, making the graphical user interface (GUI) mainstream and ending the industry debate over its viability. - Upon his return to a struggling Apple, Jobs recognized that the \"zero-sum game\" mentality—where Apple could only win if Microsoft lost—was destructive. - He called Bill Gates to \"patch things up,\" acknowledging that Apple needed to focus on its own identity and that Microsoft was a critical software developer for the Mac platform. - The relationship between Microsoft's Mac development team and Apple is now considered one of Apple's best developer relationships. - The companies are competitors in specific markets, such as with the Zune media player versus the iPod. - They also act as partners and customers for one another. - An example provided was Microsoft's Xbox 360 team placing a large order for Mac computers to use as their development platform, as the Xbox 360 initially used the same processor architecture. - The \"I'm a Mac, I'm a PC\" ad campaign was discussed, with the intent clarified as not being mean-spirited, but rather portraying two characters who ultimately like each other. - Both speakers reflected on their long history in the industry, noting that they were once the youngest people in business meetings and are now often the oldest. - Steve Jobs referenced a Beatles song, stating, \"you and I have memories longer than the road that stretches out ahead,\" to describe their shared history. ## Company Philosophies and Strategy - **Apple as a Software Company: ** - Apple views itself as a software company at its core. - Products like the iPod, Mac, and iPhone are primarily defined by their software (e.g., OS X for the Mac), which is then packaged in \"a beautiful box.\" - Steve Jobs quoted Alan Kay: \"people that love software want to do their own hardware,\" explaining Apple's focus on tightly integrating both. - **Microsoft's Ecosystem and Variety Approach:** - Microsoft's strategy focuses on creating software platforms that support a wide variety of hardware from different partners. - This approach is used for PCs, phones (on 140 different hardware types), and the robotics market (over 140 robots using Microsoft software). - The company believes this variety fosters innovation and creativity within the ecosystem. - However, Microsoft does create its own integrated hardware for specific markets, such as Xbox 360, Zune, the Surface, and the Roundtable meeting device. - **Apple's Strategy:** - Apple's strategy is to focus on creating the best consumer device and user experience, and to partner with other companies for back-end services like search and maps. - The company will only build its own services, such as iTunes, when a high-quality alternative does not exist. - It was acknowledged that the .Mac internet service has not been developed enough, with a commitment to \"make up for lost time.\" - **Microsoft's Strategy:** - Microsoft aims to participate in key internet services like search more significantly in the future. - The company's primary role is to be a platform provider, creating tools that enable an ecosystem of partners to build applications, particularly in areas like education. - One speaker expressed admiration for the other's intuitive \"taste\" for people and products, describing it as a \"magical\" quality different from his own engineering-focused mindset. - In contrast, it was acknowledged that Apple was not initially good at partnering with other companies, a sk ill at which Microsoft excelled. This ability to partner would have served Apple well in its earlier decades. ## The Future of Computing and Devices - **The PC is Not Disappearing:** - The idea that everything will migrate to the cloud and make rich personal computers obsolete is dismissed. Past predictions, like the rise of the \"network computer,\" have been wrong. - The future lies in a balance, using the \"rich local functionality\" of a device together with the power of the cloud. - **The Power of Rich Client Applications:** - A native client application can provide a vastly superior user experience compared to a browser-based one, even when using the same cloud data. - An example given was the Google Maps application on the iPhone, which \"blows away\" browser-based or Java-based mobile versions due to the power of the client-side software. - The most powerful solutions involve a \"marriage\" of great client applications with great cloud services. - The personal computer (PC) has proven resilient, evolving from a basic tool to a \"digital hub\" for managing multimedia content like photos and videos. - The PC is expected to continue to exist and morph into various form factors, such as tablets, notebooks, or large desktops. - A new evolution is beginning, where the PC may become more tightly coupled with back-end internet services. - A category of \"post-PC devices\" is emerging, which are more focused on specific functions rather than being general-purpose computers. - Examples of these devices include phones, iPods, and Zunes. - It is believed that this category will see significant innovation and that radical rethinking of user experiences will happen on these devices, as they do not have the legacy constraints of PCs. - Specialized devices for navigation, photography, and communication are converging into a single pocket-sized device. - Despite this convergence, the small screen size will remain a limitation for content creation tasks like editing homework or movies. - These devices will primarily be used for communication and entertainment. The exact functions they will have in five years are unknown, as new popular applications are constantly being invented. - The consensus is that people will not rely on a single device in the future. - Bill Gates predicts a future with multiple form factors: - A full-screen, portable tablet for reading and productivity. - A pocket-sized device combining phone, media, and navigation functions. - A \"10-foot experience\" in the living room for gaming and entertainment. - Interactive surfaces, where desks and other surfaces become displays. ## Future Technology Trends - **3D Interfaces:** 3D is expected to become a more prominent part of the user interface, helping to organize the increasing amount of media information on computers. This could allow users to navigate digital stores in a way that mimics a real-world experience. - **Natural Input:** - Multi-touch technology is seen as a significant development for direct manipulation of on-screen objects. - Vision technology, using cameras to recognize user actions and the environment, is expected to become pervasive and inexpensive. This could enable new gaming experiences and improve video conferencing. - **Pace of Change:** Radical UI changes are more likely to appear on post-PC devices first. Changes to the PC interface must be more tempered to accommodate the large existing user base that is familiar with the current paradigm. - When asked about the future of virtual communication beyond current chat rooms, it was suggested that many concepts from science fiction will become reality in the next decade. - These advancements include virtual presence and virtual worlds that represent both reality and user interests, driven by deep research investments. - Another perspective was that the future is unknown, and that uncertainty is what makes going to work every day exciting. - The internet is becoming th e primary platform for entertainment delivery, enabling more interactivity and community engagement, similar to the Xbox Live experience. - Consumers want to enjoy entertainment when, how, and on the device they choose. This freedom will force entertainment companies to adopt new and varied business models. - The entertainment industry is learning from the music industry's difficult transition and is experimenting with new delivery models. ## The Tech Industry and Society - The current tech landscape is described as \"super healthy\" and a \"great period of invention.\" - There is a lot of activity from young people building new companies with long-term ambitions, rather than just seeking to be acquired. - The presence of significant risk in new ventures is seen as a positive sign that exciting and potentially huge developments are on the horizon. - Technology is considered helpful but not a complete solution for major challenges like education. The greater opportunity for improvement in education lies in institutional practices, teacher measurement, and school design. - Energy dependence is another significant problem where Silicon Valley may be able to play a small role through investment in alternative energy. - A concern was raised that increasing diversity in technology (low-cost microprocessors, memory, and software) could hinder the creation of simplified, convergent devices. - It was argued that some level of \"aggravation\" is an acceptable trade-off for achieving imagination and innovation. - The marketplace is seen as effective at managing diversity, allowing it when beneficial and eliminating it when not. - Powerful standards, such as those for the internet and video formats, have been successfully adopted for mature technologies, allowing innovation to be focused elsewhere. - The idea that tech innovation is only youth-oriented was refuted with examples of how seniors are using technology. - Built-in video cameras in computers have seen an \"off the chart s\" response from seniors, who use them to stay in touch with family and grandchildren. - Apple's retail stores offer a personal training program called \"one-to-one\" for $99 a year, which is now at a run rate of a million one-hour sessions per year and is popular with seniors. - Natural user interfaces are seen as particularly applicable for seniors who may not be as comfortable with keyboards, making navigation easier. ## Personal Reflections and Advice - **Focus on the Future, Not the Past:** - When asked about past regrets or what could have been done differently to increase the Mac's market share, Steve Jobs stated that it \"doesn't matter.\" - He emphasized the importance of focusing on inventing the future rather than worrying about the past. - Upon returning to Apple, he gave the company's museum and old papers to Stanford to \"stop looking backwards\" and focus on what happens tomorrow. - When asked about legacy, one speaker identified the personal computer and the \"magic of software\" as his life's work, viewing his philanthropic work as a fortunate \"second act.\" - The other speaker stated he does not think about legacy much, instead focusing on creating products that people love while working with great people. - He emphasized that finding work you love is a key to happiness and that he never cared much about money after his company's early success. - To build a valuable company, the focus should be on the people and the passion for the product, not primarily on the economic value. - A key challenge is managing people and getting teams with broad skills to work well together. - Passion is critical for entrepreneurs because building a business is so difficult that any rational person would give up without it. - Successful individuals often loved what they did, which allowed them to persevere through tough times. - Being a good talent scout is the second most important factor. An entrepreneur must build a team of great people and develop a n intuition for hiring. ## Open Issues and Risks - The fundamental debate over whether an integrated hardware/software model or a decoupled ecosystem model is superior remains unresolved. It was noted that \"nobody knows the answer\" and the market will decide over the coming years. - It is unclear if a decoupled hardware and software model will ever work as well in the consumer space as it has for Windows PCs. Its potential success in the phone market is uncertain. - The specific form of the PC's next evolution remains unclear. - The development of advanced, flexible roll-out screens is not expected within the next five years. - The discussion on key technology issues to communicate to the next US president was started but not concluded.",
-    "sem_projeto": true
-  }
-];
-var PROJECTS = [
-  {
-    "id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
-    "nome": "Estruturação de Compras",
-    "status": "Ativo",
-    "area": "Outro",
-    "responsavel": "Kleber",
-    "descricao": "Implantação do fluxo e do software para a equipe de compras atuar.",
-    "reunioes": []
-  },
-  {
-    "id": "39364917-ccf1-81c8-b73a-dd3c6e92b829",
-    "nome": "Infraestrutura TI",
-    "status": "Ativo",
-    "area": "TI",
-    "responsavel": "",
-    "descricao": "Projeto de infraestrutura de TI do Grupo HOLSA",
-    "reunioes": [
-      "39264917-ccf1-811f-963b-e715ac08e145"
-    ]
-  }
-];
+var MEETINGS=[];
+var PROJECTS=[];
+var TASKS=[];
 
-var chatHistory = [];
-var currentMeetingId = null;
+var chatHistory=[];
+var currentMeetingId=null;
+var currentProjId=null;
+var _partMeetingId=null;
+var _partList=[];
+var _alocarId=null;
 
-// ─── AUTH ───────────────────────────────────────────────────────────
-function checkPwd() {
-  var v = document.getElementById('pwd-input').value;
-  if (v === SENHA) {
-    sessionStorage.setItem('holsa_auth', '1');
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
+// ─── HELPERS ─────────────────────────────────────────────────────────
+function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(iso){if(!iso)return '—';try{return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
+function fmtDateShort(iso){if(!iso)return '—';try{return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});}catch(e){return iso;}}
+function nowStr(){return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function days(iso){if(!iso)return null;try{var d=(new Date()-new Date(iso))/86400000;return Math.floor(d);}catch(e){return null;}}
+function isOverdue(iso,status){if(!iso||status==='Concluída')return false;try{return new Date(iso)<new Date();}catch(e){return false;}}
+
+var taskColors={'Não iniciada':'#8090a0','Em andamento':'#4fa3e0','Concluída':'#4caf82','Bloqueada':'#e05c5c','Aguardando':'#f08040'};
+var taskTagClass={'Não iniciada':'t-ni','Em andamento':'t-acomp','Concluída':'t-conc','Bloqueada':'t-bloc','Aguardando':'t-ag'};
+var areaColors={TI:'#4fa3e0',Financeiro:'#f0c040',Comercial:'#f08040',RH:'#e07090',Juridico:'#9070e0',Operacoes:'#40b080',Outro:'#8090a0'};
+function ac(area){return areaColors[area]||'#8090a0';}
+
+function post(path,body){return fetch(WORKER_URL+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json();});}
+function openModal(id){document.getElementById(id).style.display='flex';}
+function closeModal(id){document.getElementById(id).style.display='none';}
+
+// ─── AUTH ─────────────────────────────────────────────────────────────
+function checkPwd(){
+  if(document.getElementById('pwd-input').value===SENHA){
+    sessionStorage.setItem('holsa_auth','1');
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
     init();
-  } else {
-    document.getElementById('pwd-error').style.display = 'block';
-    document.getElementById('pwd-input').value = '';
+  }else{
+    document.getElementById('pwd-error').style.display='block';
+    document.getElementById('pwd-input').value='';
     document.getElementById('pwd-input').focus();
   }
 }
+function logout(){sessionStorage.removeItem('holsa_auth');location.reload();}
 
-function logout() {
-  sessionStorage.removeItem('holsa_auth');
-  location.reload();
+// ─── TABS ─────────────────────────────────────────────────────────────
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  var tabs={'reunioes':0,'projetos':1,'ia':2};
+  document.querySelectorAll('.tab')[tabs[name]].classList.add('active');
+  document.getElementById('view-'+name).classList.add('active');
+  if(name==='projetos')renderProjects();
 }
 
-function getToken() {
-  return sessionStorage.getItem('holsa_auth') === '1';
-}
-
-// ─── INIT ────────────────────────────────────────────────────────────
-function init() {
+// ─── INIT ─────────────────────────────────────────────────────────────
+function init(){
   computeKPIs();
-  renderProjects();
-  renderMeetings();
-  checkAlertSemProjeto();
   populateFilters();
+  renderMeetings();
+  checkAlerts();
 }
 
 // ─── KPIs ─────────────────────────────────────────────────────────────
-function computeKPIs() {
-  var total = MEETINGS.length;
-  var now = new Date();
-  var week = MEETINGS.filter(function(m) {
-    if (!m.date) return false;
-    var d = new Date(m.date);
-    return (now - d) / 86400000 <= 7;
-  }).length;
-  var done = MEETINGS.filter(function(m) {
-    return m.status && m.status.toLowerCase().indexOf('conclu') >= 0;
-  }).length;
-  var rate = total ? Math.round(done / total * 100) + '%' : '0%';
-  var ativos = PROJECTS.filter(function(p) { return p.status === 'Ativo'; });
-  var projNames = ativos.map(function(p) { return p.area || p.nome; }).filter(Boolean).join(', ') || '—';
-
-  document.getElementById('k-total').textContent = total;
-  document.getElementById('k-week').textContent = week;
-  document.getElementById('k-proj').textContent = ativos.length;
-  document.getElementById('k-proj-sub').textContent = projNames;
-  document.getElementById('k-rate').textContent = rate;
-  document.getElementById('k-rate-sub').textContent = done + ' de ' + total + ' concluídas';
+function computeKPIs(){
+  var total=MEETINGS.length;
+  var now=new Date();
+  var week=MEETINGS.filter(function(m){if(!m.date)return false;return(now-new Date(m.date))/86400000<=7;}).length;
+  var done=MEETINGS.filter(function(m){return m.status&&m.status.toLowerCase().indexOf('conclu')>=0;}).length;
+  var rate=total?Math.round(done/total*100)+'%':'0%';
+  var ativos=PROJECTS.filter(function(p){return p.status==='Ativo';});
+  document.getElementById('k-total').textContent=total;
+  document.getElementById('k-week').textContent=week;
+  document.getElementById('k-proj').textContent=ativos.length;
+  document.getElementById('k-proj-sub').textContent=ativos.map(function(p){return p.area||p.nome;}).filter(Boolean).join(', ')||'—';
+  document.getElementById('k-rate').textContent=rate;
+  document.getElementById('k-rate-sub').textContent=done+' de '+total+' concluídas';
 }
 
-// ─── PROJETOS ────────────────────────────────────────────────────────
-var areaColors = {
-  TI: '#4fa3e0', Financeiro: '#f0c040', Comercial: '#f08040',
-  RH: '#e07090', Juridico: '#9070e0', Operacoes: '#40b080', Outro: '#8090a0'
-};
-
-function getAreaColor(area) {
-  return areaColors[area] || '#8090a0';
-}
-
-function renderProjects() {
-  var grid = document.getElementById('proj-grid');
-  var ativos = PROJECTS.filter(function(p) { return p.status === 'Ativo'; });
-  if (!ativos.length) {
-    grid.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0;">Nenhum projeto ativo. Crie um projeto para organizar suas reuniões.</div>';
-    return;
+function checkAlerts(){
+  var alerts=[];
+  var semProj=MEETINGS.filter(function(m){return m.sem_projeto;}).length;
+  if(semProj>0)alerts.push(semProj+' reunião(ões) sem projeto vinculado');
+  var blocked=TASKS.filter(function(t){return t.status==='Bloqueada'&&t.dias_parada!=null&&t.dias_parada>=3;});
+  if(blocked.length>0)alerts.push(blocked.length+' atividade(s) bloqueada(s) há 3+ dias');
+  var overdue=TASKS.filter(function(t){return t.prazo_vencido;});
+  if(overdue.length>0)alerts.push(overdue.length+' atividade(s) com prazo vencido');
+  var bar=document.getElementById('alert-global');
+  if(alerts.length){
+    bar.style.display='flex';
+    document.getElementById('alert-global-txt').textContent=alerts.join(' · ');
+  }else{
+    bar.style.display='none';
   }
-  grid.innerHTML = ativos.map(function(p) {
-    var reunioes = MEETINGS.filter(function(m) { return m.projeto_id === p.id; });
-    var done = reunioes.filter(function(m) { return m.status && m.status.toLowerCase().indexOf('conclu') >= 0; }).length;
-    var pct = reunioes.length ? Math.round(done / reunioes.length * 100) : 0;
-    var ac = getAreaColor(p.area);
-    return '<div class="proj-card" onclick="filterByProject(\'' + p.id + '\')">' +
-      (p.area ? '<span class="proj-area" style="background:' + ac + '22;color:' + ac + '">' + p.area + '</span>' : '') +
-      '<div class="proj-name">' + esc(p.nome || 'Sem nome') + '</div>' +
-      (p.responsavel ? '<div class="proj-resp">Resp: ' + esc(p.responsavel) + '</div>' : '') +
-      '<div class="proj-meta">' + reunioes.length + ' reunião(ões) &middot; ' + done + ' concluída(s)</div>' +
-      '<div class="proj-bar-bg"><div class="proj-bar" style="width:' + pct + '%"></div></div>' +
-    '</div>';
-  }).join('');
-
-  // Popular select de projetos no detalhe
-  var sel = document.getElementById('edit-proj');
-  sel.innerHTML = '<option value="">Sem projeto</option>' + PROJECTS.map(function(p) {
-    return '<option value="' + p.id + '">' + esc(p.nome) + '</option>';
-  }).join('');
+  var badge=document.getElementById('tab-proj');
+  var n=blocked.length+overdue.length;
+  var existing=badge.querySelector('.tab-badge');
+  if(existing)existing.remove();
+  if(n>0){var b=document.createElement('span');b.className='tab-badge';b.textContent=n;badge.appendChild(b);}
 }
 
-function filterByProject(projId) {
-  document.getElementById('fp').value = projId;
-  renderMeetings();
-  document.getElementById('meetings-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+function populateFilters(){
+  var fp=document.getElementById('fp');
+  fp.innerHTML='<option value="">Todos os projetos</option>'+PROJECTS.filter(function(p){return p.status==='Ativo';}).map(function(p){return '<option value="'+p.id+'">'+esc(p.nome)+'</option>';}).join('');
 }
 
-function checkAlertSemProjeto() {
-  var sem = MEETINGS.filter(function(m) { return m.sem_projeto; });
-  var bar = document.getElementById('alert-sem-proj');
-  if (sem.length > 0) {
-    bar.style.display = 'flex';
-    document.getElementById('alert-sem-proj-txt').textContent =
-      sem.length + ' reunião(ões) sem projeto vinculado. Clique em "Alocar projeto" para organizar.';
-  } else {
-    bar.style.display = 'none';
-  }
+// ─── REUNIÕES ─────────────────────────────────────────────────────────
+function stag(s){
+  var c={'Concluída':'t-conc','Em acompanhamento':'t-acomp','Processando':'t-proc'}[s]||'t-proj';
+  return '<span class="tag '+c+'">'+esc(s)+'</span>';
 }
 
-function populateFilters() {
-  var fp = document.getElementById('fp');
-  var projs = PROJECTS.filter(function(p) { return p.status === 'Ativo'; });
-  fp.innerHTML = '<option value="">Todos os projetos</option>' + projs.map(function(p) {
-    return '<option value="' + p.id + '">' + esc(p.nome) + '</option>';
-  }).join('');
-}
-
-// ─── REUNIÕES ────────────────────────────────────────────────────────
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function fmtDate(iso) {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-
-function stag(s) {
-  if (!s) return '';
-  var cls = { 'Concluída': 't-conc', 'Em acompanhamento': 't-acomp', 'Processando': 't-proc' }[s] || 't-proj';
-  return '<span class="tag ' + cls + '">' + esc(s) + '</span>';
-}
-
-function renderMeetings() {
-  var fp = document.getElementById('fp').value;
-  var fs = document.getElementById('fs').value;
-  var fq = document.getElementById('fq').value.toLowerCase();
-  var list = document.getElementById('meetings-list');
-
-  var filtered = MEETINGS.filter(function(m) {
-    if (fp && m.projeto_id !== fp) return false;
-    if (fs && m.status !== fs) return false;
-    if (fq && !m.title.toLowerCase().includes(fq) && !(m.summary||'').toLowerCase().includes(fq)) return false;
+function renderMeetings(){
+  var fp=document.getElementById('fp').value;
+  var fs=document.getElementById('fs').value;
+  var fq=document.getElementById('fq').value.toLowerCase();
+  var filtered=MEETINGS.filter(function(m){
+    if(fp&&m.projeto_id!==fp)return false;
+    if(fs&&m.status!==fs)return false;
+    if(fq&&!m.title.toLowerCase().includes(fq)&&!(m.summary||'').toLowerCase().includes(fq))return false;
     return true;
   });
-
-  if (!filtered.length) {
-    list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center;">Nenhuma reunião encontrada.</div>';
+  var list=document.getElementById('meetings-list');
+  if(!filtered.length){
+    list.innerHTML='<div style="color:var(--muted);padding:20px;text-align:center;">Nenhuma reunião encontrada.</div>';
     return;
   }
-
-  list.innerHTML = filtered.map(function(m) {
-    var preview = (m.summary || '').substring(0, 120) + ((m.summary||'').length > 120 ? '...' : '');
-    return '<div class="mcard' + (m.sem_projeto ? ' sem-projeto' : '') + (m.id === currentMeetingId ? ' active' : '') + '" onclick="openMeeting(\'' + m.id + '\')">' +
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
-        '<div class="mtitle">' + esc(m.title) + '</div>' +
-        '<div class="mdate">' + fmtDate(m.date) + '</div>' +
-      '</div>' +
-      '<div class="mpreview">' + (preview ? esc(preview) : '<em>Sem resumo</em>') + '</div>' +
-      '<div class="tags">' +
-        (m.projeto ? '<span class="tag t-proj">' + esc(m.projeto.toUpperCase()) + '</span>' : '') +
-        stag(m.status) +
-        (m.sem_projeto ? '<button class="tag t-alert" onclick="event.stopPropagation();openModalAlocar(\'' + m.id + '\',\'' + m.title.replace(/'/g, '') + '\')">Alocar projeto</button>' : '') +
-      '</div>' +
+  list.innerHTML=filtered.map(function(m){
+    var preview=(m.summary||'').substring(0,100)+((m.summary||'').length>100?'...':'');
+    return '<div class="card'+(m.id===currentMeetingId?' selected':'')+(m.sem_projeto?' alert-left':'')+'" onclick="openMeeting(\''+m.id+'\')">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">'+
+        '<div style="font-size:13px;font-weight:700;flex:1">'+esc(m.title)+'</div>'+
+        '<div style="font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0">'+fmtDate(m.date)+'</div>'+
+      '</div>'+
+      (preview?'<div style="font-size:12px;color:var(--muted);margin:5px 0 8px;line-height:1.5">'+esc(preview)+'</div>':'')+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
+        (m.projeto?'<span class="tag t-proj">'+esc(m.projeto.toUpperCase())+'</span>':'')+
+        stag(m.status)+
+        (m.sem_projeto?'<button class="tag t-alert" onclick="event.stopPropagation();openModalAlocar(\''+m.id+'\',\''+m.title.replace(/'/g,'')+'\')">⚠ Alocar projeto</button>':'')+
+      '</div>'+
     '</div>';
   }).join('');
 }
 
-function openMeeting(id) {
-  var m = MEETINGS.find(function(x) { return x.id === id; });
-  if (!m) return;
-  currentMeetingId = id;
+function openMeeting(id){
+  currentMeetingId=id;
+  var m=MEETINGS.find(function(x){return x.id===id;});
+  if(!m)return;
   renderMeetings();
-
-  document.getElementById('dp-title').textContent = m.title;
-  document.getElementById('dp-status').textContent = m.status;
-  document.getElementById('dp-status').className = 'tag ' + ({ 'Concluída': 't-conc', 'Em acompanhamento': 't-acomp', 'Processando': 't-proc' }[m.status] || 't-proj');
-
-  var proj = m.projeto ? (' &middot; ' + esc(m.projeto)) : '';
-  document.getElementById('dp-meta').innerHTML = '📅 ' + fmtDate(m.date) + proj;
-  document.getElementById('dp-summary').textContent = m.summary || 'Sem resumo disponível.';
-
-  if (m.actions) {
-    document.getElementById('dp-actions-label').style.display = 'block';
-    document.getElementById('dp-actions').textContent = m.actions;
-  } else {
-    document.getElementById('dp-actions-label').style.display = 'none';
-    document.getElementById('dp-actions').textContent = '';
-  }
-
-  document.getElementById('edit-status').value = m.status || 'Processando';
-  document.getElementById('edit-proj').value = m.projeto_id || '';
-  document.getElementById('edit-msg').style.display = 'none';
-
-  document.getElementById('detail-panel').style.display = 'block';
-  document.getElementById('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  var tarefas=TASKS.filter(function(t){return t.reunioes_ids&&t.reunioes_ids.indexOf(id)>=0;});
+  var dp=document.getElementById('meeting-detail');
+  dp.style.display='block';
+  dp.innerHTML=buildMeetingDetail(m,tarefas);
+  dp.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-// ─── SALVAR EDIÇÃO ────────────────────────────────────────────────────
-function saveEdit() {
-  if (!currentMeetingId) return;
-  var status = document.getElementById('edit-status').value;
-  var projetoId = document.getElementById('edit-proj').value;
-  var msgEl = document.getElementById('edit-msg');
-  msgEl.style.display = 'block';
-  msgEl.style.color = '#4fa3e0';
-  msgEl.textContent = 'Salvando...';
+function buildMeetingDetail(m,tarefas){
+  var html='';
+  // Título editável
+  html+='<div class="detail-title-row">'+
+    '<div class="detail-title" id="dt-title" onclick="startEditTitle()" title="Clique para editar">'+esc(m.title)+'</div>'+
+    '<span class="tag '+({'Concluída':'t-conc','Em acompanhamento':'t-acomp','Processando':'t-proc'}[m.status]||'t-ni')+'">'+esc(m.status)+'</span>'+
+  '</div>';
+  if(m.titulo_ia&&!m.titulo_editado){
+    html+='<div style="font-size:11px;color:var(--muted);margin-bottom:8px">💡 Título sugerido pela IA — clique para editar ou manter</div>';
+  }
+  html+='<div class="detail-meta">'+
+    '<span>📅 '+fmtDate(m.date)+'</span>'+
+    (m.projeto?'<span>📁 '+esc(m.projeto)+'</span>':'')+
+    (m.speakers&&m.speakers.length?'<span>🎙 '+m.speakers.join(', ')+'</span>':'')+
+  '</div>';
 
-  fetch(WORKER_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ page_id: currentMeetingId, status: status, projeto_id: projetoId || undefined })
-  }).then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d.success) {
-      msgEl.style.color = '#4caf82';
-      msgEl.textContent = 'Salvo com sucesso!';
-      var m = MEETINGS.find(function(x) { return x.id === currentMeetingId; });
-      if (m) {
-        m.status = status;
-        if (projetoId) {
-          m.projeto_id = projetoId;
-          var p = PROJECTS.find(function(x) { return x.id === projetoId; });
-          m.projeto = p ? p.nome : '';
-          m.sem_projeto = false;
+  // Botões de ação rápida
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">'+
+    '<button class="btn-sm" onclick="openModalParticipantes(\''+m.id+'\')">👥 Participantes ('+(m.participantes||[]).length+')</button>'+
+    '<button class="btn-sm" onclick="openModalAlocar(\''+m.id+'\',\''+m.title.replace(/'/g,'')+'\')">📁 Alocar projeto</button>'+
+    '<button class="btn-sm" onclick="quickAskMeeting(\''+m.id+'\')">✨ Analisar com IA</button>'+
+  '</div>';
+
+  // Participantes
+  if(m.participantes&&m.participantes.length){
+    html+='<div class="dsec">Participantes</div><div class="participants-list">';
+    m.participantes.forEach(function(p){
+      var parts=p.split('::');
+      html+='<div class="participant-chip">'+esc(parts[0])+(parts[1]?'<span class="speaker">'+esc(parts[1])+'</span>':'')+' <span class="remove" onclick="removeParticipant(\''+m.id+'\',\''+encodeURIComponent(p)+'\')">×</span></div>';
+    });
+    html+='</div>';
+  }
+
+  // Resumo
+  if(m.summary){
+    html+='<div class="dsec">Resumo</div><div class="dtext">'+esc(m.summary)+'</div>';
+  }
+
+  // Action Items
+  if(m.actions){
+    html+='<div class="dsec">Action Items</div><div class="dtext">'+esc(m.actions)+'</div>';
+  }
+
+  // Editar status/projeto
+  html+='<div class="dsec">Editar</div>'+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">'+
+      '<div><div class="form-label" style="margin-bottom:4px">Status</div>'+
+        '<select class="form-input" id="edit-status" style="width:auto">'+
+          '<option>Processando</option><option>Em acompanhamento</option><option>Concluída</option>'+
+        '</select></div>'+
+      '<div><div class="form-label" style="margin-bottom:4px">Projeto</div>'+
+        '<select class="form-input" id="edit-proj" style="width:auto">'+
+          '<option value="">Sem projeto</option>'+
+          PROJECTS.map(function(p){return '<option value="'+p.id+'">'+esc(p.nome)+'</option>';}).join('')+
+        '</select></div>'+
+      '<button class="btn-sm" onclick="saveEdit()">Salvar</button>'+
+    '</div>'+
+    '<div class="edit-msg" id="edit-msg"></div>';
+
+  // Set current values
+  setTimeout(function(){
+    var es=document.getElementById('edit-status');
+    var ep=document.getElementById('edit-proj');
+    if(es)es.value=m.status;
+    if(ep)ep.value=m.projeto_id||'';
+  },0);
+
+  return html;
+}
+
+function startEditTitle(){
+  var el=document.getElementById('dt-title');
+  if(!el)return;
+  el.contentEditable='true';
+  el.focus();
+  var range=document.createRange();
+  range.selectNodeContents(el);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(range);
+  el.onblur=function(){
+    el.contentEditable='false';
+    var newTitle=el.textContent.trim();
+    if(!newTitle||!currentMeetingId)return;
+    var m=MEETINGS.find(function(x){return x.id===currentMeetingId;});
+    if(m&&newTitle!==m.title){
+      m.titulo_editado=newTitle;
+      m.title=newTitle;
+      post('',{page_id:currentMeetingId,titulo_editado:newTitle}).then(function(d){
+        showEditMsg(d.success?'Título salvo!':'Erro ao salvar.',d.success);
+      });
+    }
+  };
+  el.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();el.blur();}};
+}
+
+function quickAskMeeting(id){
+  var m=MEETINGS.find(function(x){return x.id===id;});
+  if(!m)return;
+  showTab('ia');
+  quickAsk('Analise a reuniao "'+m.title+'" e sugira proximos passos e atividades para o projeto.');
+}
+
+function saveEdit(){
+  if(!currentMeetingId)return;
+  var status=document.getElementById('edit-status').value;
+  var projetoId=document.getElementById('edit-proj').value;
+  post('',{page_id:currentMeetingId,status:status,projeto_id:projetoId||undefined}).then(function(d){
+    showEditMsg(d.success?'Salvo!':'Erro ao salvar.',d.success);
+    if(d.success){
+      var m=MEETINGS.find(function(x){return x.id===currentMeetingId;});
+      if(m){
+        m.status=status;
+        if(projetoId){
+          m.projeto_id=projetoId;
+          var p=PROJECTS.find(function(x){return x.id===projetoId;});
+          m.projeto=p?p.nome:'';
+          m.sem_projeto=false;
         }
       }
-      computeKPIs();
-      renderMeetings();
-      renderProjects();
-    } else {
-      msgEl.style.color = '#e05c5c';
-      msgEl.textContent = 'Erro ao salvar.';
+      computeKPIs();renderMeetings();checkAlerts();
     }
-  }).catch(function(e) {
-    msgEl.style.color = '#e05c5c';
-    msgEl.textContent = 'Erro: ' + e.message;
+  });
+}
+
+function showEditMsg(txt,ok){
+  var el=document.getElementById('edit-msg');
+  if(!el)return;
+  el.textContent=txt;
+  el.style.color=ok?'var(--green)':'var(--red)';
+  setTimeout(function(){if(el)el.textContent='';},3000);
+}
+
+// ─── PARTICIPANTES ────────────────────────────────────────────────────
+function openModalParticipantes(meetingId){
+  _partMeetingId=meetingId;
+  var m=MEETINGS.find(function(x){return x.id===meetingId;});
+  document.getElementById('modal-part-sub').textContent=m?m.title:'';
+  _partList=(m&&m.participantes)?m.participantes.slice():[];
+  var sel=document.getElementById('part-speaker');
+  sel.innerHTML='<option value="">Sem vínculo ao speaker</option>'+
+    (m&&m.speakers?m.speakers.map(function(s){return '<option value="'+esc(s)+'">'+esc(s)+'</option>';}).join(''):'');
+  renderPartChips();
+  document.getElementById('part-nome').value='';
+  document.getElementById('modal-part-msg').textContent='';
+  openModal('modal-part');
+}
+
+function renderPartChips(){
+  var c=document.getElementById('part-chips');
+  if(!c)return;
+  c.innerHTML=_partList.length?_partList.map(function(p,i){
+    var parts=p.split('::');
+    return '<div class="participant-chip">'+esc(parts[0])+(parts[1]?'<span class="speaker">'+esc(parts[1])+'</span>':'')+
+      ' <span class="remove" onclick="_partList.splice('+i+',1);renderPartChips()">×</span></div>';
+  }).join(''):'<span style="color:var(--muted);font-size:12px">Nenhum participante adicionado</span>';
+}
+
+function addParticipant(){
+  var nome=document.getElementById('part-nome').value.trim();
+  var speaker=document.getElementById('part-speaker').value;
+  if(!nome)return;
+  _partList.push(nome+(speaker?'::'+speaker:''));
+  renderPartChips();
+  document.getElementById('part-nome').value='';
+  document.getElementById('part-speaker').value='';
+}
+
+function saveParticipants(){
+  var msg=document.getElementById('modal-part-msg');
+  msg.textContent='Salvando...';msg.style.color='var(--accent)';
+  var str=_partList.join(',');
+  post('',{page_id:_partMeetingId,participantes:str}).then(function(d){
+    if(d.success){
+      msg.textContent='Salvo!';msg.style.color='var(--green)';
+      var m=MEETINGS.find(function(x){return x.id===_partMeetingId;});
+      if(m)m.participantes=_partList.slice();
+      setTimeout(function(){closeModal('modal-part');openMeeting(_partMeetingId);},1000);
+    }else{
+      msg.textContent='Erro ao salvar.';msg.style.color='var(--red)';
+    }
+  });
+}
+
+function removeParticipant(meetingId,encoded){
+  var p=decodeURIComponent(encoded);
+  var m=MEETINGS.find(function(x){return x.id===meetingId;});
+  if(!m)return;
+  m.participantes=(m.participantes||[]).filter(function(x){return x!==p;});
+  post('',{page_id:meetingId,participantes:m.participantes.join(',')}).then(function(d){
+    if(d.success)openMeeting(meetingId);
+  });
+}
+
+// ─── ALOCAR REUNIÃO ───────────────────────────────────────────────────
+function openModalAlocar(id,title){
+  _alocarId=id;
+  document.getElementById('modal-alocar-sub').textContent=title;
+  document.getElementById('modal-alocar-sel').innerHTML=PROJECTS.map(function(p){
+    return '<option value="'+p.id+'">'+esc(p.nome)+(p.area?' ('+p.area+')':'')+'</option>';
+  }).join('');
+  document.getElementById('modal-alocar-msg').textContent='';
+  openModal('modal-alocar');
+}
+
+function confirmarAlocar(){
+  var pid=document.getElementById('modal-alocar-sel').value;
+  var msg=document.getElementById('modal-alocar-msg');
+  msg.textContent='Salvando...';msg.style.color='var(--accent)';
+  post('',{page_id:_alocarId,projeto_id:pid}).then(function(d){
+    if(d.success){
+      msg.textContent='Salvo!';msg.style.color='var(--green)';
+      var m=MEETINGS.find(function(x){return x.id===_alocarId;});
+      if(m){m.projeto_id=pid;var p=PROJECTS.find(function(x){return x.id===pid;});m.projeto=p?p.nome:'';m.sem_projeto=false;}
+      computeKPIs();renderMeetings();checkAlerts();
+      setTimeout(function(){closeModal('modal-alocar');},1000);
+    }else{msg.textContent='Erro.';msg.style.color='var(--red)';}
+  });
+}
+
+// ─── PROJETOS ─────────────────────────────────────────────────────────
+function renderProjects(){
+  var grid=document.getElementById('proj-grid');
+  var ativos=PROJECTS.filter(function(p){return p.status==='Ativo';});
+  if(!ativos.length){
+    grid.innerHTML='<div style="color:var(--muted);font-size:13px">Nenhum projeto ativo.</div>';
+    return;
+  }
+  grid.innerHTML=ativos.map(function(p){
+    var tasks=TASKS.filter(function(t){return t.projeto_id===p.id;});
+    var done=tasks.filter(function(t){return t.status==='Concluída';}).length;
+    var blocked=tasks.filter(function(t){return t.status==='Bloqueada'||(t.prazo_vencido&&t.status!=='Concluída');});
+    var pct=tasks.length?Math.round(done/tasks.length*100):0;
+    var color=ac(p.area);
+    return '<div class="proj-card'+(blocked.length?' bloqueado':'')+'" onclick="openProject(\''+p.id+'\')">' +
+      (p.area?'<span class="tag" style="background:'+color+'20;color:'+color+';margin-bottom:8px">'+esc(p.area)+'</span>':'')+
+      '<div style="font-size:14px;font-weight:700;margin-bottom:4px">'+esc(p.nome)+'</div>'+
+      (p.responsavel?'<div style="font-size:11px;color:var(--muted);margin-bottom:6px">Resp: '+esc(p.responsavel)+'</div>':'')+
+      '<div style="font-size:11px;color:var(--muted)">'+tasks.length+' atividade(s) · '+done+' concluída(s)</div>'+
+      (blocked.length?'<div style="font-size:11px;color:var(--red);margin-top:4px">⚠ '+blocked.length+' em risco</div>':'')+
+      '<div class="proj-bar-bg"><div class="proj-bar" style="width:'+pct+'%"></div></div>'+
+    '</div>';
+  }).join('');
+}
+
+function openProject(id){
+  currentProjId=id;
+  var p=PROJECTS.find(function(x){return x.id===id;});
+  if(!p)return;
+  renderProjects();
+  var tasks=TASKS.filter(function(t){return t.projeto_id===id;}).sort(function(a,b){
+    var order={'Bloqueada':0,'Aguardando':1,'Em andamento':2,'Não iniciada':3,'Concluída':4};
+    return (order[a.status]||5)-(order[b.status]||5);
+  });
+  var meetings=MEETINGS.filter(function(m){return m.projeto_id===id;});
+  var dp=document.getElementById('proj-detail');
+  dp.style.display='block';
+  dp.innerHTML=buildProjectDetail(p,tasks,meetings);
+  dp.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function buildProjectDetail(p,tasks,meetings){
+  var color=ac(p.area);
+  var done=tasks.filter(function(t){return t.status==='Concluída';}).length;
+  var pct=tasks.length?Math.round(done/tasks.length*100):0;
+
+  var html='<div class="detail" style="margin-top:0">'+
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">'+
+      '<div>'+
+        (p.area?'<span class="tag" style="background:'+color+'20;color:'+color+';margin-bottom:8px;display:inline-block">'+esc(p.area)+'</span>':'<br>')+
+        '<div style="font-size:18px;font-weight:700">'+esc(p.nome)+'</div>'+
+        (p.responsavel?'<div style="font-size:12px;color:var(--muted);margin-top:3px">Responsável: '+esc(p.responsavel)+'</div>':'')+
+      '</div>'+
+      '<div style="display:flex;gap:8px">'+
+        '<button class="btn-sm" onclick="openModalProjeto(\''+p.id+'\')">Editar</button>'+
+        '<button class="btn-sm" onclick="openModalTask(null,\''+p.id+'\')">+ Atividade</button>'+
+      '</div>'+
+    '</div>'+
+    (p.descricao?'<div style="font-size:13px;color:var(--muted);margin-bottom:12px">'+esc(p.descricao)+'</div>':'')+
+    '<div class="prog-row"><div class="prog-bg"><div class="prog-fill" style="width:'+pct+'%"></div></div><div class="prog-label">'+pct+'% concluído</div></div>'+
+  '</div>';
+
+  // Atividades
+  html+='<div class="detail" style="margin-top:10px">'+
+    '<div class="sec-header" style="margin-bottom:10px">'+
+      '<div class="sec-title">Atividades ('+tasks.length+')</div>'+
+      '<button class="btn-sm" onclick="openModalTask(null,\''+p.id+'\')">+ Nova</button>'+
+    '</div>';
+
+  if(!tasks.length){
+    html+='<div style="color:var(--muted);font-size:13px">Nenhuma atividade cadastrada.</div>';
+  }else{
+    html+='<div>';
+    tasks.forEach(function(t){
+      var c=taskColors[t.status]||'#8090a0';
+      var overdue=t.prazo_vencido&&t.status!=='Concluída';
+      var blocked=(t.status==='Bloqueada'||t.status==='Aguardando')&&t.dias_parada!=null&&t.dias_parada>=3;
+      html+='<div class="task-item" onclick="openModalTask(\''+t.id+'\',\''+p.id+'\')" style="cursor:pointer">'+
+        '<div class="task-status-dot" style="background:'+c+'"></div>'+
+        '<div class="task-info">'+
+          '<div class="task-name">'+esc(t.nome)+'</div>'+
+          '<div class="task-meta">'+
+            '<span class="tag '+taskTagClass[t.status]+'">'+esc(t.status)+'</span>'+
+            (t.responsavel?' &nbsp;👤 '+esc(t.responsavel):'')+
+            (t.prazo?' &nbsp;📅 '+fmtDateShort(t.prazo):'')+
+            (t.participantes?' &nbsp;'+esc(t.participantes):'')+
+          '</div>'+
+          (overdue?'<div class="task-alert">⚠ Prazo vencido</div>':'')+
+          (blocked?'<div class="task-alert">⏸ Parada há '+t.dias_parada+' dias — '+esc(t.aguardando||'motivo não informado')+'</div>':'')+
+          (t.depende_de?'<div style="font-size:11px;color:var(--muted);margin-top:2px">⏳ Aguardando: '+esc(t.depende_de)+'</div>':'')+
+        '</div>'+
+        '<button class="btn-sm-r" style="font-size:10px;flex-shrink:0" onclick="event.stopPropagation();deleteTask(\''+t.id+'\',\''+p.id+'\')">×</button>'+
+      '</div>';
+    });
+    html+='</div>';
+  }
+  html+='</div>';
+
+  // Reuniões vinculadas
+  if(meetings.length){
+    html+='<div class="detail" style="margin-top:10px">'+
+      '<div class="sec-title" style="margin-bottom:10px">Reuniões vinculadas ('+meetings.length+')</div>'+
+      meetings.map(function(m){
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bord);cursor:pointer" onclick="showTab(\'reunioes\');openMeeting(\''+m.id+'\')">'+
+          '<div>'+
+            '<div style="font-size:13px;font-weight:600">'+esc(m.title)+'</div>'+
+            '<div style="font-size:11px;color:var(--muted)">'+fmtDate(m.date)+'</div>'+
+          '</div>'+
+          stag(m.status)+
+        '</div>';
+      }).join('')+
+    '</div>';
+  }
+
+  return html;
+}
+
+function openModalProjeto(id){
+  document.getElementById('modal-proj-title').textContent=id?'Editar Projeto':'Novo Projeto';
+  document.getElementById('mp-id').value=id||'';
+  if(id){
+    var p=PROJECTS.find(function(x){return x.id===id;});
+    if(p){
+      document.getElementById('mp-nome').value=p.nome||'';
+      document.getElementById('mp-area').value=p.area||'';
+      document.getElementById('mp-resp').value=p.responsavel||'';
+      document.getElementById('mp-status').value=p.status||'Ativo';
+      document.getElementById('mp-desc').value=p.descricao||'';
+    }
+  }else{
+    ['mp-nome','mp-area','mp-resp','mp-desc'].forEach(function(i){document.getElementById(i).value='';});
+    document.getElementById('mp-status').value='Ativo';
+  }
+  document.getElementById('modal-proj-msg').textContent='';
+  openModal('modal-proj');
+}
+
+function saveProjeto(){
+  var nome=document.getElementById('mp-nome').value.trim();
+  var msg=document.getElementById('modal-proj-msg');
+  if(!nome){msg.style.color='var(--red)';msg.textContent='Nome obrigatório.';return;}
+  msg.style.color='var(--accent)';msg.textContent='Salvando...';
+  post('/projeto',{
+    secret:SYNC_SECRET, id:document.getElementById('mp-id').value||undefined,
+    nome:nome, area:document.getElementById('mp-area').value,
+    responsavel:document.getElementById('mp-resp').value.trim(),
+    status:document.getElementById('mp-status').value,
+    descricao:document.getElementById('mp-desc').value.trim()
+  }).then(function(d){
+    if(d.success){msg.style.color='var(--green)';msg.textContent='Salvo!';setTimeout(function(){closeModal('modal-proj');},1000);}
+    else{msg.style.color='var(--red)';msg.textContent='Erro: '+(d.error||'tente novamente.');}
+  });
+}
+
+// ─── ATIVIDADES ───────────────────────────────────────────────────────
+function openModalTask(taskId,projId){
+  document.getElementById('modal-task-title').textContent=taskId?'Editar Atividade':'Nova Atividade';
+  document.getElementById('mt-id').value=taskId||'';
+  document.getElementById('mt-proj-id').value=projId||currentProjId||'';
+  if(taskId){
+    var t=TASKS.find(function(x){return x.id===taskId;});
+    if(t){
+      document.getElementById('mt-nome').value=t.nome||'';
+      document.getElementById('mt-status').value=t.status||'Não iniciada';
+      document.getElementById('mt-prazo').value=t.prazo?t.prazo.substring(0,10):'';
+      document.getElementById('mt-resp').value=t.responsavel||'';
+      document.getElementById('mt-part').value=t.participantes||'';
+      document.getElementById('mt-dep').value=t.depende_de||'';
+      document.getElementById('mt-ag').value=t.aguardando||'';
+      document.getElementById('mt-obs').value=t.observacoes||'';
+    }
+  }else{
+    ['mt-nome','mt-prazo','mt-resp','mt-part','mt-dep','mt-ag','mt-obs'].forEach(function(i){document.getElementById(i).value='';});
+    document.getElementById('mt-status').value='Não iniciada';
+  }
+  document.getElementById('modal-task-msg').textContent='';
+  openModal('modal-task');
+}
+
+function saveTask(){
+  var nome=document.getElementById('mt-nome').value.trim();
+  var msg=document.getElementById('modal-task-msg');
+  if(!nome){msg.style.color='var(--red)';msg.textContent='Nome obrigatório.';return;}
+  msg.style.color='var(--accent)';msg.textContent='Salvando...';
+  var status=document.getElementById('mt-status').value;
+  post('/atividade',{
+    secret:SYNC_SECRET,
+    id:document.getElementById('mt-id').value||undefined,
+    nome:nome, status:status,
+    prazo:document.getElementById('mt-prazo').value||undefined,
+    responsavel:document.getElementById('mt-resp').value.trim()||undefined,
+    participantes:document.getElementById('mt-part').value.trim()||undefined,
+    depende_de:document.getElementById('mt-dep').value.trim()||undefined,
+    aguardando:document.getElementById('mt-ag').value.trim()||undefined,
+    observacoes:document.getElementById('mt-obs').value.trim()||undefined,
+    projeto_id:document.getElementById('mt-proj-id').value||undefined
+  }).then(function(d){
+    if(d.success){
+      msg.style.color='var(--green)';msg.textContent='Salvo!';
+      // Atualizar local
+      var existing=TASKS.find(function(x){return x.id===(document.getElementById('mt-id').value);});
+      if(existing){
+        existing.nome=nome;existing.status=status;
+        existing.prazo=document.getElementById('mt-prazo').value||'';
+        existing.prazo_vencido=existing.prazo&&status!=='Concluída'?new Date(existing.prazo)<new Date():false;
+        existing.responsavel=document.getElementById('mt-resp').value.trim();
+        existing.participantes=document.getElementById('mt-part').value.trim();
+        existing.depende_de=document.getElementById('mt-dep').value.trim();
+        existing.aguardando=document.getElementById('mt-ag').value.trim();
+        existing.observacoes=document.getElementById('mt-obs').value.trim();
+      }else if(d.id){
+        TASKS.push({id:d.id,nome:nome,status:status,projeto_id:document.getElementById('mt-proj-id').value,
+          responsavel:document.getElementById('mt-resp').value.trim(),
+          participantes:document.getElementById('mt-part').value.trim(),
+          prazo:document.getElementById('mt-prazo').value,prazo_vencido:false,
+          depende_de:document.getElementById('mt-dep').value.trim(),
+          aguardando:document.getElementById('mt-ag').value.trim(),
+          observacoes:document.getElementById('mt-obs').value.trim(),reunioes_ids:[],dias_parada:null});
+      }
+      checkAlerts();
+      setTimeout(function(){closeModal('modal-task');if(currentProjId)openProject(currentProjId);},800);
+    }else{msg.style.color='var(--red)';msg.textContent='Erro: '+(d.error||'tente novamente.');}
+  });
+}
+
+function deleteTask(taskId,projId){
+  if(!confirm('Excluir esta atividade?'))return;
+  post('/atividade',{secret:SYNC_SECRET,id:taskId,status:'Cancelada'}).then(function(d){
+    if(d.success){TASKS=TASKS.filter(function(t){return t.id!==taskId;});checkAlerts();openProject(projId);}
   });
 }
 
 // ─── SINCRONIZAR ──────────────────────────────────────────────────────
-function syncNotion() {
-  var btn = document.getElementById('sync-btn');
-  var pill = document.getElementById('last-sync');
-  btn.textContent = 'Sincronizando...';
-  btn.disabled = true;
-  pill.textContent = 'Sincronizando...';
-  pill.style.color = '';
-
-  fetch(WORKER_URL + '/sync', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ secret: SYNC_SECRET })
-  }).then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d.ok) {
-      pill.textContent = 'Sincronizacao iniciada — aguarde ~30s';
-      pill.style.color = '#4caf82';
-      setTimeout(function() {
-        btn.textContent = 'Sincronizar';
-        btn.disabled = false;
-        pill.style.color = '';
-        pill.textContent = 'Notion sincronizado';
-      }, 35000);
-    } else {
-      pill.textContent = 'Erro ao sincronizar';
-      pill.style.color = '#e05c5c';
-      btn.textContent = 'Sincronizar';
-      btn.disabled = false;
+function syncNotion(){
+  var btn=document.getElementById('sync-btn');
+  var pill=document.getElementById('last-sync');
+  btn.textContent='Sincronizando...';btn.disabled=true;
+  pill.textContent='Sincronizando...';pill.style.color='';
+  post('/sync',{secret:SYNC_SECRET}).then(function(d){
+    if(d.ok){
+      pill.textContent='Sincronização iniciada — aguarde ~30s';pill.style.color='var(--green)';
+      setTimeout(function(){btn.textContent='Sincronizar';btn.disabled=false;pill.style.color='';pill.textContent='Notion sincronizado';},35000);
+    }else{
+      pill.textContent='Erro ao sincronizar';pill.style.color='var(--red)';
+      btn.textContent='Sincronizar';btn.disabled=false;
     }
-  }).catch(function(e) {
-    pill.textContent = 'Erro: ' + e.message;
-    pill.style.color = '#e05c5c';
-    btn.textContent = 'Sincronizar';
-    btn.disabled = false;
+  }).catch(function(e){
+    pill.textContent='Erro: '+e.message;pill.style.color='var(--red)';
+    btn.textContent='Sincronizar';btn.disabled=false;
   });
-}
-
-// ─── MODAL ALOCAR ─────────────────────────────────────────────────────
-var _alocarId = null;
-function openModalAlocar(id, title) {
-  _alocarId = id;
-  document.getElementById('modal-alocar-sub').textContent = title;
-  var sel = document.getElementById('modal-alocar-sel');
-  sel.innerHTML = PROJECTS.map(function(p) {
-    return '<option value="' + p.id + '">' + esc(p.nome) + (p.area ? ' (' + p.area + ')' : '') + '</option>';
-  }).join('');
-  document.getElementById('modal-alocar-msg').textContent = '';
-  document.getElementById('modal-alocar').style.display = 'flex';
-}
-
-function confirmarAlocar() {
-  var projetoId = document.getElementById('modal-alocar-sel').value;
-  var msg = document.getElementById('modal-alocar-msg');
-  msg.style.color = '#4fa3e0';
-  msg.textContent = 'Salvando...';
-  fetch(WORKER_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ page_id: _alocarId, projeto_id: projetoId })
-  }).then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d.success) {
-      msg.style.color = '#4caf82';
-      msg.textContent = 'Salvo! Sincronize para atualizar.';
-      setTimeout(function() { document.getElementById('modal-alocar').style.display = 'none'; }, 2000);
-    } else {
-      msg.style.color = '#e05c5c';
-      msg.textContent = 'Erro ao salvar.';
-    }
-  }).catch(function() { msg.style.color = '#e05c5c'; msg.textContent = 'Erro de conexao.'; });
-}
-
-// ─── MODAL NOVO PROJETO ───────────────────────────────────────────────
-function openModalNovoProjeto() {
-  document.getElementById('np-nome').value = '';
-  document.getElementById('np-resp').value = '';
-  document.getElementById('np-area').value = '';
-  document.getElementById('np-desc').value = '';
-  document.getElementById('np-msg').textContent = '';
-  document.getElementById('modal-novo-proj').style.display = 'flex';
-}
-
-function salvarNovoProjeto() {
-  var nome = document.getElementById('np-nome').value.trim();
-  var msg = document.getElementById('np-msg');
-  if (!nome) { msg.style.color = '#e05c5c'; msg.textContent = 'Nome obrigatorio.'; return; }
-  msg.style.color = '#4fa3e0';
-  msg.textContent = 'Criando projeto...';
-  fetch(WORKER_URL + '/projeto', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      nome: nome,
-      responsavel: document.getElementById('np-resp').value.trim(),
-      area: document.getElementById('np-area').value,
-      descricao: document.getElementById('np-desc').value.trim(),
-      secret: SYNC_SECRET
-    })
-  }).then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d.success) {
-      msg.style.color = '#4caf82';
-      msg.textContent = 'Projeto criado! Sincronize para atualizar.';
-      setTimeout(function() { document.getElementById('modal-novo-proj').style.display = 'none'; }, 2000);
-    } else {
-      msg.style.color = '#e05c5c';
-      msg.textContent = 'Erro: ' + (d.error || 'tente novamente.');
-    }
-  }).catch(function() { msg.style.color = '#e05c5c'; msg.textContent = 'Erro de conexao.'; });
 }
 
 // ─── IA ───────────────────────────────────────────────────────────────
-function getCtx() {
-  return '\n\nDados das reunioes:\n\n' + MEETINGS.map(function(m) {
-    return 'Reuniao: ' + m.title + '\nData: ' + m.date + '\nStatus: ' + m.status + '\nProjeto: ' + (m.projeto || 'Nao definido') + '\nResumo: ' + (m.summary || 'Sem resumo') + '\nActions: ' + (m.actions || 'Nenhum');
-  }).join('\n---\n');
+function getCtx(){
+  var ctx='Reunioes:\n'+MEETINGS.map(function(m){
+    return m.title+' | '+m.status+' | Projeto: '+(m.projeto||'N/A')+' | '+(m.summary||'').substring(0,200);
+  }).join('\n');
+  ctx+='\n\nProjetos:\n'+PROJECTS.filter(function(p){return p.status==='Ativo';}).map(function(p){
+    var tasks=TASKS.filter(function(t){return t.projeto_id===p.id;});
+    var blocked=tasks.filter(function(t){return t.status==='Bloqueada'||t.prazo_vencido;});
+    return p.nome+' | Resp: '+(p.responsavel||'N/A')+' | Atividades: '+tasks.length+' | Bloqueadas: '+blocked.length;
+  }).join('\n');
+  return ctx;
 }
 
-function nowStr() {
-  return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-}
-
-function addMsg(text, role, time, returnEl) {
-  var msgs = document.getElementById('ai-msgs');
-  var div = document.createElement('div');
-  div.className = 'msg';
-  div.innerHTML = '<div class="av ' + role + '">' + (role === 'ai' ? 'G' : 'H') + '</div><div class="bub ' + (role === 'ai' ? 'ai' : '') + '">' + text + '</div>';
+function addMsg(text,role,returnEl){
+  var msgs=document.getElementById('ai-msgs');
+  var div=document.createElement('div');
+  div.className='msg';
+  div.innerHTML='<div class="av '+role+'">'+(role==='ai'?'G':'H')+'</div><div class="bub '+(role==='ai'?'ai':'')+'">'+text+'</div>';
   msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-  return returnEl ? div : null;
+  msgs.scrollTop=msgs.scrollHeight;
+  return returnEl?div:null;
 }
 
-function updateCount() {
-  document.getElementById('hist-count').textContent = chatHistory.length;
+function quickAsk(q){document.getElementById('ai-in').value=q;sendAI();}
+
+function sendAI(){
+  var inp=document.getElementById('ai-in');
+  var q=inp.value.trim();
+  if(!q)return;
+  inp.value='';
+  addMsg(esc(q),'user',false);
+  chatHistory.push({role:'user',text:q,time:nowStr()});
+  var ph=addMsg('Processando...','ai',true);
+  var systemMsg='Voce e o assistente executivo do GRUPO HOLSA. Responda em portugues brasileiro, de forma direta e executiva.\n\n'+getCtx();
+  fetch(GROQ_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+    body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:systemMsg},{role:'user',content:q}],max_tokens:1024,temperature:0.7})
+  }).then(function(r){return r.json();})
+  .then(function(d){
+    var ans=(d.choices&&d.choices[0]&&d.choices[0].message)?d.choices[0].message.content:'Sem resposta.';
+    ph.querySelector('.bub').innerHTML=ans.replace(/\n/g,'<br>');
+    chatHistory.push({role:'ai',text:ans,time:nowStr()});
+  }).catch(function(e){ph.querySelector('.bub').textContent='Erro: '+e.message;});
 }
 
-function quickAsk(q) {
-  document.getElementById('ai-in').value = q;
-  sendAI();
+function clearHistory(){
+  if(!confirm('Limpar histórico?'))return;
+  chatHistory=[];
+  document.getElementById('ai-msgs').innerHTML='<div class="msg"><div class="av ai">G</div><div class="bub ai">Histórico limpo.</div></div>';
 }
 
-function sendAI() {
-  var inp = document.getElementById('ai-in');
-  var q = inp.value.trim();
-  if (!q) return;
-  inp.value = '';
-  var t = nowStr();
-  addMsg(esc(q), 'user', t, false);
-  chatHistory.push({ role: 'user', text: q, time: t });
-  updateCount();
-  var placeholder = addMsg('Processando<span class="dot">...</span>', 'ai', t, true);
-
-  var systemMsg = 'Voce e o assistente executivo de inteligencia corporativa do Grupo HOLSA, uma holding brasileira com 5 empresas e aproximadamente 200 colaboradores em Sao Paulo. Analise reunioes e responda com linguagem executiva, direta e orientada a resultados. Responda sempre em portugues brasileiro.' + getCtx();
-
-  fetch(GROQ_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + GROQ_KEY
-    },
-    body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      messages: [
-        { role: 'system', content: systemMsg },
-        { role: 'user', content: q }
-      ],
-      max_tokens: 1024,
-      temperature: 0.7
-    })
-  }).then(function(r) { return r.json(); })
-  .then(function(d) {
-    var ans = (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) ? d.choices[0].message.content : 'Sem resposta disponivel.';
-    var clean = ans.replace(/\n/g, '<br>');
-    placeholder.querySelector('.bub').innerHTML = clean;
-    chatHistory.push({ role: 'ai', text: ans, time: t });
-    updateCount();
-  }).catch(function(e) {
-    placeholder.querySelector('.bub').textContent = 'Erro: ' + e.message;
-  });
-}
-
-// ─── DOWNLOADS ────────────────────────────────────────────────────────
-function downloadTXT() {
-  if (!chatHistory.length) { alert('Nenhuma consulta no historico ainda.'); return; }
-  var txt = 'GRUPO HOLSA - Central de Inteligencia\nRelatorio de Consultas\nGerado em: ' + new Date().toLocaleString('pt-BR') + '\n' + '='.repeat(60) + '\n\n';
-  chatHistory.forEach(function(m) {
-    txt += '[' + m.time + '] ' + (m.role === 'user' ? 'CONSULTA' : 'RESPOSTA IA') + ':\n' + m.text + '\n\n' + '-'.repeat(40) + '\n\n';
-  });
-  txt += '\n' + '='.repeat(60) + '\nGRUPO HOLSA - Uso interno e confidencial';
-  var a = document.createElement('a');
-  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(txt);
-  a.download = 'holsa-relatorio-' + new Date().toISOString().slice(0, 10) + '.txt';
+function downloadTXT(){
+  if(!chatHistory.length){alert('Nenhuma consulta ainda.');return;}
+  var txt='GRUPO HOLSA - Relatorio\n'+new Date().toLocaleString('pt-BR')+'\n\n';
+  chatHistory.forEach(function(m){txt+='['+m.time+'] '+(m.role==='user'?'CONSULTA':'IA')+':\n'+m.text+'\n\n';});
+  var a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
+  a.download='holsa-'+new Date().toISOString().slice(0,10)+'.txt';
   a.click();
 }
 
-function downloadHTML() {
-  if (!chatHistory.length) { alert('Nenhuma consulta no historico ainda.'); return; }
-  var rows = '';
-  chatHistory.forEach(function(m) {
-    var bg = m.role === 'user' ? '#1a2836' : '#162232';
-    var label = m.role === 'user' ? 'CONSULTA' : 'RESPOSTA IA';
-    var color = m.role === 'user' ? '#5aabdd' : '#e8edf2';
-    rows += '<div style="background:' + bg + ';border-radius:8px;padding:16px;margin-bottom:12px"><div style="font-size:10px;color:' + color + ';font-weight:700;letter-spacing:1px;margin-bottom:8px">[' + m.time + '] ' + label + '</div><div style="font-size:13px;color:#c8d6e5;line-height:1.6">' + esc(m.text).replace(/\n/g, '<br>') + '</div></div>';
-  });
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>HOLSA Relatorio</title></head><body style="background:#0f1923;color:#e8edf2;font-family:system-ui,sans-serif;padding:40px;max-width:800px;margin:0 auto"><h1 style="font-size:18px;margin-bottom:4px">GRUPO HOLSA</h1><p style="color:#7a9ab5;font-size:12px;margin-bottom:24px">Relatorio gerado em ' + new Date().toLocaleString('pt-BR') + '</p>' + rows + '</body></html>';
-  var a = document.createElement('a');
-  a.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
-  a.download = 'holsa-relatorio-' + new Date().toISOString().slice(0, 10) + '.html';
-  a.click();
-}
-
-function clearHistory() {
-  if (!confirm('Limpar todo o historico de consultas?')) return;
-  chatHistory = [];
-  document.getElementById('ai-msgs').innerHTML = '<div class="msg"><div class="av ai">G</div><div class="bub ai">Historico limpo. Pronto para novas consultas.</div></div>';
-  updateCount();
-}
-
-// ─── LOAD ────────────────────────────────────────────────────────────
-window.addEventListener('load', function() {
-  if (getToken()) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
+// ─── LOAD ─────────────────────────────────────────────────────────────
+window.addEventListener('load',function(){
+  if(sessionStorage.getItem('holsa_auth')==='1'){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
     init();
   }
 });
