@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -370,8 +370,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <input class="form-input" id="mt-resp" placeholder="Nome do responsável">
       </div>
       <div class="form-group">
-        <label class="form-label">Participantes</label>
-        <input class="form-input" id="mt-part" placeholder="Nome1, Nome2...">
+        <label class="form-label">Participantes <span style="font-size:10px;color:var(--muted)">(vírgula separa nomes)</span></label>
+        <div class="chip-wrap" id="mt-part-chips" onclick="document.getElementById('mt-part-input')?.focus()"></div>
+        <input type="hidden" id="mt-part">
       </div>
     </div>
     <div class="form-group">
@@ -518,23 +519,6 @@ var PROJECTS = [
 ];
 var TASKS = [
   {
-    "id": "39364917-ccf1-817f-8767-fdc26c9aefeb",
-    "nome": "Definições dos fluxos",
-    "status": "Não iniciada",
-    "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
-    "responsavel": "Ricardo",
-    "participantes": "Kleber, Henrique, Daniela Ito, Ricardo",
-    "prazo": "2026-08-20",
-    "prazo_vencido": false,
-    "depende_de": "Levantamento de dados",
-    "aguardando": "Finalizar o levantamento de dados",
-    "observacoes": "Definição que guiará o projeto.",
-    "reunioes_ids": [],
-    "dias_parada": null,
-    "pai_id": "",
-    "sub_ids": []
-  },
-  {
     "id": "39364917-ccf1-81d2-b8fb-c57019abb839",
     "nome": "Levantamento de dados",
     "status": "Não iniciada",
@@ -547,9 +531,7 @@ var TASKS = [
     "aguardando": "De acordo",
     "observacoes": "Levantamento de informações para inicio do projeto.",
     "reunioes_ids": [],
-    "dias_parada": null,
-    "pai_id": "",
-    "sub_ids": []
+    "dias_parada": null
   }
 ];
 
