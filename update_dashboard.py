@@ -42,13 +42,20 @@ def rel_ids(prop):
 def query_db(db_id):
     url = f'https://api.notion.com/v1/databases/{db_id}/query'
     rows, cursor = [], None
+    print(f'  Querying {db_id[:8]}...')
     while True:
         payload = {'page_size': 100}
         if cursor: payload['start_cursor'] = cursor
         r = requests.post(url, headers=H, json=payload)
-        r.raise_for_status()
+        if r.status_code != 200:
+            print(f'  ERRO {r.status_code}: {r.text[:200]}')
+            return []
         data = r.json()
+        if data.get('object') == 'error':
+            print(f'  NOTION ERRO: {data.get("code")} - {data.get("message")}')
+            return []
         rows.extend(data.get('results', []))
+        print(f'  -> {len(rows)} registros até agora')
         if not data.get('has_more'): break
         cursor = data.get('next_cursor')
     return rows
