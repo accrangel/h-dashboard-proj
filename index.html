@@ -366,7 +366,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
     <div class="form-group">
       <label class="form-label">Depende de (atividade anterior)</label>
-      <input class="form-input" id="mt-dep" placeholder="Nome da atividade que deve concluir antes">
+      <select class="form-input" id="mt-dep"><option value="">Nenhuma dependência</option></select>
     </div>
     <div class="form-group" id="mt-ag-group">
       <label class="form-label">O que está aguardando?</label>
@@ -1047,6 +1047,15 @@ function openModalTask(taskId,projId){
     document.getElementById('mt-status').value='Não iniciada';
   }
   document.getElementById('modal-task-msg').textContent='';
+  // Preencher select de dependências com atividades do projeto
+  var projId2=document.getElementById('mt-proj-id').value;
+  var depSel=document.getElementById('mt-dep');
+  var currentDep=taskId?(TASKS.find(function(x){return x.id===taskId;})||{}).depende_de||'':'';
+  var projTasks=TASKS.filter(function(t){return t.projeto_id===projId2&&t.id!==taskId;});
+  depSel.innerHTML='<option value="">Nenhuma dependência</option>'+
+    projTasks.map(function(t){
+      return '<option value="'+esc(t.nome)+'"'+(currentDep===t.nome?' selected':'')+'>'+esc(t.nome)+' ('+esc(t.status)+')</option>';
+    }).join('');
   openModal('modal-task');
 }
 
@@ -1125,14 +1134,26 @@ function syncNotion(){
 
 // ─── IA ───────────────────────────────────────────────────────────────
 function getCtx(){
-  var ctx='Reunioes:\n'+MEETINGS.map(function(m){
-    return m.title+' | '+m.status+' | Projeto: '+(m.projeto||'N/A')+' | '+(m.summary||'').substring(0,200);
+  var ctx='REUNIOES:\n'+MEETINGS.map(function(m){
+    var parts=(m.participantes||[]).join(', ');
+    return '- '+m.title+' | Status: '+m.status+' | Projeto: '+(m.projeto||'N/A')+
+      (parts?' | Participantes: '+parts:'')+
+      ' | Resumo: '+(m.summary||'').substring(0,200);
   }).join('\n');
-  ctx+='\n\nProjetos:\n'+PROJECTS.filter(function(p){return p.status==='Ativo';}).map(function(p){
+  ctx+='\n\nPROJETOS ATIVOS E ATIVIDADES:\n'+PROJECTS.filter(function(p){return p.status==='Ativo';}).map(function(p){
     var tasks=TASKS.filter(function(t){return t.projeto_id===p.id;});
-    var blocked=tasks.filter(function(t){return t.status==='Bloqueada'||t.prazo_vencido;});
-    return p.nome+' | Resp: '+(p.responsavel||'N/A')+' | Atividades: '+tasks.length+' | Bloqueadas: '+blocked.length;
-  }).join('\n');
+    var tasksStr=tasks.map(function(t){
+      return '  * '+t.nome+' | Status: '+t.status+
+        (t.responsavel?' | Resp: '+t.responsavel:'')+
+        (t.participantes?' | Participantes: '+t.participantes:'')+
+        (t.prazo?' | Prazo: '+t.prazo:'')+
+        (t.depende_de?' | Depende de: '+t.depende_de:'')+
+        (t.aguardando?' | Aguardando: '+t.aguardando:'')+
+        (t.prazo_vencido?' | PRAZO VENCIDO':'');
+    }).join('\n');
+    return p.nome+' | Resp: '+(p.responsavel||'N/A')+' | Area: '+(p.area||'N/A')+
+      '\n'+tasksStr;
+  }).join('\n\n');
   return ctx;
 }
 
