@@ -309,7 +309,31 @@ function pick(id) {
     (m.summary ? '<div class="ds-lbl">Resumo executivo</div><div class="ds-txt">' + m.summary + '</div>' : '') +
     (m.actionItems ? '<div class="ds-lbl">Action items</div><div class="ds-txt">' + m.actionItems + '</div>' : '') +
     (m.transcript ? '<div class="ds-lbl">Extrato da transcrição</div><div class="ds-txt" style="max-height:65px;font-size:11px">' + m.transcript + '</div>' : '') +
-    '<button class="dbtn" onclick="qa(\'Analise a reunião: ' + m.title.replace(/'/g,"\\'") + ' e sugira próximos passos para o HOLSA\')">&#10024; Analisar com IA</button>';
+    '<div style="margin-top:16px;padding-top:14px;border-top:1px solid #253647">' +
+    '<div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#1e6fa8;margin-bottom:10px;font-weight:600">Editar reuni\u00e3o</div>' +
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">' +
+    '<div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:10px;color:#7a9ab5;text-transform:uppercase;letter-spacing:.5px">Status</label>' +
+    '<select id="edit-status" style="font-size:12px;padding:6px 10px;border:1px solid #253647;border-radius:4px;background:#1a2836;color:#e8edf2;min-width:160px">' +
+    '<option value="">' + (m.status||'Selecionar') + '</option>' +
+    '<option value="Processando">Processando</option>' +
+    '<option value="Em acompanhamento">Em acompanhamento</option>' +
+    '<option value="Conclu\u00edda">Conclu\u00edda</option>' +
+    '</select></div>' +
+    '<div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:10px;color:#7a9ab5;text-transform:uppercase;letter-spacing:.5px">Projeto</label>' +
+    '<select id="edit-project" style="font-size:12px;padding:6px 10px;border:1px solid #253647;border-radius:4px;background:#1a2836;color:#e8edf2;min-width:160px">' +
+    '<option value="">' + (m.project||'Selecionar') + '</option>' +
+    '<option value="TI">TI</option>' +
+    '<option value="Infraestrutura">Infraestrutura</option>' +
+    '<option value="Gest\u00e3o">Gest\u00e3o</option>' +
+    '<option value="Fornecedor">Fornecedor</option>' +
+    '<option value="Outro">Outro</option>' +
+    '</select></div></div>' +
+    '<div style="display:flex;gap:8px">' +
+    '<button class="dbtn" onclick="saveEdit(\'' + m.id + '\')">&#10003; Salvar no Notion</button>' +
+    '<button class="dbtn" style="border-color:#7a9ab5;color:#7a9ab5" onclick="qa(\'Analise a reuni\u00e3o: ' + m.title.replace(/'/g,"\\'") + ' e sugira pr\u00f3ximos passos para o HOLSA\')">&#10024; Analisar com IA</button>' +
+    '</div>' +
+    '<div id="edit-msg" style="font-size:11px;margin-top:8px;display:none"></div>' +
+    '</div>';
   document.getElementById('da').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
