@@ -268,11 +268,11 @@ def main():
     with open('index.html', 'r', encoding='utf-8') as f:
         html = f.read()
 
-    html = re.sub(r'var MEETINGS = \[[\s\S]*?\];',
+    html = re.sub(r'var MEETINGS\s*=\s*\[[\s\S]*?\];',
         lambda _: 'var MEETINGS = ' + json.dumps(reunioes, ensure_ascii=False, indent=2) + ';', html)
-    html = re.sub(r'var PROJECTS = \[[\s\S]*?\];',
+    html = re.sub(r'var PROJECTS\s*=\s*\[[\s\S]*?\];',
         lambda _: 'var PROJECTS = ' + json.dumps(projetos, ensure_ascii=False, indent=2) + ';', html)
-    html = re.sub(r'var TASKS = \[[\s\S]*?\];',
+    html = re.sub(r'var TASKS\s*=\s*\[[\s\S]*?\];',
         lambda _: 'var TASKS = ' + json.dumps(atividades, ensure_ascii=False, indent=2) + ';', html)
     html = re.sub(r'(GRUPO HOLSA\s*·\s*Central de Intelig[^\n<]*)',
         f'GRUPO HOLSA · Central de Inteligencia · Atualizado: {updated}', html)
