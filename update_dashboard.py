@@ -207,7 +207,6 @@ def main():
     print(f'  {total} reunioes')
 
     now = datetime.now(timezone.utc)
-    week = sum(1 for m in reunioes if m['date'] and (now - datetime.fromisoformat(m['date'].replace('Z','+00:00')).replace(tzinfo=timezone.utc) if not datetime.fromisoformat(m['date'].replace('Z','+00:00')).tzinfo else now - datetime.fromisoformat(m['date'].replace('Z','+00:00'))).days <= 7 if True else False)
 
     # Semana corrigida
     week = 0
