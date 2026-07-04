@@ -29,6 +29,12 @@ jobs:
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         run: python update_dashboard.py
+        
+      - name: Verificar mudancas
+        run: |
+          git diff --stat index.html
+          echo "--- Primeiros 200 chars do MEETINGS no index.html ---"
+          grep -o 'var MEETINGS = \[.\{0,200\}' index.html || echo "MEETINGS vazio ou nao encontrado"
 
       - name: Commit e push
         run: |
