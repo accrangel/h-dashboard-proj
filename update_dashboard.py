@@ -52,6 +52,26 @@ def strip_html(text):
     return text
 
 
+SHORT_RECORDING_PATTERNS = [
+    'a transcrição é breve',
+    'não é necessário resumo',
+    'transcrição original do áudio',
+    'speaker 1',
+    'speaker 2',
+    'gravação muito curta',
+]
+
+def clean_summary(text):
+    """Detecta textos gerados para gravações curtas e substitui por mensagem amigável."""
+    if not text:
+        return ''
+    lower = text.lower()
+    matches = sum(1 for p in SHORT_RECORDING_PATTERNS if p in lower)
+    if matches >= 2:
+        return '⏱ Gravação muito curta para gerar resumo.'
+    return text
+
+
 def get_rich_text(prop):
     """Extrai texto puro de propriedade rich_text ou title do Notion."""
     if not prop:
@@ -144,7 +164,7 @@ def fetch_meetings():
                 if key in props:
                     raw = get_rich_text(props[key])
                     if raw:
-                        summary = raw
+                        summary = clean_summary(raw)
                         break
 
             # Action Items
