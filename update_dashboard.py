@@ -108,12 +108,28 @@ def fetch_meetings():
 
             # Resumo — tenta Resumo IA primeiro, depois outros
             summary = ''
+            transcricao = ''
+            # Pega transcrição bruta como fallback
+            for k in ['Transcricao', 'Transcription']:
+                if k in props:
+                    transcricao = get_plain(props[k])
+                    if transcricao: break
+            # Busca campo Transcricao com acento
+            if not transcricao:
+                for k in list(props.keys()):
+                    if 'transcri' in k.lower():
+                        transcricao = get_plain(props[k])
+                        if transcricao: break
             for k in ['Resumo IA', 'Resumo', 'Summary', 'Notas', 'Notes']:
                 if k in props:
                     raw = get_plain(props[k])
                     if raw:
                         if is_short_recording(raw):
-                            summary = '\u23f1 Gravacao muito curta para gerar resumo.'
+                            # Usa transcrição bruta como contexto se disponível
+                            if transcricao and not is_short_recording(transcricao):
+                                summary = transcricao
+                            else:
+                                summary = '\u23f1 Gravacao muito curta para gerar resumo.'
                         else:
                             summary = raw
                         break
@@ -166,7 +182,7 @@ def main():
             except Exception:
                 pass
 
-    done = sum(1 for m in meetings if m['status'].lower() in ['concluida', 'concluida', 'done', 'completed'])
+    done = sum(1 for m in meetings if m['status'].lower() not in ['pendente', 'pending', '', 'processando'])
     rate = f"{int(done / total * 100)}%" if total else "0%"
     updated = datetime.now().strftime('%d/%m/%Y %H:%M')
     meetings_js = json.dumps(meetings, ensure_ascii=False, indent=2)
