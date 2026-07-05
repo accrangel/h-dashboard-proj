@@ -1274,9 +1274,31 @@ function renderHistorico(){
     '<select class="fsel" id="hf-origem" onchange="filterHist()"><option value="">Todas as origens</option><option>Dashboard</option><option>Notion</option><option>Sistema</option></select>'+
     '<input class="finput" id="hf-q" placeholder="Buscar..." oninput="filterHist()">'+
     '</div>'+
+    '<div id="hist-status" style="font-size:11px;color:var(--muted);margin-bottom:8px;min-height:16px"></div>'+
     '<div id="hist-list"></div>';
   document.getElementById('main-body').innerHTML=html;
   filterHist();
+  atualizarHistorico();
+}
+
+function atualizarHistorico(){
+  var btn=document.getElementById('btn-hist-refresh');
+  var status=document.getElementById('hist-status');
+  if(btn){btn.textContent='Buscando...';btn.disabled=true;}
+  if(status)status.textContent='Buscando registros no Notion...';
+  post('/historico',{secret:SYNC_SECRET}).then(function(d){
+    if(btn){btn.textContent='&#8635; Atualizar';btn.disabled=false;}
+    if(!d.success||!d.items){
+      if(status)status.textContent='Erro ao buscar histórico: '+(d.error||'tente novamente.');
+      return;
+    }
+    HISTORICO=d.items;
+    if(status)status.textContent=d.items.length+' registro(s) encontrado(s) · atualizado agora';
+    filterHist();
+  }).catch(function(e){
+    if(btn){btn.textContent='&#8635; Atualizar';btn.disabled=false;}
+    if(status)status.textContent='Erro: '+e.message;
+  });
 }
 
 function filterHist(){
