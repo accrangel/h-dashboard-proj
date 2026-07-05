@@ -242,6 +242,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ── EDIT MSG ── */
 .edit-msg{font-size:11px;margin-top:6px;min-height:14px}
+.task-indicator{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px;display:inline-block}
+.ti-green{background:#059669}
+.ti-yellow{background:#d97706}
+.ti-orange{background:#ea580c}
+.ti-red{background:#dc2626}
+.ti-gray{background:#94a3b8}
+.ti-blue{background:#2563eb}
+.proj-members{display:flex;flex-wrap:wrap;gap:5px;padding:10px 0;border-bottom:1px solid var(--bord);margin-bottom:10px}
+.member-chip{display:inline-flex;align-items:center;gap:4px;background:#ede9fe;color:#7c3aed;border:1px solid #ddd6fe;border-radius:12px;padding:3px 9px;font-size:11px;font-weight:600}
+.member-chip .chip-rm{cursor:pointer;opacity:.5;font-size:13px}
+.member-chip .chip-rm:hover{opacity:1;color:var(--red)}
+.member-add-row{display:flex;gap:6px;margin-top:8px}
 .edit-msg.ok{color:var(--green)}
 .edit-msg.err{color:var(--red)}
 
@@ -379,7 +391,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="form-group"><label class="form-label">Prazo</label><input class="form-input" type="date" id="mt-prazo"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Responsável</label><input class="form-input" id="mt-resp" placeholder="Nome do responsável"></div>
+      <div class="form-group"><label class="form-label">Responsável</label><input class="form-input" id="mt-resp" placeholder="Nome do responsável" list="membros-list" autocomplete="off"><datalist id="membros-list"></datalist></div>
       <div class="form-group"><label class="form-label">Participantes <span style="font-size:9px;color:var(--muted)">(vírgula separa)</span></label>
         <div class="chip-wrap" id="mt-part-chips" onclick="document.getElementById('mt-part-input')?.focus()"></div>
         <input type="hidden" id="mt-part">
@@ -760,7 +772,7 @@ function renderGeral(){
   html+=kpiCard('Total','blue',MEETINGS.length,'no workspace','');
   html+=kpiCard('Esta semana','blue',k.reunioes.semana||0,'últimos 7 dias','');
   html+=kpiCard('Concluídas','green',k.reunioes.concluidas||0,(k.reunioes.taxa||0)+'% do total','');
-  html+=kpiCard('Sem projeto','warn',k.reunioes.sem_projeto||0,'aguardando alocação','openModalAlocarGeral()');
+  html+=kpiCard('Sem projeto','warn',k.reunioes.sem_projeto||0,'aguardando alocação','showView("reunioes")');
   html+='</div>';
 
   // KPIs linha 2 — Atividades e Métricas
@@ -768,8 +780,8 @@ function renderGeral(){
   html+='<div class="kpi-grid-sm" style="margin-bottom:16px">';
   html+=kpiSmall('Em andamento','blue',k.atividades.andamento||0);
   html+=kpiSmall('Concluídas','green',k.atividades.concluidas||0);
-  html+=kpiSmall('Atrasadas','red',atrasadas.length,'showAlertPanel("atrasadas")');
-  html+=kpiSmall('Bloqueadas','amber',bloqueadas.length,'showAlertPanel("bloqueadas")');
+  html+=kpiSmall('Atrasadas','red',atrasadas.length,'showAlertPanel("atrasadas");showView("projetos")');
+  html+=kpiSmall('Bloqueadas','amber',bloqueadas.length,'showAlertPanel("bloqueadas");showView("projetos")');
   html+=kpiSmall('SLA','violet',sla+'%');
   html+=kpiSmall('Velocidade','gray',(k.metricas.velocidade||0)+'/sem');
   html+='</div>';
@@ -1052,8 +1064,7 @@ function renderProjetos(){
     '<select class="fsel" id="proj-filter-status" onchange="renderProjList()"><option value="">Todos os status</option><option>Ativo</option><option>Pausado</option><option>Concluído</option></select>'+
     '<input class="finput" id="proj-filter-q" placeholder="Buscar projeto..." oninput="renderProjList()">'+
     '</div>'+
-    '<div id="proj-list"></div>'+
-    '<div id="proj-detail" style="margin-top:10px"></div>';
+    '<div id="proj-list"></div>';
   document.getElementById('main-body').innerHTML=html;
   renderProjList();
 }
@@ -1097,9 +1108,19 @@ function renderProjList(){
       if(isOpen){
         var meetings=MEETINGS.filter(function(m){return m.projeto_id===p.id;});
         html+='<div class="proj-body">';
-        html+='<div style="display:flex;gap:4px;margin:10px 0 12px">'+
+        html+='<div style="display:flex;gap:4px;margin:10px 0 6px">'+
           '<div class="prog-bg" style="height:6px"><div class="prog-fill'+(pct<30?' danger':pct<60?' warn':'')+'" style="width:'+pct+'%"></div></div>'+
           '<span style="font-size:10px;color:var(--muted)">'+pct+'%</span>'+
+        '</div>';
+        var membros=getMembros(p.id);
+        html+='<div style="margin-bottom:10px">'+
+          '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Membros do projeto</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center">'+
+            membros.map(function(m){return'<span class="member-chip">'+esc(m)+' <span class="chip-rm" onclick="removeMembro(\''+p.id+'\',\''+m+'\')" title="Remover">&#215;</span></span>';}).join('')+
+            '<button class="tbtn tbtn-g" style="font-size:10px;padding:3px 10px" onclick="openAddMembro(\''+p.id+'\')">'+
+              (membros.length?'+ Adicionar':'+ Adicionar membros')+
+            '</button>'+
+          '</div>'+
         '</div>';
         html+='<div class="sec-header"><div class="sec-title">Atividades ('+tasks.length+')</div>'+
           '<div style="display:flex;gap:6px">'+
@@ -1131,6 +1152,33 @@ function toggleProject(id){
 }
 
 // ── ÁRVORE DE ATIVIDADES ──────────────────────────────────────────────
+function getTaskIndicator(t){
+  var now = new Date();
+  var hasPrazo = !!t.prazo;
+  var prazoDate = hasPrazo ? new Date(t.prazo) : null;
+  var diasAtraso = prazoDate ? Math.floor((now - prazoDate) / 86400000) : 0;
+  var vencido = prazoDate && prazoDate < now;
+  var s = t.status;
+  if(s === 'Concluída') return {cls:'ti-green', title:'Concluída'};
+  if(s === 'Bloqueada') return {cls:'ti-red', title:'Bloqueada'};
+  if(s === 'Não iniciada'){
+    if(vencido && diasAtraso > 2) return {cls:'ti-red', title:'Não iniciada · prazo vencido há '+diasAtraso+' dias'};
+    if(vencido) return {cls:'ti-yellow', title:'Não iniciada · prazo vencido'};
+    return {cls:'ti-gray', title:'Não iniciada'};
+  }
+  if(s === 'Aguardando'){
+    if(vencido && diasAtraso > 2) return {cls:'ti-red', title:'Aguardando · atrasada '+diasAtraso+' dias'};
+    if(vencido) return {cls:'ti-orange', title:'Aguardando · prazo vencido'};
+    return {cls:'ti-blue', title:'Aguardando (dentro do prazo)'};
+  }
+  if(s === 'Em andamento'){
+    if(vencido && diasAtraso > 2) return {cls:'ti-red', title:'Em andamento · atrasada '+diasAtraso+' dias'};
+    if(vencido) return {cls:'ti-yellow', title:'Em andamento · atraso de '+diasAtraso+' dia(s)'};
+    return {cls:'ti-green', title:'Em andamento · dentro do prazo'};
+  }
+  return {cls:'ti-gray', title:s};
+}
+
 function renderPartChipsTask(t){
   if(!t.participantes)return'';
   return t.participantes.split(',').map(function(n){
@@ -1262,6 +1310,8 @@ function openModalTask(taskId,projId){
     document.getElementById('mt-status-prev').value=ct.status||'';
     document.getElementById('mt-prazo').value=ct.prazo?ct.prazo.substring(0,10):'';
     document.getElementById('mt-resp').value=ct.responsavel||'';
+    // Popular datalist de membros
+    populateMembroDatalist(document.getElementById('mt-proj-id').value);
     document.getElementById('mt-ag').value=ct.aguardando||'';
     document.getElementById('mt-obs').value=ct.observacoes||'';
     _mtParts=ct.participantes?ct.participantes.split(',').map(function(n){return n.trim();}).filter(Boolean):[];
@@ -1269,6 +1319,7 @@ function openModalTask(taskId,projId){
     ['mt-nome','mt-prazo','mt-resp','mt-ag','mt-obs'].forEach(function(i){document.getElementById(i).value='';});
     document.getElementById('mt-status').value='Não iniciada';
     _mtParts=[];
+    populateMembroDatalist(document.getElementById('mt-proj-id').value);
   }
   setTimeout(initChipInput,50);
   document.getElementById('mt-msg').textContent='';
@@ -1324,6 +1375,16 @@ function deleteTask(taskId,projId){
 }
 
 // ── CHIPS INPUT ───────────────────────────────────────────────────────
+function populateMembroDatalist(projId){
+  var dl = document.getElementById('membros-list');
+  if(!dl) return;
+  var membros = getMembros(projId||'');
+  dl.innerHTML = membros.map(function(m){return'<option value="'+esc(m)+'">';}).join('');
+  // Também atualizar chip-input para sugerir membros
+  var inp = document.getElementById('mt-part-input');
+  if(inp) inp.setAttribute('list','membros-list');
+}
+
 function initChipInput(){
   var wrap=document.getElementById('mt-part-chips');
   if(!wrap)return;
@@ -1430,6 +1491,57 @@ function renderIA(){
     '</div></div>';
   document.getElementById('main-body').innerHTML=html;
   _aiHistory.forEach(function(m){addMsg(m.role==='user'?esc(m.text):m.text,m.role,false);});
+}
+
+// ─── MEMBROS DO PROJETO ───────────────────────────────────────────────
+var _projMembros = {}; // cache local de membros por projeto
+
+function getMembros(projId){
+  var p = PROJECTS.find(function(x){return x.id===projId;});
+  if(!p) return [];
+  // Pega membros do campo descricao__membros ou de campo proprio
+  if(!_projMembros[projId]){
+    // Extrair membros das atividades do projeto como fallback
+    var members = new Set();
+    TASKS.filter(function(t){return t.projeto_id===projId;}).forEach(function(t){
+      if(t.responsavel) members.add(t.responsavel.trim());
+      if(t.participantes) t.participantes.split(',').forEach(function(m){var mm=m.trim();if(mm)members.add(mm);});
+    });
+    _projMembros[projId] = Array.from(members);
+  }
+  return _projMembros[projId] || [];
+}
+
+function openAddMembro(projId){
+  var nome = prompt('Nome(s) do(s) membro(s) — separe por vírgula:');
+  if(!nome || !nome.trim()) return;
+  nome.split(',').forEach(function(n){
+    n = n.trim();
+    if(!n) return;
+    if(!_projMembros[projId]) _projMembros[projId] = [];
+    if(!_projMembros[projId].includes(n)) _projMembros[projId].push(n);
+  });
+  // Atualizar seletores de membros nas atividades
+  updateMembroSelects(projId);
+  renderProjList();
+}
+
+function removeMembro(projId, nome){
+  if(!_projMembros[projId]) return;
+  _projMembros[projId] = _projMembros[projId].filter(function(m){return m!==nome;});
+  renderProjList();
+}
+
+function updateMembroSelects(projId){
+  var sel = document.getElementById('task-filter-member-'+projId);
+  if(!sel) return;
+  var membros = getMembros(projId);
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">Todos os membros</option>' + membros.map(function(m){return'<option'+(m===cur?' selected':'')+'>'+esc(m)+'</option>';}).join('');
+}
+
+function getMembrosProjeto(projId){
+  return getMembros(projId);
 }
 
 function getCtx(){
