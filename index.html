@@ -1137,6 +1137,9 @@ function renderProjList(){
             '<button class="export-btn" onclick="exportProjExcel(\''+p.id+'\')">&#8595; Excel</button>'+
             '<button class="tbtn tbtn-p" style="font-size:11px" onclick="openModalTask(null,\''+p.id+'\')">+ Nova</button>'+
           '</div></div>';
+        var fsTask=document.getElementById('task-filter-status-'+p.id)?document.getElementById('task-filter-status-'+p.id).value:'';
+        var fmTask=document.getElementById('task-filter-member-'+p.id)?document.getElementById('task-filter-member-'+p.id).value:'';
+        window['_taskFilter_'+p.id]={status:fsTask,member:fmTask};
         if(!tasks.length){html+='<div style="color:var(--muted);font-size:13px;padding:8px 0">Nenhuma atividade ainda.</div>';}
         else{html+=renderTaskTree(tasks,'',p.id);}
         if(meetings.length){
