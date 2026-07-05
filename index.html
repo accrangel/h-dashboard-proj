@@ -529,13 +529,13 @@ var TASKS = [
   {
     "id": "39364917-ccf1-8131-87f9-fd1cb3378e89",
     "nome": "fluxo com financeiro",
-    "status": "Aguardando",
+    "status": "Bloqueada",
     "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
     "responsavel": "Kleber",
     "participantes": "Heloisa,Kleber",
-    "prazo": "",
-    "prazo_vencido": false,
-    "dias_atraso": 0,
+    "prazo": "2026-07-04",
+    "prazo_vencido": true,
+    "dias_atraso": 1,
     "depende_de": "Definições dos fluxos",
     "aguardando": "inicio geral",
     "observacoes": "Teste de funcionalidade",
@@ -543,7 +543,7 @@ var TASKS = [
     "dias_parada": 0,
     "pai_id": "39364917-ccf1-817f-8767-fdc26c9aefeb",
     "sub_ids": [],
-    "last_edited": "2026-07-04"
+    "last_edited": "2026-07-05"
   },
   {
     "id": "39364917-ccf1-817f-8767-fdc26c9aefeb",
@@ -587,7 +587,7 @@ var TASKS = [
   }
 ];
 var HISTORICO = [];
-var KPIS = {"reunioes": {"total": 3, "semana": 2, "concluidas": 1, "taxa": 33, "sem_projeto": 0}, "projetos": {"total": 2, "ativos": 2}, "atividades": {"total": 3, "concluidas": 0, "andamento": 1, "sem_prazo": 1, "atrasadas": 0, "bloqueadas": 1, "atrasadas_detail": [], "bloqueadas_detail": [{"id": "39364917-ccf1-8131-87f9-fd1cb3378e89", "nome": "fluxo com financeiro", "responsavel": "Kleber", "dias_parada": 0, "aguardando": "inicio geral", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344"}]}, "metricas": {"sla": 0, "lead_time": 0, "velocidade": 0, "workload": [["Kleber", 1], ["Ricardo", 1], ["Henrique", 1]]}};
+var KPIS = {"reunioes": {"total": 3, "semana": 2, "concluidas": 1, "taxa": 33, "sem_projeto": 0}, "projetos": {"total": 2, "ativos": 2}, "atividades": {"total": 3, "concluidas": 0, "andamento": 1, "sem_prazo": 0, "atrasadas": 1, "bloqueadas": 1, "atrasadas_detail": [{"id": "39364917-ccf1-8131-87f9-fd1cb3378e89", "nome": "fluxo com financeiro", "responsavel": "Kleber", "dias_atraso": 1, "observacoes": "Teste de funcionalidade", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Bloqueada"}], "bloqueadas_detail": [{"id": "39364917-ccf1-8131-87f9-fd1cb3378e89", "nome": "fluxo com financeiro", "responsavel": "Kleber", "dias_parada": 0, "aguardando": "inicio geral", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344"}]}, "metricas": {"sla": 0, "lead_time": 0, "velocidade": 0, "workload": [["Kleber", 1], ["Ricardo", 1], ["Henrique", 1]]}};
 
 var _currentView='geral';
 var _currentMeetingId=null;
