@@ -194,7 +194,13 @@ def fetch_atividades():
             'sub_ids': rel_ids(props.get('Sub-atividades')),
             'last_edited': a.get('last_edited_time','')[:10],
         })
-    return atividades
+    # Deduplicar por nome+projeto (manter mais recente)
+    seen = {}
+    for a in atividades:
+        key = (a['nome'].lower().strip(), a['projeto_id'])
+        if key not in seen or a['last_edited'] > seen[key]['last_edited']:
+            seen[key] = a
+    return list(seen.values())
 
 def fetch_reunioes(projetos, atividades):
     rows = query_db(REUNIOES_DB)
