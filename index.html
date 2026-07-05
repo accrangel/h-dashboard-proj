@@ -579,7 +579,7 @@ var TASKS = [
   {
     "id": "39364917-ccf1-8131-87f9-fd1cb3378e89",
     "nome": "fluxo com financeiro",
-    "status": "Bloqueada",
+    "status": "Não iniciada",
     "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
     "responsavel": "Kleber",
     "participantes": "Heloisa,Kleber",
@@ -590,7 +590,7 @@ var TASKS = [
     "aguardando": "inicio geral",
     "observacoes": "Teste de funcionalidade",
     "reunioes_ids": [],
-    "dias_parada": 0,
+    "dias_parada": null,
     "pai_id": "39364917-ccf1-817f-8767-fdc26c9aefeb",
     "sub_ids": [],
     "last_edited": "2026-07-05"
@@ -640,6 +640,19 @@ var TASKS = [
 ];
 var HISTORICO = [
   {
+    "id": "39464917-ccf1-8140-be98-c356750fe8f7",
+    "descricao": "fluxo com financeiro: Status alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39364917-ccf1-8131-87f9-fd1cb3378e89",
+    "entidade_nome": "fluxo com financeiro",
+    "campo": "Status",
+    "valor_anterior": "Bloqueada",
+    "valor_novo": "Não iniciada",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-05",
+    "created": "2026-07-05"
+  },
+  {
     "id": "39464917-ccf1-8141-834f-f5c3241dbad3",
     "descricao": "Fluxo Z: Criação alterado",
     "entidade": "Atividade",
@@ -679,7 +692,7 @@ var HISTORICO = [
     "created": "2026-07-05"
   }
 ];
-var KPIS = {"reunioes": {"total": 3, "semana": 2, "concluidas": 1, "taxa": 33, "sem_projeto": 0}, "projetos": {"total": 2, "ativos": 2}, "atividades": {"total": 5, "concluidas": 0, "andamento": 4, "sem_prazo": 0, "atrasadas": 4, "bloqueadas": 1, "atrasadas_detail": [{"id": "39464917-ccf1-81a5-8245-ee8d154224a1", "nome": "Fluxo Z", "responsavel": "Henrique", "dias_atraso": 6, "observacoes": "Vamos ver", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Em andamento"}, {"id": "39464917-ccf1-81c9-af4c-c578801d6569", "nome": "Fluxo Z", "responsavel": "Henrique", "dias_atraso": 3, "observacoes": "vamos ver", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Em andamento"}, {"id": "39364917-ccf1-8131-87f9-fd1cb3378e89", "nome": "fluxo com financeiro", "responsavel": "Kleber", "dias_atraso": 1, "observacoes": "Teste de funcionalidade", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Bloqueada"}, {"id": "39364917-ccf1-81d2-b8fb-c57019abb839", "nome": "Levantamento de dados", "responsavel": "Henrique", "dias_atraso": 4, "observacoes": "Levantamento de informações para inicio do projeto.", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Em andamento"}], "bloqueadas_detail": [{"id": "39364917-ccf1-8131-87f9-fd1cb3378e89", "nome": "fluxo com financeiro", "responsavel": "Kleber", "dias_parada": 0, "aguardando": "inicio geral", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344"}]}, "metricas": {"sla": 0, "lead_time": 0, "velocidade": 0, "workload": [["Henrique", 3], ["Kleber", 1], ["Ricardo", 1]]}};
+var KPIS = {"reunioes": {"total": 3, "semana": 2, "concluidas": 1, "taxa": 33, "sem_projeto": 0}, "projetos": {"total": 2, "ativos": 2}, "atividades": {"total": 5, "concluidas": 0, "andamento": 4, "sem_prazo": 0, "atrasadas": 4, "bloqueadas": 0, "atrasadas_detail": [{"id": "39464917-ccf1-81a5-8245-ee8d154224a1", "nome": "Fluxo Z", "responsavel": "Henrique", "dias_atraso": 6, "observacoes": "Vamos ver", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Em andamento"}, {"id": "39464917-ccf1-81c9-af4c-c578801d6569", "nome": "Fluxo Z", "responsavel": "Henrique", "dias_atraso": 3, "observacoes": "vamos ver", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Em andamento"}, {"id": "39364917-ccf1-8131-87f9-fd1cb3378e89", "nome": "fluxo com financeiro", "responsavel": "Kleber", "dias_atraso": 1, "observacoes": "Teste de funcionalidade", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Não iniciada"}, {"id": "39364917-ccf1-81d2-b8fb-c57019abb839", "nome": "Levantamento de dados", "responsavel": "Henrique", "dias_atraso": 4, "observacoes": "Levantamento de informações para inicio do projeto.", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Em andamento"}], "bloqueadas_detail": []}, "metricas": {"sla": 0, "lead_time": 0, "velocidade": 0, "workload": [["Henrique", 3], ["Kleber", 1], ["Ricardo", 1]]}};
 
 var _currentView='geral';
 var _currentMeetingId=null;
