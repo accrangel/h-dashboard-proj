@@ -134,9 +134,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .chip-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:8px;background:var(--surf2);border:1px solid var(--bord);border-radius:8px;min-height:38px;cursor:text}
 
 /* ── TREE ── */
-.tree-node{border-bottom:1px solid var(--bord)}
-.tree-node:last-child{border-bottom:none}
-.tree-row{display:flex;align-items:flex-start;gap:8px;padding:10px 0;cursor:pointer;border-radius:6px;transition:background .1s}
+.tree-node{margin-bottom:0}
+.tree-node-root{background:var(--surf);border:1px solid var(--bord);border-radius:10px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.tree-node-root>.tree-row{padding:12px 14px;font-size:14px}
+.tree-row{display:flex;align-items:flex-start;gap:8px;padding:9px 14px;cursor:pointer;transition:background .1s}
 .tree-row:hover{background:var(--surf2)}
 .tree-toggle{width:16px;text-align:center;font-size:10px;color:var(--muted);flex-shrink:0;margin-top:2px;transition:transform .15s;display:inline-block;user-select:none}
 .tree-toggle.open{transform:rotate(90deg)}
@@ -145,7 +146,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tree-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
 .tree-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
 .tree-alert{font-size:11px;color:var(--red);margin-top:3px}
-.tree-children{padding-left:24px;border-left:1px dashed var(--bord2);margin-left:12px}
+.tree-children{background:var(--surf2);border-top:1px solid var(--bord)}
+.tree-children .tree-node{border-bottom:1px solid var(--bord)}
+.tree-children .tree-node:last-child{border-bottom:none}
+.tree-children .tree-row{padding-left:12px}
 
 /* ── FILTROS ── */
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -1230,17 +1234,19 @@ function renderTaskRow(t,hasSubs,projId){
 function renderTaskTree(allTasks,parentId,projId){
   var roots=allTasks.filter(function(t){return parentId===''?!t.pai_id:t.pai_id===parentId;});
   if(!roots.length)return'';
-  var h='<div>';
+  var isRoot=parentId==='';
+  var h=isRoot?'<div>':'';
   roots.forEach(function(t){
     var subs=allTasks.filter(function(s){return s.pai_id===t.id;});
     var hasSubs=subs.length>0;
     var exp=_treeExp[t.id]!==false;
-    h+='<div class="tree-node" id="tnode-'+t.id+'">'+
+    var nodeClass=isRoot?'tree-node tree-node-root':'tree-node';
+    h+='<div class="'+nodeClass+'" id="tnode-'+t.id+'">'+
       renderTaskRow(t,hasSubs,projId)+
       (hasSubs?'<div class="tree-children" id="tch-'+t.id+'" style="display:'+(exp?'block':'none')+'">'+renderTaskTree(allTasks,t.id,projId)+'</div>':'')+
     '</div>';
   });
-  h+='</div>';
+  h+=isRoot?'</div>':'';
   return h;
 }
 
