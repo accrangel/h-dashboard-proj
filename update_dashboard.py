@@ -1,12 +1,12 @@
 import os, re, json, requests, hashlib
 from datetime import datetime, timezone
 
-NOTION_TOKEN  = os.environ.get('NOTION_TOKEN', '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')
+NOTION_TOKEN  = os.environ.get('NOTION_TOKEN', '')
 REUNIOES_DB   = '39164917ccf180a8b745f6b8bcec71fc'
 PROJETOS_DB   = 'e7aa48d0a5c6494987a2e8c95820da45'
 ATIVIDADES_DB = '1cc60a6d29fb4c049f8a5332de2fa1db'
 HISTORICO_DB  = '0967906a07b648679003d264b924b81a'
-GROQ_KEY      = os.environ.get('GROQ_KEY', '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')
+GROQ_KEY      = os.environ.get('GROQ_KEY', '')
 SNAPSHOT_FILE = 'snapshot.json'
 
 H = {'Authorization': f'Bearer {NOTION_TOKEN}', 'Notion-Version': '2022-06-28', 'Content-Type': 'application/json'}
