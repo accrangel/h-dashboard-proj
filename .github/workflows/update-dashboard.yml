@@ -30,6 +30,7 @@ jobs:
       - name: Atualizar dados do Notion
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          GROQ_KEY: ${{ secrets.GROQ_KEY }}
         run: python update_dashboard.py
 
       - name: Commit e push
