@@ -464,215 +464,11 @@ var SYNC_SECRET='holsa2026sync';
 var _msToken=sessionStorage.getItem('ms_token')||'';
 var _msRefresh=sessionStorage.getItem('ms_refresh')||'';
 
-var MEETINGS = [
-  {
-    "id": "39664917-ccf1-815d-abaa-d7ed1212be2b",
-    "title": "Reunião de Implementação do ERP Compras",
-    "titulo_editado": "Reunião de Implementação do ERP Compras",
-    "titulo_ia": "",
-    "date": "2026-07-07T15:03:00.000-03:00",
-    "status": "Concluída",
-    "projeto_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
-    "projeto": "Compras",
-    "summary": "Resumo de Reunião — Módulo de Compras ERP Data da reunião: 07 de julho de 2026 1. Fornecedor e Contexto A reunião foi conduzida por representantes do fornecedor do ERP (identificadas como Flávia e Ana nas diferentes etapas da reunião), com participação dos seguintes colaboradores da HOLSA : Henrique — TI / solicitante do agendamento Alessandro (Ale/Kazumba) — área de Compras Jana — área de Compras Guilherme (Gui) e Leila — Contas a Pagar Ricardo — Projetos O objetivo central foi avaliar a aderência e extensão do uso do ERP já contratado para abranger o módulo de Compras e Estoque , atualmente não utilizado pela empresa. A HOLSA já opera o módulo de Contas a Pagar e busca integrar o ciclo completo: requisição → pedido de compra → aprovação → recebimento → entrada de nota fiscal → geração do financeiro (contas a pagar). A empresa possui cinco CNPJs ativos (após reestruturação organizacional que reduziu significati vamente o número anterior de 56 organizações), e aproximadamente 99% das suas compras são de serviços , fator crítico para a avaliação do módulo. 2. Proposta Apresentada Não houve apresentação de nova proposta comercial com valores adicionais. O escopo discutido refere-se ao uso do ERP já contratado (\"core do produto\"), explorando funcionalidades existentes sem custo adicional de licenciamento. As seguintes funcionalidades foram apresentadas como disponíveis ou parcialmente disponíveis: Cadastro de fornecedores e produtos , com possibilidade de compartilhamento entre empresas (aplicativos ERP distintos por CNPJ) Kanban de etapas de compras : requisição → pedido → aprovação → recebimento Importação em massa via planilha para pedidos de compra Aprovação em massa de pedidos e aprovação via aplicativo mobile Baixa parcial de pedidos de compra (contratos guarda-chuva com recebimentos mensais) Captura automática de NFe (Nota Fiscal Eletrônica modelo 55) diretamente da SEFAZ, sem necessidade de digitação manual, a partir da ativação da configuração Importação de XMLs históricos para notas anteriores à ativação (sem retroatividade automática) Rateio entre departamentos e projetos dentro de uma mesma empresa APIs abertas para integração com ferramentas de BI ou desenvolvimento interno, sem custo de liberação de documentação Disparo de solicitação de cotação por e-mail diretamente pelo sistema Cadastro de vigência de contratos com possibilidade de configuração de alertas Integração direta com o módulo financeiro para geração de contas a pagar Relatórios personali zados após início da operação Manual de configuração de rateio disponível para envio imediato ao time de TI Treinamento agendado para 13 de julho de 2026, às 14h00 , com duração estimada de uma hora, conduzido pelo time de especialistas do produto, com contextualização prévia e exemplos práticos 3. Compromissos do Fornecedor # Compromisso Responsável Prazo 1 Verificar se o sistema suporta aprovação por faixa de valor / alçada escalonada por perfil de aprovador e formalizar retorno por e-mail Ana/Flávia O mais breve possível 2 Mapear quais municípios/prefeituras possuem integração para captura de Nota Fiscal de Serviços (NFS-e) , com foco em Barueri, São Paulo e Rio de Janeiro Ana/Flávia O mais breve possível 3 Confirmar se o sistema suporta rateio entre CNPJs distintos (não apenas entre departamentos de uma mesma empresa) e retornar formalmente Ana/Flávia O mais breve possível 4 Verificar e informar sobre a existência de funcionalidade de cotação no sistema ou campo adaptável Ana/Flávia O mais breve possível 5 Verificar possibilidades de visão unificada entre CNPJs para o usuário comprador Ana/Flávia (via especialista) A confirmar 6 Enviar manual de configuração do processo de rateio para o time de TI (Henrique) Ana Imediatamente após a reunião 7 Compilar e enviar por e-mail os principais pontos discutidos na reunião , com cópia a todos os participantes Ana I mediatamente após a reunião 8 Escalar internamente para o time do produto os três pontos críticos levantados pela HOLSA (alçada de aprovação, rateio entre empresas e integração NFS-e) e fornecer devolutiva formal Ana O mais breve possível 9 Conduzir sessão de treinamento com os times de Compras e Contas a Pagar, com conteúdo objetivo e contextualizado Ana 13 de julho de 2026, às 14h00 10 Convidar todos os participantes da reunião atual para o treinamento de 13 de julho de 2026 e enviar transcrição posterior Ana Antes de 13 de julho de 2026 11 Disponibilizar atendimento prioritário para chamados críticos no suporte, com acesso direto aos times internos Ana/Flávia Contínuo 12 Disponibilizar reuniões periódicas nos próximos meses com updates e previsões do roadmap do produto Ana/Flávia A agendar 4. Nossos Próximos Passos (HOLSA) Reorganizar o convite da reunião de 13 de julho de 2026 para que seja gerado por um membro da HOLSA (não pela Ana), garantindo acesso à gravação pela equipe interna Participar do treinamento agendado para 13 de julho de 2026, às 14h00 , com presença confirmada de Alessandro, Jana, Guilherme e Leila (Leila a confirmar disponibilidade na agenda) Henrique repassar o contato da Ana ao pessoal relevante do time e revisar o manual de rateio assim que recebido, avaliando viabilidade de desenvolvimento via API para dashboards consolidados das cinco empresas Aguardar retorno formal da Ana/Flávia sobre os três pontos críticos (alçada de aprovação, rateio entre C NPJs e integração NFS-e) antes de avançar na decisão de implantação Preencher o formulário de melhorias do fornecedor , registrando as necessidades da empresa de forma estruturada — recomenda-se priorizar esse preenchimento o quanto antes, dado que o processo pode levar dias Mapear a matriz de alçadas de aprovação por empresa, perfil de usuário e faixa de valor, para subsidiar a configuração do sistema assim que o fornecedor confirmar a funcionalidade Agendar segunda sessão com o time de produto do fornecedor para demonstração prática do sistema, com foco em identificar o que é atendido nativamente e o que demandará solução complementar Definir internamente os gaps aceitáveis no curto prazo e quais processos poderão ser operados manualmente ou via planilha/Excel/SharePoint de forma transitória, formalizando por quanto tempo cada processo tolerará essa condição Criar espaço compartilhado (SharePoint ou rede interna) para armazenamento das respostas de cotação recebidas por e-mail dos fornecedores, dado que o sistema não captura automaticamente esses retornos Avaliar viabilidade operacional do fluxo empresa por empresa (tela separada por CNPJ) para Alessandro e demais usuários de compras Levantar o volume de notas fiscais de serviço por município de origem, para cruzar com a lista de integrações disponíveis pelo fornecedor Preparar XMLs históricos de notas anteriores, caso haja interesse em importar o histórico de compras para o sistema 5. Riscos ou Pontos de Atenção 🔴 Risco Crítico — Integração com Notas Fiscais de Serviço (NFS-e) A captura automática via SEFAZ cobre apenas NFe (modelo 55). Para notas de serviço emitidas por prefeituras (Barueri, São Paulo e Rio de Janeiro), a integração é incerta e provavelmente parcial. Co nsiderando que aproximadamente 99% das compras da HOLSA são de serviços , a ausência dessa integração implicaria manutenção de 100% do processo de lançamento de forma manual , eliminando o principal ganho operacional esperado com a adoção do módulo. Aguarda posicionamento formal do fornecedor. 🔴 Risco Crítico — Controle de Alçada de Aprovação O sistema pode não possuir aprovação escalonada por valor e perfil de aprovador. Caso confirmado, qualquer usuário com permissão de aprovar teria acesso irrestrito a requisições de qualquer valor, gerando risco financeiro e de governança severo , além de inviabilizar o fluxo sem envolvimento direto da presidência em todas as etapas. Aguarda confirmação formal do fornecedor. 🔴 Risco Crítico — Rateio entre CNPJs Distintos O fornecedor confirmou rateio apenas entre departamentos da mesma empresa. A funcionalidade de rateio entre os cinco CNPJs da HOLSA — cenário recorrente em contratos guarda-chuva (ex.: link de internet, plano de saúde, locação de veículos) — não foi confirmada e está pendente de verificação. A ausência dessa funcionalidade compromete a utilidade do módulo para a estrutura da HOLSA. 🟠 Risco Alto — Tela por Empresa (Ausência de Visão Consolidada) Cada CNPJ exige acesso separado; não há visão consolidada para o usuário que opera múltiplas empresas. Alessandro e demais compradores precisariam acessar telas distintas para cada organização, gerando impacto operacional significativo. Funcionalidade de visão unificada está pendente de verificação pelo fornecedor. 🟠 Risco Alto — Ausência de BI/Dashboard Consolidado Nativo O sistema não possui dashboards nativos para visualização consolidada das cinco empresas. A extração e tratamento de dados será necessária via API ou ferramenta de BI externa, demandando esforço adicional do time de TI ou contratação de pa rceiro especializado. 🟡 Atenção — Retorno de Cotações Não Integrado O sistema dispara solicitações de cotação por e-mail, mas não captura as respostas automaticamente . O processo de comparação e seleção de fornecedor deverá ser feito manualmente e registrado em repositório externo, representando retrabalho operacional no curto prazo. 🟡 Atenção — Sem Retroatividade Automática para Notas Históricas Notas emitidas antes da ativação da configuração não são importadas automaticamente; exigem importação manual via XML. O time deverá preparar e executar esse processo caso haja interesse em manter histórico no sistema. 🟡 Atenção — Processo Transitório Manual Alguns processos deverão operar de forma manual ou em planilhas durante o período de implementação e configuração. É necessário que a HOLSA defina formalmente por quanto tempo cada processo tolerará essa condição e qual o plano de contingência. 🟡 Atenção — Histórico de Tentativa Frustrada com SAP A HOLSA já avaliou o SAP anteriormente para o módulo de compras sem sucesso. A estrutura atual (múltiplos CNPJs, operação predominante de serviços) deve ser mapeada com rigor antes da implantação para evitar retrabalho similar. ⚠️ Nota de rastreabilidade: Os três pontos críticos (integração NFS-e, alçada de aprovação e rateio entre CNPJs) foram formalmente sinalizados pela HOLSA ao fornecedor durante a reunião e aguardam posicionamento escrito. A ausência de resposta formal representa risco direto ao cronograma de implantação do módulo.",
-    "actions": "Resumo de Reunião — Módulo de Compras ERP Data da reunião: 07 de julho de 2026 1. Fornecedor e Contexto A reunião foi conduzida por representantes do fornecedor do ERP (identificadas como Flávia e Ana nas diferentes etapas da reunião), com participação dos seguintes colaboradores da HOLSA : Henrique — TI / solicitante do agendamento Alessandro (Ale/Kazumba) — área de Compras Jana — área de Compras Guilherme (Gui) e Leila — Contas a Pagar Ricardo — Projetos O objetivo central foi avaliar a aderência e extensão do uso do ERP já contratado para abranger o módulo de Compras e Estoque , atualmente não utilizado pela empresa. A HOLSA já opera o módulo de Contas a Pagar e busca integrar o ciclo completo: requisição → pedido de compra → aprovação → recebimento → entrada de nota fiscal → geração do financeiro (contas a pagar). A empresa possui cinco CNPJs ativos (após reestruturação organizacional que reduziu significati vamente o número anterior de 56 organizações), e aproximadamente 99% das suas compras são de serviços , fator crítico para a avaliação do módulo. 2. Proposta Apresentada Não houve apresentação de nova proposta comercial com valores adicionais. O escopo discutido refere-se ao uso do ERP já contratado (\"core do produto\"), explorando funcionalidades existentes sem custo adicional de licenciamento. As seguintes funcionalidades foram apresentadas como disponíveis ou parcialmente disponíveis: Cadastro de fornecedores e produtos , com possibilidade de compartilhamento entre empresas (aplicativos ERP distintos por CNPJ) Kanban de etapas de compras : requisição → pedido → aprovação → recebimento Importação em massa via planilha para pedidos de compra Aprovação em massa de pedidos e aprovação via aplicativo mobile Baixa parcial de pedidos de compra (contratos guarda-chuva com recebimentos mensais) Captura automática de NFe (Nota Fiscal Eletrônica modelo 55) diretamente da SEFAZ, sem necessidade de digitação manual, a partir da ativação da configuração Importação de XMLs históricos para notas anteriores à ativação (sem retroatividade automática) Rateio entre departamentos e projetos dentro de uma mesma empresa APIs abertas para integração com ferramentas de BI ou desenvolvimento interno, sem custo de liberação de documentação Disparo de solicitação de cotação por e-mail diretamente pelo sistema Cadastro de vigência de contratos com possibilidade de configuração de alertas Integração direta com o módulo financeiro para geração de contas a pagar Relatórios personali zados após início da operação Manual de configuração de rateio disponível para envio imediato ao time de TI Treinamento agendado para 13 de julho de 2026, às 14h00 , com duração estimada de uma hora, conduzido pelo time de especialistas do produto, com contextualização prévia e exemplos práticos 3. Compromissos do Fornecedor # Compromisso Responsável Prazo 1 Verificar se o sistema suporta aprovação por faixa de valor / alçada escalonada por perfil de aprovador e formalizar retorno por e-mail Ana/Flávia O mais breve possível 2 Mapear quais municípios/prefeituras possuem integração para captura de Nota Fiscal de Serviços (NFS-e) , com foco em Barueri, São Paulo e Rio de Janeiro Ana/Flávia O mais breve possível 3 Confirmar se o sistema suporta rateio entre CNPJs distintos (não apenas entre departamentos de uma mesma empresa) e retornar formalmente Ana/Flávia O mais breve possível 4 Verificar e informar sobre a existência de funcionalidade de cotação no sistema ou campo adaptável Ana/Flávia O mais breve possível 5 Verificar possibilidades de visão unificada entre CNPJs para o usuário comprador Ana/Flávia (via especialista) A confirmar 6 Enviar manual de configuração do processo de rateio para o time de TI (Henrique) Ana Imediatamente após a reunião 7 Compilar e enviar por e-mail os principais pontos discutidos na reunião , com cópia a todos os participantes Ana I mediatamente após a reunião 8 Escalar internamente para o time do produto os três pontos críticos levantados pela HOLSA (alçada de aprovação, rateio entre empresas e integração NFS-e) e fornecer devolutiva formal Ana O mais breve possível 9 Conduzir sessão de treinamento com os times de Compras e Contas a Pagar, com conteúdo objetivo e contextualizado Ana 13 de julho de 2026, às 14h00 10 Convidar todos os participantes da reunião atual para o treinamento de 13 de julho de 2026 e enviar transcrição posterior Ana Antes de 13 de julho de 2026 11 Disponibilizar atendimento prioritário para chamados críticos no suporte, com acesso direto aos times internos Ana/Flávia Contínuo 12 Disponibilizar reuniões periódicas nos próximos meses com updates e previsões do roadmap do produto Ana/Flávia A agendar 4. Nossos Próximos Passos (HOLSA) Reorganizar o convite da reunião de 13 de julho de 2026 para que seja gerado por um membro da HOLSA (não pela Ana), garantindo acesso à gravação pela equipe interna Participar do treinamento agendado para 13 de julho de 2026, às 14h00 , com presença confirmada de Alessandro, Jana, Guilherme e Leila (Leila a confirmar disponibilidade na agenda) Henrique repassar o contato da Ana ao pessoal relevante do time e revisar o manual de rateio assim que recebido, avaliando viabilidade de desenvolvimento via API para dashboards consolidados das cinco empresas Aguardar retorno formal da Ana/Flávia sobre os três pontos críticos (alçada de aprovação, rateio entre C NPJs e integração NFS-e) antes de avançar na decisão de implantação Preencher o formulário de melhorias do fornecedor , registrando as necessidades da empresa de forma estruturada — recomenda-se priorizar esse preenchimento o quanto antes, dado que o processo pode levar dias Mapear a matriz de alçadas de aprovação por empresa, perfil de usuário e faixa de valor, para subsidiar a configuração do sistema assim que o fornecedor confirmar a funcionalidade Agendar segunda sessão com o time de produto do fornecedor para demonstração prática do sistema, com foco em identificar o que é atendido nativamente e o que demandará solução complementar Definir internamente os gaps aceitáveis no curto prazo e quais processos poderão ser operados manualmente ou via planilha/Excel/SharePoint de forma transitória, formalizando por quanto tempo cada processo tolerará essa condição Criar espaço compartilhado (SharePoint ou rede interna) para armazenamento das respostas de cotação recebidas por e-mail dos fornecedores, dado que o sistema não captura automaticamente esses retornos Avaliar viabilidade operacional do fluxo empresa por empresa (tela separada por CNPJ) para Alessandro e demais usuários de compras Levantar o volume de notas fiscais de serviço por município de origem, para cruzar com a lista de integrações disponíveis pelo fornecedor Preparar XMLs históricos de notas anteriores, caso haja interesse em importar o histórico de compras para o sistema 5. Riscos ou Pontos de Atenção 🔴 Risco Crítico — Integração com Notas Fiscais de Serviço (NFS-e) A captura automática via SEFAZ cobre apenas NFe (modelo 55). Para notas de serviço emitidas por prefeituras (Barueri, São Paulo e Rio de Janeiro), a integração é incerta e provavelmente parcial. Co nsiderando que aproximadamente 99% das compras da HOLSA são de serviços , a ausência dessa integração implicaria manutenção de 100% do processo de lançamento de forma manual , eliminando o principal ganho operacional esperado com a adoção do módulo. Aguarda posicionamento formal do fornecedor. 🔴 Risco Crítico — Controle de Alçada de Aprovação O sistema pode não possuir aprovação escalonada por valor e perfil de aprovador. Caso confirmado, qualquer usuário com permissão de aprovar teria acesso irrestrito a requisições de qualquer valor, gerando risco financeiro e de governança severo , além de inviabilizar o fluxo sem envolvimento direto da presidência em todas as etapas. Aguarda confirmação formal do fornecedor. 🔴 Risco Crítico — Rateio entre CNPJs Distintos O fornecedor confirmou rateio apenas entre departamentos da mesma empresa. A funcionalidade de rateio entre os cinco CNPJs da HOLSA — cenário recorrente em contratos guarda-chuva (ex.: link de internet, plano de saúde, locação de veículos) — não foi confirmada e está pendente de verificação. A ausência dessa funcionalidade compromete a utilidade do módulo para a estrutura da HOLSA. 🟠 Risco Alto — Tela por Empresa (Ausência de Visão Consolidada) Cada CNPJ exige acesso separado; não há visão consolidada para o usuário que opera múltiplas empresas. Alessandro e demais compradores precisariam acessar telas distintas para cada organização, gerando impacto operacional significativo. Funcionalidade de visão unificada está pendente de verificação pelo fornecedor. 🟠 Risco Alto — Ausência de BI/Dashboard Consolidado Nativo O sistema não possui dashboards nativos para visualização consolidada das cinco empresas. A extração e tratamento de dados será necessária via API ou ferramenta de BI externa, demandando esforço adicional do time de TI ou contratação de pa rceiro especializado. 🟡 Atenção — Retorno de Cotações Não Integrado O sistema dispara solicitações de cotação por e-mail, mas não captura as respostas automaticamente . O processo de comparação e seleção de fornecedor deverá ser feito manualmente e registrado em repositório externo, representando retrabalho operacional no curto prazo. 🟡 Atenção — Sem Retroatividade Automática para Notas Históricas Notas emitidas antes da ativação da configuração não são importadas automaticamente; exigem importação manual via XML. O time deverá preparar e executar esse processo caso haja interesse em manter histórico no sistema. 🟡 Atenção — Processo Transitório Manual Alguns processos deverão operar de forma manual ou em planilhas durante o período de implementação e configuração. É necessário que a HOLSA defina formalmente por quanto tempo cada processo tolerará essa condição e qual o plano de contingência. 🟡 Atenção — Histórico de Tentativa Frustrada com SAP A HOLSA já avaliou o SAP anteriormente para o módulo de compras sem sucesso. A estrutura atual (múltiplos CNPJs, operação predominante de serviços) deve ser mapeada com rigor antes da implantação para evitar retrabalho similar. ⚠️ Nota de rastreabilidade: Os três pontos críticos (integração NFS-e, alçada de aprovação e rateio entre CNPJs) foram formalmente sinalizados pela HOLSA ao fornecedor durante a reunião e aguardam posicionamento escrito. A ausência de resposta formal representa risco direto ao cronograma de implantação do módulo.",
-    "transcricao": "Speaker 1 00:01:18 Então, agora com a entrada do Henrique, eu já posso seguir aqui a reunião, é isso? Sim. Boa, vou pedir a autorização de vocês só para gravar, que aí depois... Speaker 2 00:01:34 Gente, Vamos lá. Desculpa, é rapidinho. Qual que é o intuito aqui? Por que a gente está com o Gui, com a Leila? O Gui e a Leila, eles vêm da parte do Contas a Pagar e já utilizam o ERP. Então, eles são o resultado da ponta. O Ale, que está aqui, o Kazumba, ele é da nossa área de compras. A gente estava",
-    "participantes": [
-      "Ricardo",
-      "Leila",
-      "Janaina",
-      "Heloisa",
-      "Alessando",
-      "Kleber",
-      "Guilherme",
-      "Henrique",
-      "Ana (OMIE)"
-    ],
-    "speakers": [
-      "Speaker 1",
-      "Speaker 2",
-      "Speaker 3",
-      "Speaker 4",
-      "Speaker 5",
-      "Speaker 6",
-      "Speaker 7"
-    ],
-    "sem_projeto": false,
-    "atividades_ids": [],
-    "last_edited": "2026-07-07"
-  }
-];
-var PROJECTS = [
-  {
-    "id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
-    "nome": "Compras",
-    "status": "Ativo",
-    "area": "Compras",
-    "responsavel": "Ricardo",
-    "descricao": "Revisão do processo de compras (processo e sistemas)",
-    "atividades_ids": []
-  }
-];
-var TASKS = [
-  {
-    "id": "39664917-ccf1-8169-b0e4-d85cab857f17",
-    "nome": "Treinamento OMIE",
-    "status": "Em andamento",
-    "projeto_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
-    "responsavel": "Kleber",
-    "participantes": "Heloisa,Leila,Guilherme,Alessando,Janaina",
-    "prazo": "2026-07-13",
-    "prazo_vencido": false,
-    "dias_atraso": 0,
-    "depende_de": "Reunião com fornecedor OMIE",
-    "aguardando": "Atividade agendada. Necessário aguardar.",
-    "observacoes": "Agendado para o dia 13/07 às 14h. Será apresentado o funcionamento do módulo de compras pelos especialistas da OMIE, além da apresentação das soluções oferecidas aos pontos levantados na reunião de apresentação do módulo.",
-    "reunioes_ids": [],
-    "dias_parada": null,
-    "pai_id": "",
-    "sub_ids": [],
-    "last_edited": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-81ae-b9e2-f79ac2d04f82",
-    "nome": "Apresentação do módulo de compras do OMIE",
-    "status": "Concluída",
-    "projeto_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
-    "responsavel": "Henrique",
-    "participantes": "Kleber,Heloisa,Henrique,Ricardo,Janaina,Alessando,Leila,Guilherme,Ana (OMIE)",
-    "prazo": "2026-07-07",
-    "prazo_vencido": false,
-    "dias_atraso": 0,
-    "depende_de": "",
-    "aguardando": "",
-    "observacoes": "Reunião agendada para apresentação do produto a todos os envolvidos na implantação da área de compras.",
-    "reunioes_ids": [],
-    "dias_parada": null,
-    "pai_id": "",
-    "sub_ids": [],
-    "last_edited": "2026-07-07"
-  }
-];
-var HISTORICO = [
-  {
-    "id": "39664917-ccf1-81fb-8480-da55e04b604a",
-    "descricao": "Treinamento OMIE: status alterado",
-    "entidade": "Atividade",
-    "entidade_id": "39664917-ccf1-8169-b0e4-d85cab857f17",
-    "entidade_nome": "Treinamento OMIE",
-    "campo": "status",
-    "valor_anterior": "Aguardando",
-    "valor_novo": "Em andamento",
-    "alterado_por": "Notion",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-818b-bdf9-eb6cad99141c",
-    "descricao": "Treinamento OMIE: Status alterado",
-    "entidade": "Atividade",
-    "entidade_id": "39664917-ccf1-8169-b0e4-d85cab857f17",
-    "entidade_nome": "Treinamento OMIE",
-    "campo": "Status",
-    "valor_anterior": "Aguardando",
-    "valor_novo": "Em andamento",
-    "alterado_por": "Dashboard",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-8180-a818-e5f2fad69329",
-    "descricao": "Treinamento OMIE: Criação alterado",
-    "entidade": "Atividade",
-    "entidade_id": "39664917-ccf1-8169-b0e4-d85cab857f17",
-    "entidade_nome": "Treinamento OMIE",
-    "campo": "Criação",
-    "valor_anterior": "",
-    "valor_novo": "Treinamento OMIE",
-    "alterado_por": "Dashboard",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-8177-a4df-de6dfb1ff4a2",
-    "descricao": "Reunião com fornecedor OMIE: Criação alterado",
-    "entidade": "Atividade",
-    "entidade_id": "39664917-ccf1-81ae-b9e2-f79ac2d04f82",
-    "entidade_nome": "Reunião com fornecedor OMIE",
-    "campo": "Criação",
-    "valor_anterior": "",
-    "valor_novo": "Reunião com fornecedor OMIE",
-    "alterado_por": "Dashboard",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-81d0-860d-fba2f240a815",
-    "descricao": "Reunião de Implementação do ERP Compras: Participantes alterado",
-    "entidade": "Reunião",
-    "entidade_id": "39664917-ccf1-815d-abaa-d7ed1212be2b",
-    "entidade_nome": "Reunião de Implementação do ERP Compras",
-    "campo": "Participantes",
-    "valor_anterior": "",
-    "valor_novo": "Ricardo,Leila,Janaina,Heloisa,Alessando,Kleber,Guilherme,Henrique,Ana (OMIE)",
-    "alterado_por": "Dashboard",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-81f9-8623-d1d0b74d5936",
-    "descricao": "Reunião de Implementação do ERP Compras: Projeto alterado",
-    "entidade": "Reunião",
-    "entidade_id": "39664917-ccf1-815d-abaa-d7ed1212be2b",
-    "entidade_nome": "Reunião de Implementação do ERP Compras",
-    "campo": "Projeto",
-    "valor_anterior": "",
-    "valor_novo": "Compras",
-    "alterado_por": "Dashboard",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-818b-8fdd-dd9e8915abd2",
-    "descricao": "Reunião de Implementação do ERP Compras: Projeto alterado",
-    "entidade": "Reunião",
-    "entidade_id": "39664917-ccf1-815d-abaa-d7ed1212be2b",
-    "entidade_nome": "Reunião de Implementação do ERP Compras",
-    "campo": "Projeto",
-    "valor_anterior": "",
-    "valor_novo": "Compras",
-    "alterado_por": "Dashboard",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-813c-abe0-f7fb6ce5350c",
-    "descricao": "Compras: Criação alterado",
-    "entidade": "Projeto",
-    "entidade_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
-    "entidade_nome": "Compras",
-    "campo": "Criação",
-    "valor_anterior": "",
-    "valor_novo": "Compras",
-    "alterado_por": "Dashboard",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  },
-  {
-    "id": "39664917-ccf1-818c-aac3-e8429fd1c87e",
-    "descricao": "07-07 Reunião: Planejamento de Mudança e Armazenamento de Mobiliário: Projeto alterado",
-    "entidade": "Reunião",
-    "entidade_id": "39664917-ccf1-81f3-b7d9-d68f285f12bc",
-    "entidade_nome": "07-07 Reunião: Planejamento de Mudança e Armazenamento de Mobiliário",
-    "campo": "Projeto",
-    "valor_anterior": "",
-    "valor_novo": "Depósito HOLSA",
-    "alterado_por": "Dashboard",
-    "data": "2026-07-07",
-    "created": "2026-07-07"
-  }
-];
-var KPIS = {"reunioes": {"total": 1, "semana": 1, "concluidas": 1, "taxa": 100, "sem_projeto": 0}, "projetos": {"total": 1, "ativos": 1}, "atividades": {"total": 2, "concluidas": 1, "andamento": 1, "sem_prazo": 0, "atrasadas": 0, "bloqueadas": 0, "atrasadas_detail": [], "bloqueadas_detail": []}, "metricas": {"sla": 50, "lead_time": 0, "velocidade": 0, "workload": [["Kleber", 1]]}};
+var MEETINGS=[];
+var PROJECTS=[];
+var TASKS=[];
+var HISTORICO=[];
+var KPIS={reunioes:{total:0,semana:0,concluidas:0,taxa:0,sem_projeto:0},projetos:{total:0,ativos:0},atividades:{total:0,concluidas:0,andamento:0,atrasadas:0,bloqueadas:0,sem_prazo:0,atrasadas_detail:[],bloqueadas_detail:[]},metricas:{sla:0,lead_time:0,velocidade:0,workload:[]}};
 
 var _currentView='geral';
 var _currentMeetingId=null;
@@ -866,6 +662,8 @@ function renderReunioes(){
   html+='<select class="fsel" id="fp" onchange="renderMeetingList()"><option value="">Todos os projetos</option>'+PROJECTS.filter(function(p){return p.status==='Ativo';}).map(function(p){return'<option value="'+p.id+'">'+esc(p.nome)+'</option>';}).join('')+'</select>';
   html+='<select class="fsel" id="fs" onchange="renderMeetingList()"><option value="">Todos os status</option><option'+(_mFilter.status==='Concluída'?' selected':'')+'>Concluída</option><option'+(_mFilter.status==='Em acompanhamento'?' selected':'')+'>Em acompanhamento</option><option'+(_mFilter.status==='Processando'?' selected':'')+'>Processando</option></select>';
   html+='<input class="finput" id="fq" placeholder="Buscar reunião..." oninput="renderMeetingList()">';
+  html+='<input class="fsel" type="date" id="fd1" onchange="renderMeetingList()" title="Data inicial" style="padding:6px 8px">';
+  html+='<input class="fsel" type="date" id="fd2" onchange="renderMeetingList()" title="Data final" style="padding:6px 8px">';
   if(_mFilter.week)html+='<span class="tag t-acomp" style="cursor:pointer;padding:6px 12px" onclick="clearMFilter()" title="Remover filtro">&#128197; Últimos 7 dias &#215;</span>';
   if(_mFilter.sem)html+='<span class="tag" style="cursor:pointer;padding:6px 12px;background:var(--yellow-bg);color:var(--yellow);border:1px solid #fde68a" onclick="clearMFilter()" title="Remover filtro">&#9888; Sem projeto &#215;</span>';
   html+='</div>';
@@ -881,10 +679,15 @@ function renderMeetingList(){
   var fp=document.getElementById('fp')?.value||'';
   var fs=document.getElementById('fs')?.value||'';
   var fq=(document.getElementById('fq')?.value||'').toLowerCase();
+  var fd1=document.getElementById('fd1')?.value||'';
+  var fd2=document.getElementById('fd2')?.value||'';
   var filtered=MEETINGS.filter(function(m){
     if(fp&&m.projeto_id!==fp)return false;
     if(fs&&m.status!==fs)return false;
     if(fq&&!m.title.toLowerCase().includes(fq)&&!(m.summary||'').toLowerCase().includes(fq))return false;
+    var mdate=(m.date||'').substring(0,10);
+    if(fd1&&mdate&&mdate<fd1)return false;
+    if(fd2&&mdate&&mdate>fd2)return false;
     if(_mFilter.sem&&!m.sem_projeto)return false;
     if(_mFilter.week&&m.date){
       try{
@@ -1077,6 +880,8 @@ function renderProjetos(){
     '</select>'+
     '<select class="fsel" id="proj-filter-status" onchange="renderProjList()"><option value="">Todos os status</option><option>Ativo</option><option>Pausado</option><option>Concluído</option></select>'+
     '<input class="finput" id="proj-filter-q" placeholder="Buscar projeto..." oninput="renderProjList()">'+
+    '<input class="fsel" type="date" id="proj-date-from" onchange="renderProjList()" title="Prazo de" style="padding:6px 8px">'+
+    '<input class="fsel" type="date" id="proj-date-to" onchange="renderProjList()" title="Prazo até" style="padding:6px 8px">'+
     '</div>'+
     '<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px;padding:8px 12px;background:var(--surf);border:1px solid var(--bord);border-radius:8px;font-size:10px;color:var(--muted)">'+
       '<span style="font-weight:700;letter-spacing:1px;text-transform:uppercase">Legenda:</span>'+
@@ -1256,6 +1061,16 @@ function renderTaskRow(t,hasSubs,projId){
   if(_pf.status==='__atrasadas'){if(!(t.prazo_vencido&&t.status!=='Concluída'))_dimmed=true;}
   else if(_pf.status&&t.status!==_pf.status)_dimmed=true;
   if(_pf.member&&t.responsavel!==_pf.member&&!(t.participantes||'').includes(_pf.member))_dimmed=true;
+  var _df=document.getElementById('proj-date-from')?document.getElementById('proj-date-from').value:'';
+  var _dt=document.getElementById('proj-date-to')?document.getElementById('proj-date-to').value:'';
+  if(_df||_dt){
+    var _tp=(t.prazo||'').substring(0,10);
+    if(!_tp)_dimmed=true;
+    else{
+      if(_df&&_tp<_df)_dimmed=true;
+      if(_dt&&_tp>_dt)_dimmed=true;
+    }
+  }
   var _dimStyle=_dimmed?'opacity:0.35;':'';
   var exp=_treeExp[t.id]!==false;
   var overdue=t.prazo_vencido&&t.status!=='Concluída';
