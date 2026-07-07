@@ -463,11 +463,355 @@ var SYNC_SECRET='holsa2026sync';
 var _msToken=sessionStorage.getItem('ms_token')||'';
 var _msRefresh=sessionStorage.getItem('ms_refresh')||'';
 
-var MEETINGS=[];
-var PROJECTS=[];
-var TASKS=[];
-var HISTORICO=[];
-var KPIS={reunioes:{total:0,semana:0,concluidas:0,taxa:0,sem_projeto:0},projetos:{total:0,ativos:0},atividades:{total:0,concluidas:0,andamento:0,atrasadas:0,bloqueadas:0,sem_prazo:0,atrasadas_detail:[],bloqueadas_detail:[]},metricas:{sla:0,lead_time:0,velocidade:0,workload:[]}};
+var MEETINGS = [
+  {
+    "id": "39664917-ccf1-815d-abaa-d7ed1212be2b",
+    "title": "Reunião de Implementação do ERP Compras",
+    "titulo_editado": "Reunião de Implementação do ERP Compras",
+    "titulo_ia": "",
+    "date": "2026-07-07T15:03:00.000+00:00",
+    "status": "Concluída",
+    "projeto_id": "",
+    "projeto": "",
+    "summary": "Resumo de Reunião — Módulo de Compras ERP Data da reunião: 07 de julho de 2026 1. Fornecedor e Contexto A reunião foi conduzida por representantes do fornecedor do ERP (identificadas como Flávia e Ana nas diferentes etapas da reunião), com participação dos seguintes colaboradores da HOLSA : Henrique — TI / solicitante do agendamento Alessandro (Ale/Kazumba) — área de Compras Jana — área de Compras Guilherme (Gui) e Leila — Contas a Pagar Ricardo — Projetos O objetivo central foi avaliar a aderência e extensão do uso do ERP já contratado para abranger o módulo de Compras e Estoque , atualmente não utilizado pela empresa. A HOLSA já opera o módulo de Contas a Pagar e busca integrar o ciclo completo: requisição → pedido de compra → aprovação → recebimento → entrada de nota fiscal → geração do financeiro (contas a pagar). A empresa possui cinco CNPJs ativos (após reestruturação organizacional que reduziu significati vamente o número anterior de 56 organizações), e aproximadamente 99% das suas compras são de serviços , fator crítico para a avaliação do módulo. 2. Proposta Apresentada Não houve apresentação de nova proposta comercial com valores adicionais. O escopo discutido refere-se ao uso do ERP já contratado (\"core do produto\"), explorando funcionalidades existentes sem custo adicional de licenciamento. As seguintes funcionalidades foram apresentadas como disponíveis ou parcialmente disponíveis: Cadastro de fornecedores e produtos , com possibilidade de compartilhamento entre empresas (aplicativos ERP distintos por CNPJ) Kanban de etapas de compras : requisição → pedido → aprovação → recebimento Importação em massa via planilha para pedidos de compra Aprovação em massa de pedidos e aprovação via aplicativo mobile Baixa parcial de pedidos de compra (contratos guarda-chuva com recebimentos mensais) Captura automática de NFe (Nota Fiscal Eletrônica modelo 55) diretamente da SEFAZ, sem necessidade de digitação manual, a partir da ativação da configuração Importação de XMLs históricos para notas anteriores à ativação (sem retroatividade automática) Rateio entre departamentos e projetos dentro de uma mesma empresa APIs abertas para integração com ferramentas de BI ou desenvolvimento interno, sem custo de liberação de documentação Disparo de solicitação de cotação por e-mail diretamente pelo sistema Cadastro de vigência de contratos com possibilidade de configuração de alertas Integração direta com o módulo financeiro para geração de contas a pagar Relatórios personali zados após início da operação Manual de configuração de rateio disponível para envio imediato ao time de TI Treinamento agendado para 13 de julho de 2026, às 14h00 , com duração estimada de uma hora, conduzido pelo time de especialistas do produto, com contextualização prévia e exemplos práticos 3. Compromissos do Fornecedor # Compromisso Responsável Prazo 1 Verificar se o sistema suporta aprovação por faixa de valor / alçada escalonada por perfil de aprovador e formalizar retorno por e-mail Ana/Flávia O mais breve possível 2 Mapear quais municípios/prefeituras possuem integração para captura de Nota Fiscal de Serviços (NFS-e) , com foco em Barueri, São Paulo e Rio de Janeiro Ana/Flávia O mais breve possível 3 Confirmar se o sistema suporta rateio entre CNPJs distintos (não apenas entre departamentos de uma mesma empresa) e retornar formalmente Ana/Flávia O mais breve possível 4 Verificar e informar sobre a existência de funcionalidade de cotação no sistema ou campo adaptável Ana/Flávia O mais breve possível 5 Verificar possibilidades de visão unificada entre CNPJs para o usuário comprador Ana/Flávia (via especialista) A confirmar 6 Enviar manual de configuração do processo de rateio para o time de TI (Henrique) Ana Imediatamente após a reunião 7 Compilar e enviar por e-mail os principais pontos discutidos na reunião , com cópia a todos os participantes Ana I mediatamente após a reunião 8 Escalar internamente para o time do produto os três pontos críticos levantados pela HOLSA (alçada de aprovação, rateio entre empresas e integração NFS-e) e fornecer devolutiva formal Ana O mais breve possível 9 Conduzir sessão de treinamento com os times de Compras e Contas a Pagar, com conteúdo objetivo e contextualizado Ana 13 de julho de 2026, às 14h00 10 Convidar todos os participantes da reunião atual para o treinamento de 13 de julho de 2026 e enviar transcrição posterior Ana Antes de 13 de julho de 2026 11 Disponibilizar atendimento prioritário para chamados críticos no suporte, com acesso direto aos times internos Ana/Flávia Contínuo 12 Disponibilizar reuniões periódicas nos próximos meses com updates e previsões do roadmap do produto Ana/Flávia A agendar 4. Nossos Próximos Passos (HOLSA) Reorganizar o convite da reunião de 13 de julho de 2026 para que seja gerado por um membro da HOLSA (não pela Ana), garantindo acesso à gravação pela equipe interna Participar do treinamento agendado para 13 de julho de 2026, às 14h00 , com presença confirmada de Alessandro, Jana, Guilherme e Leila (Leila a confirmar disponibilidade na agenda) Henrique repassar o contato da Ana ao pessoal relevante do time e revisar o manual de rateio assim que recebido, avaliando viabilidade de desenvolvimento via API para dashboards consolidados das cinco empresas Aguardar retorno formal da Ana/Flávia sobre os três pontos críticos (alçada de aprovação, rateio entre C NPJs e integração NFS-e) antes de avançar na decisão de implantação Preencher o formulário de melhorias do fornecedor , registrando as necessidades da empresa de forma estruturada — recomenda-se priorizar esse preenchimento o quanto antes, dado que o processo pode levar dias Mapear a matriz de alçadas de aprovação por empresa, perfil de usuário e faixa de valor, para subsidiar a configuração do sistema assim que o fornecedor confirmar a funcionalidade Agendar segunda sessão com o time de produto do fornecedor para demonstração prática do sistema, com foco em identificar o que é atendido nativamente e o que demandará solução complementar Definir internamente os gaps aceitáveis no curto prazo e quais processos poderão ser operados manualmente ou via planilha/Excel/SharePoint de forma transitória, formalizando por quanto tempo cada processo tolerará essa condição Criar espaço compartilhado (SharePoint ou rede interna) para armazenamento das respostas de cotação recebidas por e-mail dos fornecedores, dado que o sistema não captura automaticamente esses retornos Avaliar viabilidade operacional do fluxo empresa por empresa (tela separada por CNPJ) para Alessandro e demais usuários de compras Levantar o volume de notas fiscais de serviço por município de origem, para cruzar com a lista de integrações disponíveis pelo fornecedor Preparar XMLs históricos de notas anteriores, caso haja interesse em importar o histórico de compras para o sistema 5. Riscos ou Pontos de Atenção 🔴 Risco Crítico — Integração com Notas Fiscais de Serviço (NFS-e) A captura automática via SEFAZ cobre apenas NFe (modelo 55). Para notas de serviço emitidas por prefeituras (Barueri, São Paulo e Rio de Janeiro), a integração é incerta e provavelmente parcial. Co nsiderando que aproximadamente 99% das compras da HOLSA são de serviços , a ausência dessa integração implicaria manutenção de 100% do processo de lançamento de forma manual , eliminando o principal ganho operacional esperado com a adoção do módulo. Aguarda posicionamento formal do fornecedor. 🔴 Risco Crítico — Controle de Alçada de Aprovação O sistema pode não possuir aprovação escalonada por valor e perfil de aprovador. Caso confirmado, qualquer usuário com permissão de aprovar teria acesso irrestrito a requisições de qualquer valor, gerando risco financeiro e de governança severo , além de inviabilizar o fluxo sem envolvimento direto da presidência em todas as etapas. Aguarda confirmação formal do fornecedor. 🔴 Risco Crítico — Rateio entre CNPJs Distintos O fornecedor confirmou rateio apenas entre departamentos da mesma empresa. A funcionalidade de rateio entre os cinco CNPJs da HOLSA — cenário recorrente em contratos guarda-chuva (ex.: link de internet, plano de saúde, locação de veículos) — não foi confirmada e está pendente de verificação. A ausência dessa funcionalidade compromete a utilidade do módulo para a estrutura da HOLSA. 🟠 Risco Alto — Tela por Empresa (Ausência de Visão Consolidada) Cada CNPJ exige acesso separado; não há visão consolidada para o usuário que opera múltiplas empresas. Alessandro e demais compradores precisariam acessar telas distintas para cada organização, gerando impacto operacional significativo. Funcionalidade de visão unificada está pendente de verificação pelo fornecedor. 🟠 Risco Alto — Ausência de BI/Dashboard Consolidado Nativo O sistema não possui dashboards nativos para visualização consolidada das cinco empresas. A extração e tratamento de dados será necessária via API ou ferramenta de BI externa, demandando esforço adicional do time de TI ou contratação de pa rceiro especializado. 🟡 Atenção — Retorno de Cotações Não Integrado O sistema dispara solicitações de cotação por e-mail, mas não captura as respostas automaticamente . O processo de comparação e seleção de fornecedor deverá ser feito manualmente e registrado em repositório externo, representando retrabalho operacional no curto prazo. 🟡 Atenção — Sem Retroatividade Automática para Notas Históricas Notas emitidas antes da ativação da configuração não são importadas automaticamente; exigem importação manual via XML. O time deverá preparar e executar esse processo caso haja interesse em manter histórico no sistema. 🟡 Atenção — Processo Transitório Manual Alguns processos deverão operar de forma manual ou em planilhas durante o período de implementação e configuração. É necessário que a HOLSA defina formalmente por quanto tempo cada processo tolerará essa condição e qual o plano de contingência. 🟡 Atenção — Histórico de Tentativa Frustrada com SAP A HOLSA já avaliou o SAP anteriormente para o módulo de compras sem sucesso. A estrutura atual (múltiplos CNPJs, operação predominante de serviços) deve ser mapeada com rigor antes da implantação para evitar retrabalho similar. ⚠️ Nota de rastreabilidade: Os três pontos críticos (integração NFS-e, alçada de aprovação e rateio entre CNPJs) foram formalmente sinalizados pela HOLSA ao fornecedor durante a reunião e aguardam posicionamento escrito. A ausência de resposta formal representa risco direto ao cronograma de implantação do módulo.",
+    "actions": "Resumo de Reunião — Módulo de Compras ERP Data da reunião: 07 de julho de 2026 1. Fornecedor e Contexto A reunião foi conduzida por representantes do fornecedor do ERP (identificadas como Flávia e Ana nas diferentes etapas da reunião), com participação dos seguintes colaboradores da HOLSA : Henrique — TI / solicitante do agendamento Alessandro (Ale/Kazumba) — área de Compras Jana — área de Compras Guilherme (Gui) e Leila — Contas a Pagar Ricardo — Projetos O objetivo central foi avaliar a aderência e extensão do uso do ERP já contratado para abranger o módulo de Compras e Estoque , atualmente não utilizado pela empresa. A HOLSA já opera o módulo de Contas a Pagar e busca integrar o ciclo completo: requisição → pedido de compra → aprovação → recebimento → entrada de nota fiscal → geração do financeiro (contas a pagar). A empresa possui cinco CNPJs ativos (após reestruturação organizacional que reduziu significati vamente o número anterior de 56 organizações), e aproximadamente 99% das suas compras são de serviços , fator crítico para a avaliação do módulo. 2. Proposta Apresentada Não houve apresentação de nova proposta comercial com valores adicionais. O escopo discutido refere-se ao uso do ERP já contratado (\"core do produto\"), explorando funcionalidades existentes sem custo adicional de licenciamento. As seguintes funcionalidades foram apresentadas como disponíveis ou parcialmente disponíveis: Cadastro de fornecedores e produtos , com possibilidade de compartilhamento entre empresas (aplicativos ERP distintos por CNPJ) Kanban de etapas de compras : requisição → pedido → aprovação → recebimento Importação em massa via planilha para pedidos de compra Aprovação em massa de pedidos e aprovação via aplicativo mobile Baixa parcial de pedidos de compra (contratos guarda-chuva com recebimentos mensais) Captura automática de NFe (Nota Fiscal Eletrônica modelo 55) diretamente da SEFAZ, sem necessidade de digitação manual, a partir da ativação da configuração Importação de XMLs históricos para notas anteriores à ativação (sem retroatividade automática) Rateio entre departamentos e projetos dentro de uma mesma empresa APIs abertas para integração com ferramentas de BI ou desenvolvimento interno, sem custo de liberação de documentação Disparo de solicitação de cotação por e-mail diretamente pelo sistema Cadastro de vigência de contratos com possibilidade de configuração de alertas Integração direta com o módulo financeiro para geração de contas a pagar Relatórios personali zados após início da operação Manual de configuração de rateio disponível para envio imediato ao time de TI Treinamento agendado para 13 de julho de 2026, às 14h00 , com duração estimada de uma hora, conduzido pelo time de especialistas do produto, com contextualização prévia e exemplos práticos 3. Compromissos do Fornecedor # Compromisso Responsável Prazo 1 Verificar se o sistema suporta aprovação por faixa de valor / alçada escalonada por perfil de aprovador e formalizar retorno por e-mail Ana/Flávia O mais breve possível 2 Mapear quais municípios/prefeituras possuem integração para captura de Nota Fiscal de Serviços (NFS-e) , com foco em Barueri, São Paulo e Rio de Janeiro Ana/Flávia O mais breve possível 3 Confirmar se o sistema suporta rateio entre CNPJs distintos (não apenas entre departamentos de uma mesma empresa) e retornar formalmente Ana/Flávia O mais breve possível 4 Verificar e informar sobre a existência de funcionalidade de cotação no sistema ou campo adaptável Ana/Flávia O mais breve possível 5 Verificar possibilidades de visão unificada entre CNPJs para o usuário comprador Ana/Flávia (via especialista) A confirmar 6 Enviar manual de configuração do processo de rateio para o time de TI (Henrique) Ana Imediatamente após a reunião 7 Compilar e enviar por e-mail os principais pontos discutidos na reunião , com cópia a todos os participantes Ana I mediatamente após a reunião 8 Escalar internamente para o time do produto os três pontos críticos levantados pela HOLSA (alçada de aprovação, rateio entre empresas e integração NFS-e) e fornecer devolutiva formal Ana O mais breve possível 9 Conduzir sessão de treinamento com os times de Compras e Contas a Pagar, com conteúdo objetivo e contextualizado Ana 13 de julho de 2026, às 14h00 10 Convidar todos os participantes da reunião atual para o treinamento de 13 de julho de 2026 e enviar transcrição posterior Ana Antes de 13 de julho de 2026 11 Disponibilizar atendimento prioritário para chamados críticos no suporte, com acesso direto aos times internos Ana/Flávia Contínuo 12 Disponibilizar reuniões periódicas nos próximos meses com updates e previsões do roadmap do produto Ana/Flávia A agendar 4. Nossos Próximos Passos (HOLSA) Reorganizar o convite da reunião de 13 de julho de 2026 para que seja gerado por um membro da HOLSA (não pela Ana), garantindo acesso à gravação pela equipe interna Participar do treinamento agendado para 13 de julho de 2026, às 14h00 , com presença confirmada de Alessandro, Jana, Guilherme e Leila (Leila a confirmar disponibilidade na agenda) Henrique repassar o contato da Ana ao pessoal relevante do time e revisar o manual de rateio assim que recebido, avaliando viabilidade de desenvolvimento via API para dashboards consolidados das cinco empresas Aguardar retorno formal da Ana/Flávia sobre os três pontos críticos (alçada de aprovação, rateio entre C NPJs e integração NFS-e) antes de avançar na decisão de implantação Preencher o formulário de melhorias do fornecedor , registrando as necessidades da empresa de forma estruturada — recomenda-se priorizar esse preenchimento o quanto antes, dado que o processo pode levar dias Mapear a matriz de alçadas de aprovação por empresa, perfil de usuário e faixa de valor, para subsidiar a configuração do sistema assim que o fornecedor confirmar a funcionalidade Agendar segunda sessão com o time de produto do fornecedor para demonstração prática do sistema, com foco em identificar o que é atendido nativamente e o que demandará solução complementar Definir internamente os gaps aceitáveis no curto prazo e quais processos poderão ser operados manualmente ou via planilha/Excel/SharePoint de forma transitória, formalizando por quanto tempo cada processo tolerará essa condição Criar espaço compartilhado (SharePoint ou rede interna) para armazenamento das respostas de cotação recebidas por e-mail dos fornecedores, dado que o sistema não captura automaticamente esses retornos Avaliar viabilidade operacional do fluxo empresa por empresa (tela separada por CNPJ) para Alessandro e demais usuários de compras Levantar o volume de notas fiscais de serviço por município de origem, para cruzar com a lista de integrações disponíveis pelo fornecedor Preparar XMLs históricos de notas anteriores, caso haja interesse em importar o histórico de compras para o sistema 5. Riscos ou Pontos de Atenção 🔴 Risco Crítico — Integração com Notas Fiscais de Serviço (NFS-e) A captura automática via SEFAZ cobre apenas NFe (modelo 55). Para notas de serviço emitidas por prefeituras (Barueri, São Paulo e Rio de Janeiro), a integração é incerta e provavelmente parcial. Co nsiderando que aproximadamente 99% das compras da HOLSA são de serviços , a ausência dessa integração implicaria manutenção de 100% do processo de lançamento de forma manual , eliminando o principal ganho operacional esperado com a adoção do módulo. Aguarda posicionamento formal do fornecedor. 🔴 Risco Crítico — Controle de Alçada de Aprovação O sistema pode não possuir aprovação escalonada por valor e perfil de aprovador. Caso confirmado, qualquer usuário com permissão de aprovar teria acesso irrestrito a requisições de qualquer valor, gerando risco financeiro e de governança severo , além de inviabilizar o fluxo sem envolvimento direto da presidência em todas as etapas. Aguarda confirmação formal do fornecedor. 🔴 Risco Crítico — Rateio entre CNPJs Distintos O fornecedor confirmou rateio apenas entre departamentos da mesma empresa. A funcionalidade de rateio entre os cinco CNPJs da HOLSA — cenário recorrente em contratos guarda-chuva (ex.: link de internet, plano de saúde, locação de veículos) — não foi confirmada e está pendente de verificação. A ausência dessa funcionalidade compromete a utilidade do módulo para a estrutura da HOLSA. 🟠 Risco Alto — Tela por Empresa (Ausência de Visão Consolidada) Cada CNPJ exige acesso separado; não há visão consolidada para o usuário que opera múltiplas empresas. Alessandro e demais compradores precisariam acessar telas distintas para cada organização, gerando impacto operacional significativo. Funcionalidade de visão unificada está pendente de verificação pelo fornecedor. 🟠 Risco Alto — Ausência de BI/Dashboard Consolidado Nativo O sistema não possui dashboards nativos para visualização consolidada das cinco empresas. A extração e tratamento de dados será necessária via API ou ferramenta de BI externa, demandando esforço adicional do time de TI ou contratação de pa rceiro especializado. 🟡 Atenção — Retorno de Cotações Não Integrado O sistema dispara solicitações de cotação por e-mail, mas não captura as respostas automaticamente . O processo de comparação e seleção de fornecedor deverá ser feito manualmente e registrado em repositório externo, representando retrabalho operacional no curto prazo. 🟡 Atenção — Sem Retroatividade Automática para Notas Históricas Notas emitidas antes da ativação da configuração não são importadas automaticamente; exigem importação manual via XML. O time deverá preparar e executar esse processo caso haja interesse em manter histórico no sistema. 🟡 Atenção — Processo Transitório Manual Alguns processos deverão operar de forma manual ou em planilhas durante o período de implementação e configuração. É necessário que a HOLSA defina formalmente por quanto tempo cada processo tolerará essa condição e qual o plano de contingência. 🟡 Atenção — Histórico de Tentativa Frustrada com SAP A HOLSA já avaliou o SAP anteriormente para o módulo de compras sem sucesso. A estrutura atual (múltiplos CNPJs, operação predominante de serviços) deve ser mapeada com rigor antes da implantação para evitar retrabalho similar. ⚠️ Nota de rastreabilidade: Os três pontos críticos (integração NFS-e, alçada de aprovação e rateio entre CNPJs) foram formalmente sinalizados pela HOLSA ao fornecedor durante a reunião e aguardam posicionamento escrito. A ausência de resposta formal representa risco direto ao cronograma de implantação do módulo.",
+    "transcricao": "Speaker 1 00:01:18 Então, agora com a entrada do Henrique, eu já posso seguir aqui a reunião, é isso? Sim. Boa, vou pedir a autorização de vocês só para gravar, que aí depois... Speaker 2 00:01:34 Gente, Vamos lá. Desculpa, é rapidinho. Qual que é o intuito aqui? Por que a gente está com o Gui, com a Leila? O Gui e a Leila, eles vêm da parte do Contas a Pagar e já utilizam o ERP. Então, eles são o resultado da ponta. O Ale, que está aqui, o Kazumba, ele é da nossa área de compras. A gente estava",
+    "participantes": [],
+    "speakers": [
+      "Speaker 1",
+      "Speaker 2",
+      "Speaker 3",
+      "Speaker 4",
+      "Speaker 5",
+      "Speaker 6",
+      "Speaker 7"
+    ],
+    "sem_projeto": true,
+    "atividades_ids": [],
+    "last_edited": "2026-07-07"
+  },
+  {
+    "id": "39664917-ccf1-814d-9ca6-d006d42ee1c7",
+    "title": "Preparação para uma Reunião",
+    "titulo_editado": "Preparação para uma Reunião",
+    "titulo_ia": "",
+    "date": "2026-07-07T11:40:00.000+00:00",
+    "status": "Concluída",
+    "projeto_id": "",
+    "projeto": "",
+    "summary": "Preparação para o ERP A equipe estruturou ações concretas antes da apresentação formal do fornecedor às 15h. O módulo de Compras será comparado ao processo interno já documentado pela equipe. O assistente de IA (Cláudio) foi acionado para extrair dados do site do ERP e atualizar o manual de processos. Alinhamento de Equipe Uma reunião de alinhamento foi convocada com Alessandro, Henrique, Ricardo, Janaína e Bruno junto a Heloísa. O sistema de gravação com diarização foi validado para distinguir corretamente os falantes na sessão.",
+    "actions": "Preparação para o ERP A equipe estruturou ações concretas antes da apresentação formal do fornecedor às 15h. O módulo de Compras será comparado ao processo interno já documentado pela equipe. O assistente de IA (Cláudio) foi acionado para extrair dados do site do ERP e atualizar o manual de processos. Alinhamento de Equipe Uma reunião de alinhamento foi convocada com Alessandro, Henrique, Ricardo, Janaína e Bruno junto a Heloísa. O sistema de gravação com diarização foi validado para distinguir corretamente os falantes na sessão.",
+    "transcricao": "Speaker 1 00:00:10 Vou chamar aqui também o Ricardo, peraí, Ricardo, peraí, chamei também. Speaker 2 00:00:35 Quero ver se ele vai começar a fazer a gravação direito. Speaker 2 00:00:40 Comanda. Beleza. Fala alguma coisa aí também, ô Kleber. Speaker 3 00:00:45 Que horas ficou a reunião falando nisso? As duas? Speaker 2 00:00:48 Não, era três? Speaker 3 00:00:50 Não sei, tô perguntando. Deixa eu ver aqui, Peraí. Speaker 2 00:00:52 Eu acho que eram três horas. Não lembro e. Speaker 3 00:00:54 Tô g",
+    "participantes": [],
+    "speakers": [
+      "Speaker 1",
+      "Speaker 2",
+      "Speaker 3",
+      "Speaker 4"
+    ],
+    "sem_projeto": true,
+    "atividades_ids": [],
+    "last_edited": "2026-07-07"
+  },
+  {
+    "id": "39664917-ccf1-81f3-b7d9-d68f285f12bc",
+    "title": "Reunião sobre mudança de mobiliário empresa",
+    "titulo_editado": "Reunião sobre mudança de mobiliário empresa",
+    "titulo_ia": "",
+    "date": "2026-07-07T10:55:00.000+00:00",
+    "status": "Concluída",
+    "projeto_id": "39664917-ccf1-81fd-9bb3-c63525299aa6",
+    "projeto": "Depósito HOLSA",
+    "summary": "⏱ Gravação muito curta.",
+    "actions": "📋 Resumo da Reunião Data de criação: 07/07/2026 1) Contexto A reunião trata do planejamento para mudança e armazenamento de mobiliário proveniente do 14º andar, da Mavi e do Domo. O objetivo é organizar o processo de transporte, catalogação e armazenamento dos itens em um espaço de aproximadamente 325 m². 2) Decisões Tomadas Definição do espaço de armazenamento em 325 m² , com a seguinte distribuição: 25 m² destinados a equipamentos de TI e audiovisual 50 m² destinados a documentos Restante para mobiliário de escritório (itens desmontáveis e não desmontáveis) 2. Necessidade de contratar uma empresa de transporte para realizar a mudança. Necessidade de contratar uma empresa de ativo fixo para catalogação dos itens na saída e na entrada do local de armazenamento. 3) Action Items Tarefa Responsável Prazo Mencionado Elaborar arquivo de orientação para mudança do mobiliário Speaker 1 Não mencionado Prospectar e contratar empresa de transporte A definir Não mencionado Prospectar e contratar empresa de ativo fixo para catalogação A definir Não mencionado 4) Pontos em Aberto Empresa de transporte ainda não foi selecionada . Empresa de ativo fixo ainda não foi contratada . Responsáveis pelas contratações não foram definidos . Cronograma da mudança não foi estabelecido . 5) Próximos Passos Finalizar o arquivo de orientação para a mudança do mobiliário. Iniciar processo de seleção da empresa de transporte. Iniciar processo de seleção da empresa de ativo fixo. Definir responsáveis e prazos para cada etapa do processo. Confirmar disponibilidade e condições do espaço de 325 m² para armazenamento.",
+    "transcricao": "Speaker 1 00:00:01 Mandou fazer teste e o teste aqui o que eu estou fazendo é o arquivo de orientação para mudar o mobiliário que a gente tem no 14º, na Mavi e no Domo. A gente está considerando um espaço de aproximadamente 325 metros quadrados, onde 25 metros quadrados serão de TI e coisas de audiovisual. Speaker 1 00:00:31 50 metros quadrados para a questão de documentos e o restante de imobiliário e de escritório, Coisas que são desmontáveis e coisas não desmontáveis. E aí nós estamos procura",
+    "participantes": [],
+    "speakers": [
+      "Speaker 1"
+    ],
+    "sem_projeto": false,
+    "atividades_ids": [],
+    "last_edited": "2026-07-07"
+  },
+  {
+    "id": "39264917-ccf1-811f-963b-e715ac08e145",
+    "title": "Teste de Reunião no Aplicativo Notion",
+    "titulo_editado": "Teste de Reunião no Aplicativo Notion",
+    "titulo_ia": "",
+    "date": "2026-07-03T15:28:00.000+00:00",
+    "status": "Processando",
+    "projeto_id": "39364917-ccf1-81c8-b73a-dd3c6e92b829",
+    "projeto": "Infraestrutura TI",
+    "summary": "⏱ Gravação muito curta.",
+    "actions": "A transcrição é breve, não é necessário resumo. A transcrição original do áudio é a seguinte: Speaker 1 00:00:01 Um novo teste de reunião, vamos ver o que vai sair dentro do aplicativo. Eu preciso que ele consiga identificar o que eu falei e colocar dentro do Notion do Zap.",
+    "transcricao": "Speaker 1 00:00:01 Um novo teste de reunião, vamos ver o que vai sair dentro do aplicativo. Eu preciso que ele consiga identificar o que eu falei e colocar dentro do Notion do Zap.",
+    "participantes": [
+      "Kleber",
+      "Ricardo::Speaker 1"
+    ],
+    "speakers": [
+      "Speaker 1"
+    ],
+    "sem_projeto": false,
+    "atividades_ids": [],
+    "last_edited": "2026-07-05"
+  },
+  {
+    "id": "39264917-ccf1-8103-bbc4-cffe7fbfd0ba",
+    "title": "Teste de Áudio Inicial",
+    "titulo_editado": "Teste de Áudio Inicial",
+    "titulo_ia": "",
+    "date": "2026-07-03T15:12:00.000+00:00",
+    "status": "Concluída",
+    "projeto_id": "39364917-ccf1-81c8-b73a-dd3c6e92b829",
+    "projeto": "Infraestrutura TI",
+    "summary": "⏱ Gravação muito curta.",
+    "actions": "A transcrição é breve, não é necessário resumo. A transcrição original do áudio é a seguinte: Speaker 1 00:00:08 Teste de áudio, 1, 2, 3, 4, Teste de áudio, parar e salvar.",
+    "transcricao": "Speaker 1 00:00:08 Teste de áudio, 1, 2, 3, 4, Teste de áudio, parar e salvar.",
+    "participantes": [],
+    "speakers": [
+      "Speaker 1"
+    ],
+    "sem_projeto": false,
+    "atividades_ids": [],
+    "last_edited": "2026-07-05"
+  },
+  {
+    "id": "39164917-ccf1-81d7-b98b-c8977954052e",
+    "title": "Contribuições de Bill e Steve",
+    "titulo_editado": "Contribuições de Bill e Steve",
+    "titulo_ia": "",
+    "date": "2026-06-16T23:06:00.000+00:00",
+    "status": "Em acompanhamento",
+    "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
+    "projeto": "Estruturação de Compras",
+    "summary": "## Overview This document consolidates a series of discussions between Steve Jobs and Bill Gates. They reflect on their shared history, from early collaborations and intense rivalry to their modern-day partnership, and discuss their respective contributions to the industry. The conversation covers their differing company philosophies on hardware and software integration, their strategic approaches to internet services, and their predictions for the future of computing, including the evolution of the PC, the rise of post-PC devices, and advancements in user interfaces like multi-touch and 3D. They also offer personal reflections on their careers, legacy, and provide advice for entrepreneurs. The discussion touches on broader topics such as technology's role in solving societal problems, its use by an aging population, and the balance between innovation and industry standards. ## History and Contributions of Apple and Microsoft - Bill Gates is credited with building the first major software company and establishing a successful business model before the industry fully understood the importance of software. He was praised for his focus and for building a company that could attract and retain top talent for many years. - Steve Jobs is recognized for his visionary bet on the Apple II as a mass-market computer in 1977. His work on the Macintosh was highlighted as a risky but phenomenal success that he pursued with \"incredible taste and elegance,\" which had a huge impact on the industry. - **Floating Point BASIC for Apple II** - Microsoft provided a Floating Point BASIC for the Apple II after Apple's co-founder, Steve Wozniak, never updated his original fixed-point version. - Apple paid Microsoft $31,000 for the software license. - **The Macintosh Project** - Microsoft was one of the few companies given a prototype of the Macintosh and made a strategic bet on the platform to enter the applications business. - At the time, the PC application market was domi nated by DOS-based products like Lotus 1-2-3 and WordPerfect. Microsoft saw the Mac's graphical interface as the next major paradigm shift. - The teams worked closely together under significant technical constraints, such as the original Mac's 128K of memory. - After Steve Jobs' initial departure from Apple, the company struggled to evolve its product line and differentiate itself from the increasingly popular Windows platform. - The release of Windows 95 in 1995 was a major turning point, making the graphical user interface (GUI) mainstream and ending the industry debate over its viability. - Upon his return to a struggling Apple, Jobs recognized that the \"zero-sum game\" mentality—where Apple could only win if Microsoft lost—was destructive. - He called Bill Gates to \"patch things up,\" acknowledging that Apple needed to focus on its own identity and that Microsoft was a critical software developer for the Mac platform. - The relationship between Microsoft's Mac development team and Apple is now considered one of Apple's best developer relationships. - The companies are competitors in specific markets, such as with the Zune media player versus the iPod. - They also act as partners and customers for one another. - An example provided was Microsoft's Xbox 360 team placing a large order for Mac computers to use as their development platform, as the Xbox 360 initially used the same processor architecture. - The \"I'm a Mac, I'm a PC\" ad campaign was discussed, with the intent clarified as not being mean-spirited, but rather portraying two characters who ultimately like each other. - Both speakers reflected on their long history in the industry, noting that they were once the youngest people in business meetings and are now often the oldest. - Steve Jobs referenced a Beatles song, stating, \"you and I have memories longer than the road that stretches out ahead,\" to describe their shared history. ## Company Philosophies and Strategy - **Apple as a Software Company: ** - Apple views itself as a software company at its core. - Products like the iPod, Mac, and iPhone are primarily defined by their software (e.g., OS X for the Mac), which is then packaged in \"a beautiful box.\" - Steve Jobs quoted Alan Kay: \"people that love software want to do their own hardware,\" explaining Apple's focus on tightly integrating both. - **Microsoft's Ecosystem and Variety Approach:** - Microsoft's strategy focuses on creating software platforms that support a wide variety of hardware from different partners. - This approach is used for PCs, phones (on 140 different hardware types), and the robotics market (over 140 robots using Microsoft software). - The company believes this variety fosters innovation and creativity within the ecosystem. - However, Microsoft does create its own integrated hardware for specific markets, such as Xbox 360, Zune, the Surface, and the Roundtable meeting device. - **Apple's Strategy:** - Apple's strategy is to focus on creating the best consumer device and user experience, and to partner with other companies for back-end services like search and maps. - The company will only build its own services, such as iTunes, when a high-quality alternative does not exist. - It was acknowledged that the .Mac internet service has not been developed enough, with a commitment to \"make up for lost time.\" - **Microsoft's Strategy:** - Microsoft aims to participate in key internet services like search more significantly in the future. - The company's primary role is to be a platform provider, creating tools that enable an ecosystem of partners to build applications, particularly in areas like education. - One speaker expressed admiration for the other's intuitive \"taste\" for people and products, describing it as a \"magical\" quality different from his own engineering-focused mindset. - In contrast, it was acknowledged that Apple was not initially good at partnering with other companies, a sk ill at which Microsoft excelled. This ability to partner would have served Apple well in its earlier decades. ## The Future of Computing and Devices - **The PC is Not Disappearing:** - The idea that everything will migrate to the cloud and make rich personal computers obsolete is dismissed. Past predictions, like the rise of the \"network computer,\" have been wrong. - The future lies in a balance, using the \"rich local functionality\" of a device together with the power of the cloud. - **The Power of Rich Client Applications:** - A native client application can provide a vastly superior user experience compared to a browser-based one, even when using the same cloud data. - An example given was the Google Maps application on the iPhone, which \"blows away\" browser-based or Java-based mobile versions due to the power of the client-side software. - The most powerful solutions involve a \"marriage\" of great client applications with great cloud services. - The personal computer (PC) has proven resilient, evolving from a basic tool to a \"digital hub\" for managing multimedia content like photos and videos. - The PC is expected to continue to exist and morph into various form factors, such as tablets, notebooks, or large desktops. - A new evolution is beginning, where the PC may become more tightly coupled with back-end internet services. - A category of \"post-PC devices\" is emerging, which are more focused on specific functions rather than being general-purpose computers. - Examples of these devices include phones, iPods, and Zunes. - It is believed that this category will see significant innovation and that radical rethinking of user experiences will happen on these devices, as they do not have the legacy constraints of PCs. - Specialized devices for navigation, photography, and communication are converging into a single pocket-sized device. - Despite this convergence, the small screen size will remain a limitation for content creation tasks like editing homework or movies. - These devices will primarily be used for communication and entertainment. The exact functions they will have in five years are unknown, as new popular applications are constantly being invented. - The consensus is that people will not rely on a single device in the future. - Bill Gates predicts a future with multiple form factors: - A full-screen, portable tablet for reading and productivity. - A pocket-sized device combining phone, media, and navigation functions. - A \"10-foot experience\" in the living room for gaming and entertainment. - Interactive surfaces, where desks and other surfaces become displays. ## Future Technology Trends - **3D Interfaces:** 3D is expected to become a more prominent part of the user interface, helping to organize the increasing amount of media information on computers. This could allow users to navigate digital stores in a way that mimics a real-world experience. - **Natural Input:** - Multi-touch technology is seen as a significant development for direct manipulation of on-screen objects. - Vision technology, using cameras to recognize user actions and the environment, is expected to become pervasive and inexpensive. This could enable new gaming experiences and improve video conferencing. - **Pace of Change:** Radical UI changes are more likely to appear on post-PC devices first. Changes to the PC interface must be more tempered to accommodate the large existing user base that is familiar with the current paradigm. - When asked about the future of virtual communication beyond current chat rooms, it was suggested that many concepts from science fiction will become reality in the next decade. - These advancements include virtual presence and virtual worlds that represent both reality and user interests, driven by deep research investments. - Another perspective was that the future is unknown, and that uncertainty is what makes going to work every day exciting. - The internet is becoming th e primary platform for entertainment delivery, enabling more interactivity and community engagement, similar to the Xbox Live experience. - Consumers want to enjoy entertainment when, how, and on the device they choose. This freedom will force entertainment companies to adopt new and varied business models. - The entertainment industry is learning from the music industry's difficult transition and is experimenting with new delivery models. ## The Tech Industry and Society - The current tech landscape is described as \"super healthy\" and a \"great period of invention.\" - There is a lot of activity from young people building new companies with long-term ambitions, rather than just seeking to be acquired. - The presence of significant risk in new ventures is seen as a positive sign that exciting and potentially huge developments are on the horizon. - Technology is considered helpful but not a complete solution for major challenges like education. The greater opportunity for improvement in education lies in institutional practices, teacher measurement, and school design. - Energy dependence is another significant problem where Silicon Valley may be able to play a small role through investment in alternative energy. - A concern was raised that increasing diversity in technology (low-cost microprocessors, memory, and software) could hinder the creation of simplified, convergent devices. - It was argued that some level of \"aggravation\" is an acceptable trade-off for achieving imagination and innovation. - The marketplace is seen as effective at managing diversity, allowing it when beneficial and eliminating it when not. - Powerful standards, such as those for the internet and video formats, have been successfully adopted for mature technologies, allowing innovation to be focused elsewhere. - The idea that tech innovation is only youth-oriented was refuted with examples of how seniors are using technology. - Built-in video cameras in computers have seen an \"off the chart s\" response from seniors, who use them to stay in touch with family and grandchildren. - Apple's retail stores offer a personal training program called \"one-to-one\" for $99 a year, which is now at a run rate of a million one-hour sessions per year and is popular with seniors. - Natural user interfaces are seen as particularly applicable for seniors who may not be as comfortable with keyboards, making navigation easier. ## Personal Reflections and Advice - **Focus on the Future, Not the Past:** - When asked about past regrets or what could have been done differently to increase the Mac's market share, Steve Jobs stated that it \"doesn't matter.\" - He emphasized the importance of focusing on inventing the future rather than worrying about the past. - Upon returning to Apple, he gave the company's museum and old papers to Stanford to \"stop looking backwards\" and focus on what happens tomorrow. - When asked about legacy, one speaker identified the personal computer and the \"magic of software\" as his life's work, viewing his philanthropic work as a fortunate \"second act.\" - The other speaker stated he does not think about legacy much, instead focusing on creating products that people love while working with great people. - He emphasized that finding work you love is a key to happiness and that he never cared much about money after his company's early success. - To build a valuable company, the focus should be on the people and the passion for the product, not primarily on the economic value. - A key challenge is managing people and getting teams with broad skills to work well together. - Passion is critical for entrepreneurs because building a business is so difficult that any rational person would give up without it. - Successful individuals often loved what they did, which allowed them to persevere through tough times. - Being a good talent scout is the second most important factor. An entrepreneur must build a team of great people and develop a n intuition for hiring. ## Open Issues and Risks - The fundamental debate over whether an integrated hardware/software model or a decoupled ecosystem model is superior remains unresolved. It was noted that \"nobody knows the answer\" and the market will decide over the coming years. - It is unclear if a decoupled hardware and software model will ever work as well in the consumer space as it has for Windows PCs. Its potential success in the phone market is uncertain. - The specific form of the PC's next evolution remains unclear. - The development of advanced, flexible roll-out screens is not expected within the next five years. - The discussion on key technology issues to communicate to the next US president was started but not concluded.",
+    "actions": "## Overview This document consolidates a series of discussions between Steve Jobs and Bill Gates. They reflect on their shared history, from early collaborations and intense rivalry to their modern-day partnership, and discuss their respective contributions to the industry. The conversation covers their differing company philosophies on hardware and software integration, their strategic approaches to internet services, and their predictions for the future of computing, including the evolution of the PC, the rise of post-PC devices, and advancements in user interfaces like multi-touch and 3D. They also offer personal reflections on their careers, legacy, and provide advice for entrepreneurs. The discussion touches on broader topics such as technology's role in solving societal problems, its use by an aging population, and the balance between innovation and industry standards. ## History and Contributions of Apple and Microsoft - Bill Gates is credited with building the first major software company and establishing a successful business model before the industry fully understood the importance of software. He was praised for his focus and for building a company that could attract and retain top talent for many years. - Steve Jobs is recognized for his visionary bet on the Apple II as a mass-market computer in 1977. His work on the Macintosh was highlighted as a risky but phenomenal success that he pursued with \"incredible taste and elegance,\" which had a huge impact on the industry. - **Floating Point BASIC for Apple II** - Microsoft provided a Floating Point BASIC for the Apple II after Apple's co-founder, Steve Wozniak, never updated his original fixed-point version. - Apple paid Microsoft $31,000 for the software license. - **The Macintosh Project** - Microsoft was one of the few companies given a prototype of the Macintosh and made a strategic bet on the platform to enter the applications business. - At the time, the PC application market was domi nated by DOS-based products like Lotus 1-2-3 and WordPerfect. Microsoft saw the Mac's graphical interface as the next major paradigm shift. - The teams worked closely together under significant technical constraints, such as the original Mac's 128K of memory. - After Steve Jobs' initial departure from Apple, the company struggled to evolve its product line and differentiate itself from the increasingly popular Windows platform. - The release of Windows 95 in 1995 was a major turning point, making the graphical user interface (GUI) mainstream and ending the industry debate over its viability. - Upon his return to a struggling Apple, Jobs recognized that the \"zero-sum game\" mentality—where Apple could only win if Microsoft lost—was destructive. - He called Bill Gates to \"patch things up,\" acknowledging that Apple needed to focus on its own identity and that Microsoft was a critical software developer for the Mac platform. - The relationship between Microsoft's Mac development team and Apple is now considered one of Apple's best developer relationships. - The companies are competitors in specific markets, such as with the Zune media player versus the iPod. - They also act as partners and customers for one another. - An example provided was Microsoft's Xbox 360 team placing a large order for Mac computers to use as their development platform, as the Xbox 360 initially used the same processor architecture. - The \"I'm a Mac, I'm a PC\" ad campaign was discussed, with the intent clarified as not being mean-spirited, but rather portraying two characters who ultimately like each other. - Both speakers reflected on their long history in the industry, noting that they were once the youngest people in business meetings and are now often the oldest. - Steve Jobs referenced a Beatles song, stating, \"you and I have memories longer than the road that stretches out ahead,\" to describe their shared history. ## Company Philosophies and Strategy - **Apple as a Software Company: ** - Apple views itself as a software company at its core. - Products like the iPod, Mac, and iPhone are primarily defined by their software (e.g., OS X for the Mac), which is then packaged in \"a beautiful box.\" - Steve Jobs quoted Alan Kay: \"people that love software want to do their own hardware,\" explaining Apple's focus on tightly integrating both. - **Microsoft's Ecosystem and Variety Approach:** - Microsoft's strategy focuses on creating software platforms that support a wide variety of hardware from different partners. - This approach is used for PCs, phones (on 140 different hardware types), and the robotics market (over 140 robots using Microsoft software). - The company believes this variety fosters innovation and creativity within the ecosystem. - However, Microsoft does create its own integrated hardware for specific markets, such as Xbox 360, Zune, the Surface, and the Roundtable meeting device. - **Apple's Strategy:** - Apple's strategy is to focus on creating the best consumer device and user experience, and to partner with other companies for back-end services like search and maps. - The company will only build its own services, such as iTunes, when a high-quality alternative does not exist. - It was acknowledged that the .Mac internet service has not been developed enough, with a commitment to \"make up for lost time.\" - **Microsoft's Strategy:** - Microsoft aims to participate in key internet services like search more significantly in the future. - The company's primary role is to be a platform provider, creating tools that enable an ecosystem of partners to build applications, particularly in areas like education. - One speaker expressed admiration for the other's intuitive \"taste\" for people and products, describing it as a \"magical\" quality different from his own engineering-focused mindset. - In contrast, it was acknowledged that Apple was not initially good at partnering with other companies, a sk ill at which Microsoft excelled. This ability to partner would have served Apple well in its earlier decades. ## The Future of Computing and Devices - **The PC is Not Disappearing:** - The idea that everything will migrate to the cloud and make rich personal computers obsolete is dismissed. Past predictions, like the rise of the \"network computer,\" have been wrong. - The future lies in a balance, using the \"rich local functionality\" of a device together with the power of the cloud. - **The Power of Rich Client Applications:** - A native client application can provide a vastly superior user experience compared to a browser-based one, even when using the same cloud data. - An example given was the Google Maps application on the iPhone, which \"blows away\" browser-based or Java-based mobile versions due to the power of the client-side software. - The most powerful solutions involve a \"marriage\" of great client applications with great cloud services. - The personal computer (PC) has proven resilient, evolving from a basic tool to a \"digital hub\" for managing multimedia content like photos and videos. - The PC is expected to continue to exist and morph into various form factors, such as tablets, notebooks, or large desktops. - A new evolution is beginning, where the PC may become more tightly coupled with back-end internet services. - A category of \"post-PC devices\" is emerging, which are more focused on specific functions rather than being general-purpose computers. - Examples of these devices include phones, iPods, and Zunes. - It is believed that this category will see significant innovation and that radical rethinking of user experiences will happen on these devices, as they do not have the legacy constraints of PCs. - Specialized devices for navigation, photography, and communication are converging into a single pocket-sized device. - Despite this convergence, the small screen size will remain a limitation for content creation tasks like editing homework or movies. - These devices will primarily be used for communication and entertainment. The exact functions they will have in five years are unknown, as new popular applications are constantly being invented. - The consensus is that people will not rely on a single device in the future. - Bill Gates predicts a future with multiple form factors: - A full-screen, portable tablet for reading and productivity. - A pocket-sized device combining phone, media, and navigation functions. - A \"10-foot experience\" in the living room for gaming and entertainment. - Interactive surfaces, where desks and other surfaces become displays. ## Future Technology Trends - **3D Interfaces:** 3D is expected to become a more prominent part of the user interface, helping to organize the increasing amount of media information on computers. This could allow users to navigate digital stores in a way that mimics a real-world experience. - **Natural Input:** - Multi-touch technology is seen as a significant development for direct manipulation of on-screen objects. - Vision technology, using cameras to recognize user actions and the environment, is expected to become pervasive and inexpensive. This could enable new gaming experiences and improve video conferencing. - **Pace of Change:** Radical UI changes are more likely to appear on post-PC devices first. Changes to the PC interface must be more tempered to accommodate the large existing user base that is familiar with the current paradigm. - When asked about the future of virtual communication beyond current chat rooms, it was suggested that many concepts from science fiction will become reality in the next decade. - These advancements include virtual presence and virtual worlds that represent both reality and user interests, driven by deep research investments. - Another perspective was that the future is unknown, and that uncertainty is what makes going to work every day exciting. - The internet is becoming th e primary platform for entertainment delivery, enabling more interactivity and community engagement, similar to the Xbox Live experience. - Consumers want to enjoy entertainment when, how, and on the device they choose. This freedom will force entertainment companies to adopt new and varied business models. - The entertainment industry is learning from the music industry's difficult transition and is experimenting with new delivery models. ## The Tech Industry and Society - The current tech landscape is described as \"super healthy\" and a \"great period of invention.\" - There is a lot of activity from young people building new companies with long-term ambitions, rather than just seeking to be acquired. - The presence of significant risk in new ventures is seen as a positive sign that exciting and potentially huge developments are on the horizon. - Technology is considered helpful but not a complete solution for major challenges like education. The greater opportunity for improvement in education lies in institutional practices, teacher measurement, and school design. - Energy dependence is another significant problem where Silicon Valley may be able to play a small role through investment in alternative energy. - A concern was raised that increasing diversity in technology (low-cost microprocessors, memory, and software) could hinder the creation of simplified, convergent devices. - It was argued that some level of \"aggravation\" is an acceptable trade-off for achieving imagination and innovation. - The marketplace is seen as effective at managing diversity, allowing it when beneficial and eliminating it when not. - Powerful standards, such as those for the internet and video formats, have been successfully adopted for mature technologies, allowing innovation to be focused elsewhere. - The idea that tech innovation is only youth-oriented was refuted with examples of how seniors are using technology. - Built-in video cameras in computers have seen an \"off the chart s\" response from seniors, who use them to stay in touch with family and grandchildren. - Apple's retail stores offer a personal training program called \"one-to-one\" for $99 a year, which is now at a run rate of a million one-hour sessions per year and is popular with seniors. - Natural user interfaces are seen as particularly applicable for seniors who may not be as comfortable with keyboards, making navigation easier. ## Personal Reflections and Advice - **Focus on the Future, Not the Past:** - When asked about past regrets or what could have been done differently to increase the Mac's market share, Steve Jobs stated that it \"doesn't matter.\" - He emphasized the importance of focusing on inventing the future rather than worrying about the past. - Upon returning to Apple, he gave the company's museum and old papers to Stanford to \"stop looking backwards\" and focus on what happens tomorrow. - When asked about legacy, one speaker identified the personal computer and the \"magic of software\" as his life's work, viewing his philanthropic work as a fortunate \"second act.\" - The other speaker stated he does not think about legacy much, instead focusing on creating products that people love while working with great people. - He emphasized that finding work you love is a key to happiness and that he never cared much about money after his company's early success. - To build a valuable company, the focus should be on the people and the passion for the product, not primarily on the economic value. - A key challenge is managing people and getting teams with broad skills to work well together. - Passion is critical for entrepreneurs because building a business is so difficult that any rational person would give up without it. - Successful individuals often loved what they did, which allowed them to persevere through tough times. - Being a good talent scout is the second most important factor. An entrepreneur must build a team of great people and develop a n intuition for hiring. ## Open Issues and Risks - The fundamental debate over whether an integrated hardware/software model or a decoupled ecosystem model is superior remains unresolved. It was noted that \"nobody knows the answer\" and the market will decide over the coming years. - It is unclear if a decoupled hardware and software model will ever work as well in the consumer space as it has for Windows PCs. Its potential success in the phone market is uncertain. - The specific form of the PC's next evolution remains unclear. - The development of advanced, flexible roll-out screens is not expected within the next five years. - The discussion on key technology issues to communicate to the next US president was started but not concluded.",
+    "transcricao": "00:00:01 So, let's get started. I wanted to ask. There's been a lot of like mano a mano, catfight kind of thing in a lot of the blogs and the press and stuff like that. And we wanted to, the first question I was interested in asking is what you think each has contributed to the computer and technology industry, starting with you, Steve, for Bill, and vice versa. 00:00:25 Hmm, well, you know, Bill built the first software company in the industry. And I think he built the first software company be",
+    "participantes": [],
+    "speakers": [],
+    "sem_projeto": false,
+    "atividades_ids": [],
+    "last_edited": "2026-07-05"
+  }
+];
+var PROJECTS = [
+  {
+    "id": "39664917-ccf1-81fd-9bb3-c63525299aa6",
+    "nome": "Depósito HOLSA",
+    "status": "Ativo",
+    "area": "Logística",
+    "responsavel": "Ricardo",
+    "descricao": "projeto para migração dos depósitos para um único local",
+    "atividades_ids": []
+  },
+  {
+    "id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
+    "nome": "Estruturação de Compras",
+    "status": "Ativo",
+    "area": "Outro",
+    "responsavel": "Kleber",
+    "descricao": "Implantação do fluxo e do software para a equipe de compras atuar.",
+    "atividades_ids": []
+  },
+  {
+    "id": "39364917-ccf1-81c8-b73a-dd3c6e92b829",
+    "nome": "Infraestrutura TI",
+    "status": "Ativo",
+    "area": "TI",
+    "responsavel": "",
+    "descricao": "Projeto de infraestrutura de TI do Grupo HOLSA",
+    "atividades_ids": []
+  }
+];
+var TASKS = [
+  {
+    "id": "39464917-ccf1-81a5-8245-ee8d154224a1",
+    "nome": "Fluxo Z",
+    "status": "Em andamento",
+    "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
+    "responsavel": "Henrique",
+    "participantes": "Henrique",
+    "prazo": "2026-06-29",
+    "prazo_vencido": true,
+    "dias_atraso": 8,
+    "depende_de": "Definições dos fluxos",
+    "aguardando": "Finalizar o levantamento de dados",
+    "observacoes": "Vamos ver",
+    "reunioes_ids": [],
+    "dias_parada": null,
+    "pai_id": "39364917-ccf1-817f-8767-fdc26c9aefeb",
+    "sub_ids": [],
+    "last_edited": "2026-07-05"
+  },
+  {
+    "id": "39364917-ccf1-8131-87f9-fd1cb3378e89",
+    "nome": "fluxo com financeiro",
+    "status": "Não iniciada",
+    "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
+    "responsavel": "Kleber",
+    "participantes": "Heloisa,Kleber",
+    "prazo": "2026-07-04",
+    "prazo_vencido": true,
+    "dias_atraso": 3,
+    "depende_de": "Definições dos fluxos",
+    "aguardando": "inicio geral",
+    "observacoes": "Teste de funcionalidade",
+    "reunioes_ids": [],
+    "dias_parada": null,
+    "pai_id": "39364917-ccf1-817f-8767-fdc26c9aefeb",
+    "sub_ids": [],
+    "last_edited": "2026-07-05"
+  },
+  {
+    "id": "39364917-ccf1-817f-8767-fdc26c9aefeb",
+    "nome": "Definições dos fluxos",
+    "status": "Em andamento",
+    "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
+    "responsavel": "Ricardo",
+    "participantes": "Kleber,Henrique,Daniela Ito,Ricardo",
+    "prazo": "2026-08-20",
+    "prazo_vencido": false,
+    "dias_atraso": 0,
+    "depende_de": "Levantamento de dados",
+    "aguardando": "Finalizar o levantamento de dados",
+    "observacoes": "Definição que guiará o projeto.",
+    "reunioes_ids": [],
+    "dias_parada": null,
+    "pai_id": "",
+    "sub_ids": [
+      "39364917-ccf1-8131-87f9-fd1cb3378e89",
+      "39464917-ccf1-81a5-8245-ee8d154224a1"
+    ],
+    "last_edited": "2026-07-05"
+  },
+  {
+    "id": "39364917-ccf1-81d2-b8fb-c57019abb839",
+    "nome": "Levantamento de dados",
+    "status": "Em andamento",
+    "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344",
+    "responsavel": "Henrique",
+    "participantes": "Kleber,Henrique,Daniela Ito",
+    "prazo": "2026-07-01",
+    "prazo_vencido": true,
+    "dias_atraso": 6,
+    "depende_de": "",
+    "aguardando": "De acordo",
+    "observacoes": "Levantamento de informações para inicio do projeto.",
+    "reunioes_ids": [],
+    "dias_parada": null,
+    "pai_id": "",
+    "sub_ids": [],
+    "last_edited": "2026-07-05"
+  }
+];
+var HISTORICO = [
+  {
+    "id": "39664917-ccf1-818c-aac3-e8429fd1c87e",
+    "descricao": "07-07 Reunião: Planejamento de Mudança e Armazenamento de Mobiliário: Projeto alterado",
+    "entidade": "Reunião",
+    "entidade_id": "39664917-ccf1-81f3-b7d9-d68f285f12bc",
+    "entidade_nome": "07-07 Reunião: Planejamento de Mudança e Armazenamento de Mobiliário",
+    "campo": "Projeto",
+    "valor_anterior": "",
+    "valor_novo": "Depósito HOLSA",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-07",
+    "created": "2026-07-07"
+  },
+  {
+    "id": "39664917-ccf1-812a-a8dd-d180b3ab18f0",
+    "descricao": "07-07 Reunião: Planejamento de Mudança e Armazenamento de Mobiliário: Projeto alterado",
+    "entidade": "Reunião",
+    "entidade_id": "39664917-ccf1-81f3-b7d9-d68f285f12bc",
+    "entidade_nome": "07-07 Reunião: Planejamento de Mudança e Armazenamento de Mobiliário",
+    "campo": "Projeto",
+    "valor_anterior": "",
+    "valor_novo": "Depósito HOLSA",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-07",
+    "created": "2026-07-07"
+  },
+  {
+    "id": "39664917-ccf1-81af-a805-fc1ff9c62b98",
+    "descricao": "Depósito HOLSA: Criação alterado",
+    "entidade": "Projeto",
+    "entidade_id": "39664917-ccf1-81fd-9bb3-c63525299aa6",
+    "entidade_nome": "Depósito HOLSA",
+    "campo": "Criação",
+    "valor_anterior": "",
+    "valor_novo": "Depósito HOLSA",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-07",
+    "created": "2026-07-07"
+  },
+  {
+    "id": "39464917-ccf1-8179-b477-f681d43f75c5",
+    "descricao": "fluxo com financeiro: status alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39364917-ccf1-8131-87f9-fd1cb3378e89",
+    "entidade_nome": "fluxo com financeiro",
+    "campo": "status",
+    "valor_anterior": "Bloqueada",
+    "valor_novo": "Não iniciada",
+    "alterado_por": "Notion",
+    "data": "2026-07-05",
+    "created": "2026-07-05"
+  },
+  {
+    "id": "39464917-ccf1-8140-be98-c356750fe8f7",
+    "descricao": "fluxo com financeiro: Status alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39364917-ccf1-8131-87f9-fd1cb3378e89",
+    "entidade_nome": "fluxo com financeiro",
+    "campo": "Status",
+    "valor_anterior": "Bloqueada",
+    "valor_novo": "Não iniciada",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-05",
+    "created": "2026-07-05"
+  },
+  {
+    "id": "39464917-ccf1-8141-834f-f5c3241dbad3",
+    "descricao": "Fluxo Z: Criação alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39464917-ccf1-81a5-8245-ee8d154224a1",
+    "entidade_nome": "Fluxo Z",
+    "campo": "Criação",
+    "valor_anterior": "",
+    "valor_novo": "Fluxo Z",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-05",
+    "created": "2026-07-05"
+  },
+  {
+    "id": "39464917-ccf1-81fe-84bb-ceb9553eeba2",
+    "descricao": "Fluxo Z: Status alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39464917-ccf1-81c9-af4c-c578801d6569",
+    "entidade_nome": "Fluxo Z",
+    "campo": "Status",
+    "valor_anterior": "Aguardando",
+    "valor_novo": "Em andamento",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-05",
+    "created": "2026-07-05"
+  },
+  {
+    "id": "39464917-ccf1-811f-a4cb-c6af1039a89c",
+    "descricao": "Fluxo Z: Criação alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39464917-ccf1-81c9-af4c-c578801d6569",
+    "entidade_nome": "Fluxo Z",
+    "campo": "Criação",
+    "valor_anterior": "",
+    "valor_novo": "Fluxo Z",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-05",
+    "created": "2026-07-05"
+  }
+];
+var KPIS = {"reunioes": {"total": 6, "semana": 5, "concluidas": 4, "taxa": 67, "sem_projeto": 2}, "projetos": {"total": 3, "ativos": 3}, "atividades": {"total": 4, "concluidas": 0, "andamento": 3, "sem_prazo": 0, "atrasadas": 3, "bloqueadas": 0, "atrasadas_detail": [{"id": "39464917-ccf1-81a5-8245-ee8d154224a1", "nome": "Fluxo Z", "responsavel": "Henrique", "dias_atraso": 8, "observacoes": "Vamos ver", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Em andamento"}, {"id": "39364917-ccf1-8131-87f9-fd1cb3378e89", "nome": "fluxo com financeiro", "responsavel": "Kleber", "dias_atraso": 3, "observacoes": "Teste de funcionalidade", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Não iniciada"}, {"id": "39364917-ccf1-81d2-b8fb-c57019abb839", "nome": "Levantamento de dados", "responsavel": "Henrique", "dias_atraso": 6, "observacoes": "Levantamento de informações para inicio do projeto.", "projeto_id": "39364917-ccf1-8150-a7b4-fdd91ebf3344", "status": "Em andamento"}], "bloqueadas_detail": []}, "metricas": {"sla": 0, "lead_time": 0, "velocidade": 0, "workload": [["Henrique", 2], ["Kleber", 1], ["Ricardo", 1]]}};
 
 var _currentView='geral';
 var _currentMeetingId=null;
