@@ -276,7 +276,6 @@ def compute_kpis(projetos, atividades, reunioes):
     now = datetime.now(timezone.utc)
     ativos = [p for p in projetos if p['status'] == 'Ativo']
     r_total = len(reunioes)
-    r_week_tmp = 0
     r_week = 0
     for m in reunioes:
         if m['date']:
