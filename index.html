@@ -513,8 +513,73 @@ var PROJECTS = [
     "atividades_ids": []
   }
 ];
-var TASKS = [];
+var TASKS = [
+  {
+    "id": "39664917-ccf1-8169-b0e4-d85cab857f17",
+    "nome": "Treinamento OMIE",
+    "status": "Aguardando",
+    "projeto_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
+    "responsavel": "Kleber",
+    "participantes": "Heloisa,Leila,Guilherme,Alessando,Janaina",
+    "prazo": "2026-07-13",
+    "prazo_vencido": false,
+    "dias_atraso": 0,
+    "depende_de": "Reunião com fornecedor OMIE",
+    "aguardando": "Atividade agendada. Necessário aguardar.",
+    "observacoes": "Agendado para o dia 13/07 às 14h. Será apresentado o funcionamento do módulo de compras pelos especialistas da OMIE, além da apresentação das soluções oferecidas aos pontos levantados na reunião de apresentação do módulo.",
+    "reunioes_ids": [],
+    "dias_parada": 0,
+    "pai_id": "",
+    "sub_ids": [],
+    "last_edited": "2026-07-07"
+  },
+  {
+    "id": "39664917-ccf1-81ae-b9e2-f79ac2d04f82",
+    "nome": "Apresentação do módulo de compras do OMIE",
+    "status": "Concluída",
+    "projeto_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
+    "responsavel": "Henrique",
+    "participantes": "Kleber,Heloisa,Henrique,Ricardo,Janaina,Alessando,Leila,Guilherme,Ana (OMIE)",
+    "prazo": "2026-07-07",
+    "prazo_vencido": false,
+    "dias_atraso": 0,
+    "depende_de": "",
+    "aguardando": "",
+    "observacoes": "Reunião agendada para apresentação do produto a todos os envolvidos na implantação da área de compras.",
+    "reunioes_ids": [],
+    "dias_parada": null,
+    "pai_id": "",
+    "sub_ids": [],
+    "last_edited": "2026-07-07"
+  }
+];
 var HISTORICO = [
+  {
+    "id": "39664917-ccf1-8180-a818-e5f2fad69329",
+    "descricao": "Treinamento OMIE: Criação alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39664917-ccf1-8169-b0e4-d85cab857f17",
+    "entidade_nome": "Treinamento OMIE",
+    "campo": "Criação",
+    "valor_anterior": "",
+    "valor_novo": "Treinamento OMIE",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-07",
+    "created": "2026-07-07"
+  },
+  {
+    "id": "39664917-ccf1-8177-a4df-de6dfb1ff4a2",
+    "descricao": "Reunião com fornecedor OMIE: Criação alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39664917-ccf1-81ae-b9e2-f79ac2d04f82",
+    "entidade_nome": "Reunião com fornecedor OMIE",
+    "campo": "Criação",
+    "valor_anterior": "",
+    "valor_novo": "Reunião com fornecedor OMIE",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-07",
+    "created": "2026-07-07"
+  },
   {
     "id": "39664917-ccf1-81d0-860d-fba2f240a815",
     "descricao": "Reunião de Implementação do ERP Compras: Participantes alterado",
@@ -581,7 +646,7 @@ var HISTORICO = [
     "created": "2026-07-07"
   }
 ];
-var KPIS = {"reunioes": {"total": 1, "semana": 1, "concluidas": 1, "taxa": 100, "sem_projeto": 0}, "projetos": {"total": 1, "ativos": 1}, "atividades": {"total": 0, "concluidas": 0, "andamento": 0, "sem_prazo": 0, "atrasadas": 0, "bloqueadas": 0, "atrasadas_detail": [], "bloqueadas_detail": []}, "metricas": {"sla": 0, "lead_time": 0, "velocidade": 0, "workload": []}};
+var KPIS = {"reunioes": {"total": 1, "semana": 1, "concluidas": 1, "taxa": 100, "sem_projeto": 0}, "projetos": {"total": 1, "ativos": 1}, "atividades": {"total": 2, "concluidas": 1, "andamento": 0, "sem_prazo": 0, "atrasadas": 0, "bloqueadas": 1, "atrasadas_detail": [], "bloqueadas_detail": [{"id": "39664917-ccf1-8169-b0e4-d85cab857f17", "nome": "Treinamento OMIE", "responsavel": "Kleber", "dias_parada": 0, "aguardando": "Atividade agendada. Necessário aguardar.", "projeto_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43"}]}, "metricas": {"sla": 50, "lead_time": 0, "velocidade": 0, "workload": [["Kleber", 1]]}};
 
 var _currentView='geral';
 var _currentMeetingId=null;
