@@ -492,9 +492,32 @@ var MEETINGS = [
     "last_edited": "2026-07-07"
   }
 ];
-var PROJECTS = [];
+var PROJECTS = [
+  {
+    "id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
+    "nome": "Compras",
+    "status": "Ativo",
+    "area": "Compras",
+    "responsavel": "Ricardo",
+    "descricao": "Revisão do processo de compras (processo e sistemas)",
+    "atividades_ids": []
+  }
+];
 var TASKS = [];
 var HISTORICO = [
+  {
+    "id": "39664917-ccf1-813c-abe0-f7fb6ce5350c",
+    "descricao": "Compras: Criação alterado",
+    "entidade": "Projeto",
+    "entidade_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
+    "entidade_nome": "Compras",
+    "campo": "Criação",
+    "valor_anterior": "",
+    "valor_novo": "Compras",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-07",
+    "created": "2026-07-07"
+  },
   {
     "id": "39664917-ccf1-818c-aac3-e8429fd1c87e",
     "descricao": "07-07 Reunião: Planejamento de Mudança e Armazenamento de Mobiliário: Projeto alterado",
@@ -509,7 +532,7 @@ var HISTORICO = [
     "created": "2026-07-07"
   }
 ];
-var KPIS = {"reunioes": {"total": 1, "semana": 1, "concluidas": 1, "taxa": 100, "sem_projeto": 1}, "projetos": {"total": 0, "ativos": 0}, "atividades": {"total": 0, "concluidas": 0, "andamento": 0, "sem_prazo": 0, "atrasadas": 0, "bloqueadas": 0, "atrasadas_detail": [], "bloqueadas_detail": []}, "metricas": {"sla": 0, "lead_time": 0, "velocidade": 0, "workload": []}};
+var KPIS = {"reunioes": {"total": 1, "semana": 1, "concluidas": 1, "taxa": 100, "sem_projeto": 1}, "projetos": {"total": 1, "ativos": 1}, "atividades": {"total": 0, "concluidas": 0, "andamento": 0, "sem_prazo": 0, "atrasadas": 0, "bloqueadas": 0, "atrasadas_detail": [], "bloqueadas_detail": []}, "metricas": {"sla": 0, "lead_time": 0, "velocidade": 0, "workload": []}};
 
 var _currentView='geral';
 var _currentMeetingId=null;
