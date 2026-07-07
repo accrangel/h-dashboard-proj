@@ -517,7 +517,7 @@ var TASKS = [
   {
     "id": "39664917-ccf1-8169-b0e4-d85cab857f17",
     "nome": "Treinamento OMIE",
-    "status": "Aguardando",
+    "status": "Em andamento",
     "projeto_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43",
     "responsavel": "Kleber",
     "participantes": "Heloisa,Leila,Guilherme,Alessando,Janaina",
@@ -528,7 +528,7 @@ var TASKS = [
     "aguardando": "Atividade agendada. Necessário aguardar.",
     "observacoes": "Agendado para o dia 13/07 às 14h. Será apresentado o funcionamento do módulo de compras pelos especialistas da OMIE, além da apresentação das soluções oferecidas aos pontos levantados na reunião de apresentação do módulo.",
     "reunioes_ids": [],
-    "dias_parada": 0,
+    "dias_parada": null,
     "pai_id": "",
     "sub_ids": [],
     "last_edited": "2026-07-07"
@@ -554,6 +554,19 @@ var TASKS = [
   }
 ];
 var HISTORICO = [
+  {
+    "id": "39664917-ccf1-818b-bdf9-eb6cad99141c",
+    "descricao": "Treinamento OMIE: Status alterado",
+    "entidade": "Atividade",
+    "entidade_id": "39664917-ccf1-8169-b0e4-d85cab857f17",
+    "entidade_nome": "Treinamento OMIE",
+    "campo": "Status",
+    "valor_anterior": "Aguardando",
+    "valor_novo": "Em andamento",
+    "alterado_por": "Dashboard",
+    "data": "2026-07-07",
+    "created": "2026-07-07"
+  },
   {
     "id": "39664917-ccf1-8180-a818-e5f2fad69329",
     "descricao": "Treinamento OMIE: Criação alterado",
@@ -646,7 +659,7 @@ var HISTORICO = [
     "created": "2026-07-07"
   }
 ];
-var KPIS = {"reunioes": {"total": 1, "semana": 1, "concluidas": 1, "taxa": 100, "sem_projeto": 0}, "projetos": {"total": 1, "ativos": 1}, "atividades": {"total": 2, "concluidas": 1, "andamento": 0, "sem_prazo": 0, "atrasadas": 0, "bloqueadas": 1, "atrasadas_detail": [], "bloqueadas_detail": [{"id": "39664917-ccf1-8169-b0e4-d85cab857f17", "nome": "Treinamento OMIE", "responsavel": "Kleber", "dias_parada": 0, "aguardando": "Atividade agendada. Necessário aguardar.", "projeto_id": "39664917-ccf1-81ea-9e83-d7b9b5495a43"}]}, "metricas": {"sla": 50, "lead_time": 0, "velocidade": 0, "workload": [["Kleber", 1]]}};
+var KPIS = {"reunioes": {"total": 1, "semana": 1, "concluidas": 1, "taxa": 100, "sem_projeto": 0}, "projetos": {"total": 1, "ativos": 1}, "atividades": {"total": 2, "concluidas": 1, "andamento": 1, "sem_prazo": 0, "atrasadas": 0, "bloqueadas": 0, "atrasadas_detail": [], "bloqueadas_detail": []}, "metricas": {"sla": 50, "lead_time": 0, "velocidade": 0, "workload": [["Kleber", 1]]}};
 
 var _currentView='geral';
 var _currentMeetingId=null;
