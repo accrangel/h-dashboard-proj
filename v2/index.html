@@ -402,6 +402,27 @@ function can(a){return S.profile&&PERM[a]&&PERM[a].indexOf(S.profile.papel)>=0;}
 
 // ═══ HELPERS ══════════════════════════════════════════════════════════
 function esc(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtTexto(t){
+  if(!t)return'';
+  var linhas=String(t).split('\n');
+  var out='';var emLista=false;
+  linhas.forEach(function(l){
+    l=l.trim();
+    if(!l){if(emLista){out+='</ul>';emLista=false;}out+='<div style="height:8px"></div>';return;}
+    if(l.indexOf('• ')===0){
+      if(!emLista){out+='<ul style="margin:4px 0 4px 18px;padding:0">';emLista=true;}
+      out+='<li style="margin-bottom:3px">'+esc(l.slice(2))+'</li>';return;
+    }
+    if(emLista){out+='</ul>';emLista=false;}
+    // linha curta terminada sem pontuação e seguida de conteúdo = título de seção
+    if(l.length<60&&!/[.,;:!?]$/.test(l)&&l===l.replace(/[a-z]/g,function(c){return c;})&&/^[A-ZÀ-Ú0-9]/.test(l)&&l.split(' ').length<=6){
+      out+='<div style="font-weight:800;margin-top:8px;margin-bottom:3px">'+esc(l)+'</div>';return;
+    }
+    out+='<div style="margin-bottom:4px">'+esc(l)+'</div>';
+  });
+  if(emLista)out+='</ul>';
+  return out;
+}
 function fmtDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return iso;}}
 function fmtDateTime(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
 function toast(txt,err){var t=document.createElement('div');t.className='toast'+(err?' err':'');t.textContent=txt;document.getElementById('toasts').appendChild(t);setTimeout(function(){t.remove();},3200);}
@@ -656,7 +677,7 @@ function rReunioesList(){
   if(!list.length){el.innerHTML='<div class="empty">Nenhuma reunião encontrada. Grave pelo Plaud ou ajuste os filtros.</div>';document.getElementById('rdetail').innerHTML='';return;}
   el.innerHTML=list.map(function(m){
     var tit=m.titulo_editado||m.titulo;
-    var prev=(m.resumo||'').slice(0,110);
+    var prev=(m.resumo||'').replace(/\n+/g,' ').slice(0,110);
     return'<div class="mcard'+(m.id===_reuniaoAberta?' sel':'')+(!m.projeto_id?' semproj':'')+'" onclick="abrirReuniao(\''+m.id+'\')">'+
       '<div style="display:flex;justify-content:space-between;gap:8px"><div style="font-size:13px;font-weight:800">'+esc(tit)+'</div><div style="font-size:11px;color:var(--muted);white-space:nowrap">'+fmtDateTime(m.data)+'</div></div>'+
       (prev?'<div style="font-size:12px;color:var(--muted);margin:5px 0 8px;line-height:1.5">'+esc(prev)+'…</div>':'')+
@@ -695,8 +716,13 @@ function renderDetalheReuniao(){
      '<button class="btn btn-p" onclick="gerarATA(\''+m.id+'\',false)">&#128196; Gerar ATA (Word)</button>'+
      (can('editarReuniao')?'<button class="btn btn-g" onclick="gerarATA(\''+m.id+'\',true)">&#8682; Gerar e salvar no SharePoint</button>':'')+'</div>';
   h+='<div class="dsec">Arquivos da reunião</div><div id="fa-Reunioes-'+m.id+'" data-nome="'+esc(m.titulo_editado||m.titulo)+'"></div>';
-  if(m.resumo){h+='<div class="dsec">Resumo</div><div class="dtext">'+esc(m.resumo)+'</div>';}
-  if(m.action_items){h+='<div class="dsec">Action Items</div><div class="dtext">'+esc(m.action_items)+'</div>';}
+  if(m.resumo){h+='<div class="dsec">Resumo</div><div class="dtext">'+fmtTexto(m.resumo)+'</div>';}
+  if(m.action_items){h+='<div class="dsec">Action Items</div><div class="dtext">'+fmtTexto(m.action_items)+'</div>';}
+  if(m.transcricao){
+    h+='<div class="dsec">Transcrição</div>'+
+       '<details style="margin-bottom:6px"><summary style="cursor:pointer;font-size:12px;color:var(--brand);font-weight:700;padding:4px 0">Mostrar transcrição completa ('+Math.round(m.transcricao.length/1000)+'k caracteres)</summary>'+
+       '<div class="dtext" style="max-height:340px;overflow-y:auto;background:var(--surf2);border:1px solid var(--bord);border-radius:8px;padding:12px;margin-top:6px">'+fmtTexto(m.transcricao)+'</div></details>';
+  }
   if(pode){
     h+='<div class="dsec">Status</div><div style="display:flex;gap:8px;flex-wrap:wrap">'+
       ['Processando','Em acompanhamento','Concluída'].map(function(s){
@@ -1204,8 +1230,16 @@ function gerarATAdocx(d,salvarSP){
     kids.push(h2('Participantes'));
     d.m.participantes.forEach(function(pt){kids.push(new dx.Paragraph({children:[new dx.TextRun({text:pt,size:22})],bullet:{level:0}}));});
   }
-  if(d.m.resumo){kids.push(h2('Resumo / Pauta'));kids.push(p(d.m.resumo,{after:120}));}
-  if(d.m.action_items){kids.push(h2('Decisões e Action Items'));kids.push(p(d.m.action_items,{after:120}));}
+  function blocoTexto(txt){
+    String(txt).split('\n').forEach(function(l){
+      l=l.trim();if(!l)return;
+      if(l.indexOf('• ')===0){kids.push(new dx.Paragraph({children:[new dx.TextRun({text:l.slice(2),size:22})],bullet:{level:0},spacing:{after:60}}));}
+      else if(l.length<60&&!/[.,;:!?]$/.test(l)&&l.split(' ').length<=6){kids.push(new dx.Paragraph({children:[new dx.TextRun({text:l,bold:true,size:22})],spacing:{before:120,after:60}}));}
+      else kids.push(p(l,{after:80}));
+    });
+  }
+  if(d.m.resumo){kids.push(h2('Resumo / Pauta'));blocoTexto(d.m.resumo);}
+  if(d.m.action_items){kids.push(h2('Decisões e Action Items'));blocoTexto(d.m.action_items);}
   if(d.ativs.length){
     kids.push(h2('Atividades em aberto do projeto'));
     var rows=[new dx.TableRow({children:['Atividade','Responsável','Status','Prazo'].map(function(c){
@@ -1236,8 +1270,8 @@ function gerarATAdoc(d,salvarSP){
   b+='<p><b>GRUPO HOLSA</b> · Central de Inteligência</p>';
   b+='<p>Data: '+fmtDateTime(d.m.data)+' · Status: '+esc(d.m.status)+(d.proj?' · Projeto: '+esc(d.proj.nome):'')+'</p>';
   if((d.m.participantes||[]).length)b+='<h2>Participantes</h2><ul>'+d.m.participantes.map(function(p){return'<li>'+esc(p)+'</li>';}).join('')+'</ul>';
-  if(d.m.resumo)b+='<h2>Resumo / Pauta</h2><p>'+esc(d.m.resumo).replace(/\n/g,'<br>')+'</p>';
-  if(d.m.action_items)b+='<h2>Decisões e Action Items</h2><p>'+esc(d.m.action_items).replace(/\n/g,'<br>')+'</p>';
+  if(d.m.resumo)b+='<h2>Resumo / Pauta</h2>'+fmtTexto(d.m.resumo);
+  if(d.m.action_items)b+='<h2>Decisões e Action Items</h2>'+fmtTexto(d.m.action_items);
   if(d.ativs.length){
     b+='<h2>Atividades em aberto do projeto</h2><table><tr><th>Atividade</th><th>Responsável</th><th>Status</th><th>Prazo</th></tr>';
     d.ativs.forEach(function(a){b+='<tr><td>'+esc(a.nome)+'</td><td>'+esc(a.responsavel||'—')+'</td><td>'+esc(a.status)+'</td><td>'+(a.prazo?fmtDate(a.prazo):'—')+'</td></tr>';});
@@ -1316,7 +1350,7 @@ function addMsgIA(html,role){
 function ctxIA(){
   var c='PROJETOS:\n'+S.projetos.map(function(p){var t=S.atividades.filter(function(a){return a.projeto_id===p.id;});var d=t.filter(function(a){return a.status==='Concluída';}).length;return p.nome+' | '+(p.area||'—')+' | Resp: '+(p.responsavel||'—')+' | '+d+'/'+t.length+' concluídas | '+p.status;}).join('\n');
   c+='\n\nATIVIDADES:\n'+S.atividades.map(function(a){return'- '+a.nome+' | '+a.status+' | Resp: '+(a.responsavel||'—')+' | Prazo: '+(a.prazo||'sem')+(prazoVencido(a)?' [ATRASADA '+diasAtraso(a)+'d]':'');}).join('\n');
-  c+='\n\nREUNIOES:\n'+S.reunioes.slice(0,20).map(function(m){return'- '+(m.titulo_editado||m.titulo)+' | '+m.status+' | '+(projNome(m.projeto_id)||'sem projeto')+' | '+(m.resumo||'').slice(0,120);}).join('\n');
+  c+='\n\nREUNIOES:\n'+S.reunioes.slice(0,20).map(function(m){return'- '+(m.titulo_editado||m.titulo)+' | '+m.status+' | '+(projNome(m.projeto_id)||'sem projeto')+' | '+(m.resumo||'').replace(/\n+/g,' ').slice(0,120);}).join('\n');
   return c;
 }
 async function enviarIA(){
