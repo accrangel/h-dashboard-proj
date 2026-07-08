@@ -206,6 +206,25 @@ button{font-family:inherit}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--brand);color:var(--brand)}
 .up-prog{font-size:11px;color:var(--brand);margin-top:5px;min-height:14px}
 
+/* DRAWER (painel lateral de atividade) */
+.drawer-ov{display:none;position:fixed;inset:0;background:rgba(10,16,13,.28);z-index:140}
+.drawer-ov.open{display:block}
+.drawer{position:fixed;top:0;right:-500px;width:470px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bord);z-index:150;transition:right .22s ease;display:flex;flex-direction:column;box-shadow:-10px 0 34px rgba(0,0,0,.16)}
+.drawer.open{right:0}
+.drawer-h{padding:15px 18px;border-bottom:1px solid var(--bord);display:flex;gap:10px;align-items:flex-start}
+.drawer-t{font-size:15px;font-weight:800;flex:1;line-height:1.35}
+.drawer-x{background:none;border:none;font-size:19px;color:var(--muted);cursor:pointer;padding:0 4px;line-height:1}
+.drawer-x:hover{color:var(--text)}
+.drawer-b{flex:1;overflow-y:auto;padding:16px 18px}
+.drawer-f{padding:12px 18px;border-top:1px solid var(--bord);display:flex;gap:8px;align-items:center;background:var(--surf)}
+.dr-sec{font-size:9.5px;font-weight:800;letter-spacing:1.8px;color:var(--muted);text-transform:uppercase;margin:16px 0 6px}
+.dr-sec:first-child{margin-top:0}
+.dr-read{font-size:13px;line-height:1.55;color:var(--text)}
+.dr-meta{font-size:10.5px;color:var(--muted);line-height:1.7}
+.st-chip{font-size:11px;font-weight:700;border-radius:6px;padding:5px 11px;cursor:pointer;border:1.5px solid transparent;opacity:.55}
+.st-chip.on{opacity:1;border-color:currentColor}
+@media(max-width:920px){.drawer{width:100vw;right:-100vw}}
+
 /* TOAST */
 #toasts{position:fixed;top:16px;right:16px;z-index:400;display:flex;flex-direction:column;gap:8px}
 .toast{background:var(--surf);border:1px solid var(--bord);border-left:3px solid var(--brand);border-radius:9px;padding:11px 16px;font-size:12.5px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.16);animation:tin .2s ease}
@@ -290,6 +309,16 @@ button{font-family:inherit}
   </div>
 </div>
 
+<div class="drawer-ov" id="drawer-ov" onclick="fecharDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-h">
+    <div class="drawer-t" id="dr-titulo">Atividade</div>
+    <button class="drawer-x" onclick="fecharDrawer()">&#215;</button>
+  </div>
+  <div class="drawer-b" id="dr-body"></div>
+  <div class="drawer-f" id="dr-foot"></div>
+</div>
+
 <div class="upd-badge" id="upd-badge" onclick="aplicarPendentes()">&#8635; Há atualizações — clique para ver</div>
 <div id="toasts"></div>
 
@@ -313,34 +342,6 @@ button{font-family:inherit}
       <button class="btn btn-p" onclick="salvarProjeto()">Salvar</button>
     </div>
     <div class="m-msg" id="mp-msg"></div>
-  </div>
-</div>
-
-<!-- MODAL ATIVIDADE -->
-<div class="overlay" id="mo-task">
-  <div class="modal">
-    <div class="m-title" id="mt-title">Nova Atividade</div>
-    <input type="hidden" id="mt-id"><input type="hidden" id="mt-proj"><input type="hidden" id="mt-loadstamp">
-    <div class="fg"><label class="fl">Nome *</label><input class="fi" id="mt-nome"></div>
-    <div class="frow">
-      <div class="fg"><label class="fl">Status</label><select class="fi" id="mt-status"><option>Não iniciada</option><option>Em andamento</option><option>Concluída</option><option>Bloqueada</option><option>Aguardando</option></select></div>
-      <div class="fg"><label class="fl">Prazo</label><input class="fi" type="date" id="mt-prazo"></div>
-    </div>
-    <div class="frow">
-      <div class="fg"><label class="fl">Responsável</label><div id="mt-resp-pp"></div></div>
-      <div class="fg"><label class="fl">Sub-atividade de</label><select class="fi" id="mt-pai"><option value="">Atividade raiz</option></select></div>
-    </div>
-    <div class="fg"><label class="fl">Participantes</label><div id="mt-part-pp"></div></div>
-    <div class="frow">
-      <div class="fg"><label class="fl">Depende de</label><select class="fi" id="mt-dep"><option value="">Nenhuma</option></select></div>
-      <div class="fg"><label class="fl">Aguardando o quê?</label><input class="fi" id="mt-ag"></div>
-    </div>
-    <div class="fg"><label class="fl">Observações</label><textarea class="fta" id="mt-obs"></textarea></div>
-    <div class="m-btns">
-      <button class="btn btn-g" onclick="fecharModal('mo-task')">Cancelar</button>
-      <button class="btn btn-p" onclick="salvarAtividade()">Salvar</button>
-    </div>
-    <div class="m-msg" id="mt-msg"></div>
   </div>
 </div>
 
@@ -853,7 +854,7 @@ function rProjList(){
       var tf=_taskFilter[p.id]||{status:'',member:''};
       h+='<div class="sec-h"><div class="sec-t" style="margin:0">Atividades ('+tasks.length+')</div><div style="display:flex;gap:6px">'+
          (can('editarProjeto')?'<button class="btn btn-g" style="font-size:11px" onclick="event.stopPropagation();abrirProjetoModal(\''+p.id+'\')">Editar projeto</button>':'')+
-         (can('criarAtividade')?'<button class="btn btn-p" style="font-size:11px" onclick="event.stopPropagation();abrirTaskModal(null,\''+p.id+'\')">+ Nova</button>':'')+'</div></div>';
+         (can('criarAtividade')?'<button class="btn btn-p" style="font-size:11px" onclick="event.stopPropagation();abrirDrawer(null,\''+p.id+'\')">+ Nova</button>':'')+'</div></div>';
       h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'+
          '<select class="fsel" style="font-size:11px;padding:5px 8px" onchange="setTF(\''+p.id+'\',\'status\',this.value)">'+
          '<option value="">Todos os status</option><option value="__atrasadas"'+(tf.status==='__atrasadas'?' selected':'')+'>&#9888; Atrasadas</option>'+
@@ -905,12 +906,11 @@ function arvore(tasks,paiId,projId){
       (t.aguardando?'<div style="font-size:10px;color:var(--muted);margin-top:2px">&#8987; Aguardando: '+esc(t.aguardando)+'</div>':'')+
       (t.depende_de?'<div style="font-size:10px;color:var(--muted);margin-top:2px">&#128279; Depende de: '+esc(t.depende_de)+'</div>':'')+
       '</div>'+
-      '<button class="btn btn-g" style="font-size:10px;padding:3px 9px;flex-shrink:0" title="Arquivos" onclick="event.stopPropagation();toggleArquivos(\'Atividades\',\''+t.id+'\')">&#128206;</button>'+
+      '<button class="btn btn-g" style="font-size:10px;padding:3px 9px;flex-shrink:0" title="Arquivos" onclick="event.stopPropagation();abrirDrawer(\''+t.id+'\',\''+projId+'\')">&#128206;</button>'+
       (can('excluirAtividade')?'<button class="btn btn-r" style="font-size:10px;padding:3px 9px;flex-shrink:0;margin-left:4px" onclick="event.stopPropagation();excluirAtividade(\''+t.id+'\')">&#215;</button>':'')+
       '</div>';
     var kids=subs.length?'<div class="tchildren" id="tc-'+t.id+'" style="display:'+(exp?'block':'none')+'">'+arvore(tasks,t.id,projId)+'</div>':'';
-    var farea='<div id="fa-Atividades-'+t.id+'" data-nome="'+esc(t.nome)+'" style="display:none;padding:10px 14px;background:var(--surf2);border-top:1px solid var(--bord)"></div>';
-    return'<div class="'+(isRoot?'tnode tnode-root':'tnode')+'">'+row+farea+kids+'</div>';
+    return'<div class="'+(isRoot?'tnode tnode-root':'tnode')+'">'+row+kids+'</div>';
   }).join('');
 }
 function cliqueTask(e,id,projId,temSubs){
@@ -923,7 +923,7 @@ function cliqueTask(e,id,projId,temSubs){
     _treeExp[id]=!open;
     return;
   }
-  if(can('editarAtividade'))abrirTaskModal(id,projId);
+  abrirDrawer(id,projId);
 }
 
 // ═══ CRUD PROJETO ═════════════════════════════════════════════════════
@@ -979,65 +979,120 @@ async function removerMembro(pid,nome){
   if(r.error)toast('Erro: '+r.error.message,true);
 }
 
-// ═══ CRUD ATIVIDADE ═══════════════════════════════════════════════════
-function abrirTaskModal(id,projId){
-  document.getElementById('mt-title').textContent=id?'Editar Atividade':'Nova Atividade';
-  document.getElementById('mt-id').value=id||'';
-  document.getElementById('mt-proj').value=projId;
-  var t=id?S.atividades.find(function(x){return x.id===id;}):null;
-  document.getElementById('mt-loadstamp').value=t?t.atualizado_em:'';
-  document.getElementById('mt-nome').value=t?t.nome:'';
-  document.getElementById('mt-status').value=t?t.status:'Não iniciada';
-  document.getElementById('mt-prazo').value=t&&t.prazo?t.prazo:'';
-  document.getElementById('mt-ag').value=t&&t.aguardando?t.aguardando:'';
-  document.getElementById('mt-obs').value=t&&t.observacoes?t.observacoes:'';
+// ═══ DRAWER DE ATIVIDADE (ver/criar/editar) ══════════════════════════
+var _drTask=null,_drProj=null;
+function abrirDrawer(taskId,projId){
+  _drTask=taskId;_drProj=projId;
+  _modalAberto=true;
+  var t=taskId?S.atividades.find(function(x){return x.id===taskId;}):null;
   var proj=S.projetos.find(function(x){return x.id===projId;});
-  var sugeridos=(proj&&proj.membros)||[];
-  criarPicker('mt-resp-pp',t&&t.responsavel?[t.responsavel]:[],{single:true,placeholder:'Responsável...',prioridade:sugeridos});
-  criarPicker('mt-part-pp',t&&t.participantes?t.participantes.slice():[],{placeholder:'Participantes...',prioridade:sugeridos});
-  var outras=S.atividades.filter(function(x){return x.projeto_id===projId&&x.id!==id;});
-  document.getElementById('mt-pai').innerHTML='<option value="">Atividade raiz</option>'+outras.map(function(o){return'<option value="'+o.id+'"'+((t&&t.pai_id)===o.id?' selected':'')+'>'+esc(o.nome)+'</option>';}).join('');
-  document.getElementById('mt-dep').innerHTML='<option value="">Nenhuma</option>'+outras.map(function(o){return'<option'+((t&&t.depende_de)===o.nome?' selected':'')+'>'+esc(o.nome)+'</option>';}).join('');
-  document.getElementById('mt-msg').textContent='';
-  abrirModal('mo-task');
+  var edit=can('editarAtividade');
+  var membros=(proj&&proj.membros)||[];
+  document.getElementById('dr-titulo').textContent=t?(edit?'Editar atividade':'Detalhes da atividade'):'Nova atividade';
+  var b='';
+  if(edit){
+    b+='<div class="dr-sec">Nome</div><input class="fi" id="dr-nome" value="'+esc(t?t.nome:'')+'">';
+    b+='<div class="dr-sec">Status</div><div style="display:flex;gap:6px;flex-wrap:wrap" id="dr-status">'+
+      ['Não iniciada','Em andamento','Concluída','Bloqueada','Aguardando'].map(function(s){
+        var cls={'Concluída':'t-conc','Em andamento':'t-acomp','Bloqueada':'t-bloc','Aguardando':'t-ag','Não iniciada':'t-ni'}[s];
+        return'<span class="tag '+cls+' st-chip'+(((t&&t.status)||'Não iniciada')===s?' on':'')+'" data-s="'+s+'" onclick="drStatus(this)">'+s+'</span>';
+      }).join('')+'</div>';
+    b+='<div class="dr-sec">Prazo</div><input class="fi" type="date" id="dr-prazo" value="'+(t&&t.prazo?t.prazo:'')+'">';
+    b+='<div class="dr-sec">Responsável</div><div id="dr-resp"></div>';
+    b+='<div class="dr-sec">Participantes</div><div id="dr-part"></div>';
+    var outras=S.atividades.filter(function(x){return x.projeto_id===projId&&x.id!==taskId;});
+    b+='<div class="dr-sec">Sub-atividade de</div><select class="fi" id="dr-pai"><option value="">Atividade raiz</option>'+
+       outras.map(function(o){return'<option value="'+o.id+'"'+((t&&t.pai_id)===o.id?' selected':'')+'>'+esc(o.nome)+'</option>';}).join('')+'</select>';
+    b+='<div class="dr-sec">Depende de</div><select class="fi" id="dr-dep"><option value="">Nenhuma</option>'+
+       outras.map(function(o){return'<option'+((t&&t.depende_de)===o.nome?' selected':'')+'>'+esc(o.nome)+'</option>';}).join('')+'</select>';
+    b+='<div class="dr-sec">Aguardando o quê?</div><input class="fi" id="dr-ag" value="'+esc(t&&t.aguardando?t.aguardando:'')+'">';
+    b+='<div class="dr-sec">Observações</div><textarea class="fta" id="dr-obs" style="height:80px">'+esc(t&&t.observacoes?t.observacoes:'')+'</textarea>';
+  }else if(t){
+    var ind=indicador(t);
+    b+='<div class="dr-sec">Nome</div><div class="dr-read">'+esc(t.nome)+'</div>';
+    b+='<div class="dr-sec">Situação</div><div class="dr-read" style="display:flex;gap:8px;align-items:center"><span class="ti '+ind.cls+'"></span>'+tagStatus(t.status)+
+       (prazoVencido(t)&&t.status!=='Concluída'?'<span style="font-size:11px;color:var(--red)">vencida há '+diasAtraso(t)+' dias</span>':'')+'</div>';
+    if(t.prazo)b+='<div class="dr-sec">Prazo</div><div class="dr-read">'+fmtDate(t.prazo)+'</div>';
+    if(t.responsavel)b+='<div class="dr-sec">Responsável</div><div class="dr-read"><span class="chip chip-resp">&#128100; '+esc(t.responsavel)+'</span></div>';
+    if((t.participantes||[]).length)b+='<div class="dr-sec">Participantes</div><div class="dr-read" style="display:flex;flex-wrap:wrap;gap:5px">'+t.participantes.map(function(n){return'<span class="chip chip-neutral">'+esc(n)+'</span>';}).join('')+'</div>';
+    if(t.pai_id){var pai=S.atividades.find(function(x){return x.id===t.pai_id;});if(pai)b+='<div class="dr-sec">Sub-atividade de</div><div class="dr-read">'+esc(pai.nome)+'</div>';}
+    if(t.depende_de)b+='<div class="dr-sec">Depende de</div><div class="dr-read">'+esc(t.depende_de)+'</div>';
+    if(t.aguardando)b+='<div class="dr-sec">Aguardando</div><div class="dr-read">'+esc(t.aguardando)+'</div>';
+    if(t.observacoes)b+='<div class="dr-sec">Observações</div><div class="dr-read">'+fmtTexto(t.observacoes)+'</div>';
+  }
+  if(t){
+    b+='<div class="dr-sec">Arquivos</div><div id="fa-Atividades-'+t.id+'" data-nome="'+esc(t.nome)+'"></div>';
+    b+='<div class="dr-sec">Registro</div><div class="dr-meta">'+
+       (t.criado_por?'Criada por '+esc(t.criado_por)+' em '+fmtDateTime(t.criado_em)+'<br>':'')+
+       'Última atualização: '+fmtDateTime(t.atualizado_em)+'</div>';
+  }
+  document.getElementById('dr-body').innerHTML=b;
+  var f='';
+  if(edit){
+    f='<span class="m-msg" id="dr-msg" style="margin:0;flex:1;text-align:left"></span>';
+    if(t&&can('excluirAtividade'))f+='<button class="btn btn-r" onclick="excluirAtividade(\''+t.id+'\')">Excluir</button>';
+    f+='<button class="btn btn-g" onclick="fecharDrawer()">Cancelar</button>';
+    f+='<button class="btn btn-p" onclick="salvarDrawer()">Salvar</button>';
+  }else{
+    f='<span style="flex:1;font-size:11px;color:var(--muted)">Modo consulta — somente leitura</span><button class="btn btn-g" onclick="fecharDrawer()">Fechar</button>';
+  }
+  document.getElementById('dr-foot').innerHTML=f;
+  if(edit){
+    criarPicker('dr-resp',t&&t.responsavel?[t.responsavel]:[],{single:true,placeholder:'Responsável...',prioridade:membros});
+    criarPicker('dr-part',t&&t.participantes?t.participantes.slice():[],{placeholder:'Participantes...',prioridade:membros});
+  }
+  if(t)renderArquivos('Atividades',t.id);
+  window._drStamp=t?t.atualizado_em:'';
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-ov').classList.add('open');
 }
-async function salvarAtividade(){
-  var id=document.getElementById('mt-id').value;
-  var nome=document.getElementById('mt-nome').value.trim();
-  var msg=document.getElementById('mt-msg');
+function drStatus(el){
+  document.querySelectorAll('#dr-status .st-chip').forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on');
+}
+function fecharDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-ov').classList.remove('open');
+  _drTask=null;_modalAberto=false;
+  if(_pendente)aplicarPendentes();
+}
+async function salvarDrawer(){
+  var nome=document.getElementById('dr-nome').value.trim();
+  var msg=document.getElementById('dr-msg');
   if(!nome){msg.textContent='Nome obrigatório.';return;}
   msg.textContent='Salvando...';
+  var stEl=document.querySelector('#dr-status .st-chip.on');
   var rec={
     nome:nome,
-    projeto_id:document.getElementById('mt-proj').value,
-    status:document.getElementById('mt-status').value,
-    prazo:document.getElementById('mt-prazo').value||null,
-    responsavel:pickerValores('mt-resp-pp')[0]||null,
-    participantes:pickerValores('mt-part-pp'),
-    pai_id:document.getElementById('mt-pai').value||null,
-    depende_de:document.getElementById('mt-dep').value||null,
-    aguardando:document.getElementById('mt-ag').value.trim()||null,
-    observacoes:document.getElementById('mt-obs').value.trim()||null
+    projeto_id:_drProj,
+    status:stEl?stEl.dataset.s:'Não iniciada',
+    prazo:document.getElementById('dr-prazo').value||null,
+    responsavel:pickerValores('dr-resp')[0]||null,
+    participantes:pickerValores('dr-part'),
+    pai_id:document.getElementById('dr-pai').value||null,
+    depende_de:document.getElementById('dr-dep').value||null,
+    aguardando:document.getElementById('dr-ag').value.trim()||null,
+    observacoes:document.getElementById('dr-obs').value.trim()||null
   };
   var r;
-  if(id){
-    var atual=S.atividades.find(function(x){return x.id===id;});
-    var stamp=document.getElementById('mt-loadstamp').value;
-    if(atual&&stamp&&atual.atualizado_em!==stamp){
+  if(_drTask){
+    var atual=S.atividades.find(function(x){return x.id===_drTask;});
+    if(atual&&window._drStamp&&atual.atualizado_em!==window._drStamp){
       if(!confirm('Esta atividade foi alterada por outra pessoa enquanto você editava. Sobrescrever?')){msg.textContent='';return;}
     }
-    r=await sb.from('atividades').update(rec).eq('id',id);
+    r=await sb.from('atividades').update(rec).eq('id',_drTask);
   }else{
     rec.criado_por=S.profile.nome||S.profile.email;
     r=await sb.from('atividades').insert(rec);
   }
   if(r.error){msg.textContent='Erro: '+r.error.message;}
-  else{msg.textContent='';fecharModal('mo-task');toast(id?'Atividade atualizada':'Atividade criada');}
+  else{fecharDrawer();toast(_drTask?'Atividade atualizada':'Atividade criada');}
 }
 async function excluirAtividade(id){
   if(!confirm('Excluir esta atividade (e sub-atividades)?'))return;
   var r=await sb.from('atividades').delete().eq('id',id);
-  if(r.error)toast('Erro: '+r.error.message,true);else toast('Atividade excluída');
+  if(r.error)toast('Erro: '+r.error.message,true);
+  else{toast('Atividade excluída');if(_drTask===id)fecharDrawer();}
 }
 
 // ═══ PEOPLE PICKER ════════════════════════════════════════════════════
@@ -1086,14 +1141,24 @@ function renderPicker(cid){
     inp.value='';renderPicker(cid);
     setTimeout(function(){var ni=document.querySelector('#'+cid+' .pp-in');if(ni)ni.focus();},30);
   }
-  inp.oninput=function(){
-    var q=inp.value.trim().toLowerCase();
-    if(!q){fechar();return;}
+  function opcoes(q){
     var prio=st.opts.prioridade||[];
     var base=S.pessoas.length?S.pessoas:S.perfis.map(function(p){return{nome:p.nome||p.email,area:p.area||'',cargo:''};});
-    var lista=base.filter(function(p){return p.nome&&p.nome.toLowerCase().indexOf(q)>=0&&st.sel.indexOf(p.nome)<0;});
+    // membros do projeto que não estão no diretório entram como opção também
+    prio.forEach(function(n){if(n&&!base.some(function(p){return p.nome===n;}))base=base.concat([{nome:n,area:'',cargo:'membro do projeto'}]);});
+    var lista=base.filter(function(p){
+      if(!p.nome||st.sel.indexOf(p.nome)>=0)return false;
+      if(q)return p.nome.toLowerCase().indexOf(q)>=0;
+      return prio.indexOf(p.nome)>=0; // sem digitação: só membros do projeto
+    });
+    if(!q&&!lista.length)lista=base.slice(0,8); // projeto sem membros: mostra o diretório
     lista.sort(function(a,b){return(prio.indexOf(b.nome)>=0?1:0)-(prio.indexOf(a.nome)>=0?1:0);});
-    abrir(lista);
+    return lista;
+  }
+  inp.onfocus=function(){abrir(opcoes(''));};
+  inp.oninput=function(){
+    var q=inp.value.trim().toLowerCase();
+    abrir(opcoes(q));
   };
   inp.onkeydown=function(e){
     if(e.key==='Backspace'&&!inp.value&&st.sel.length){st.sel.pop();renderPicker(cid);}
@@ -1106,12 +1171,6 @@ function renderPicker(cid){
 }
 
 // ═══ ARQUIVOS (SharePoint) ════════════════════════════════════════════
-function toggleArquivos(tipo,id){
-  var fa=document.getElementById('fa-'+tipo+'-'+id);
-  if(!fa)return;
-  if(fa.style.display==='none'){fa.style.display='block';renderArquivos(tipo,id);}
-  else fa.style.display='none';
-}
 function wfile(path,qs,opts){
   var q=Object.keys(qs).map(function(k){return k+'='+encodeURIComponent(qs[k]);}).join('&');
   opts=opts||{};
