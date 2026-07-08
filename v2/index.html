@@ -195,6 +195,17 @@ button{font-family:inherit}
 .pp-op:hover,.pp-op.hl{background:var(--brand-soft)}
 .pp-op small{color:var(--muted);display:block;font-size:10px}
 
+/* ARQUIVOS */
+.file-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surf2);border:1px solid var(--bord);border-radius:7px;margin-bottom:5px;font-size:12px}
+.file-name{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-meta{font-size:10px;color:var(--muted);white-space:nowrap}
+.file-dl{font-size:10px;color:var(--brand);cursor:pointer;text-decoration:none;font-weight:700}
+.file-dl:hover{text-decoration:underline}
+.file-rm{font-size:11px;color:var(--red);cursor:pointer;font-weight:700;border:none;background:none;padding:0 2px}
+.upload-zone{border:2px dashed var(--bord2);border-radius:8px;padding:13px;text-align:center;cursor:pointer;transition:.15s;margin-top:6px;font-size:12px;color:var(--muted)}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--brand);color:var(--brand)}
+.up-prog{font-size:11px;color:var(--brand);margin-top:5px;min-height:14px}
+
 /* TOAST */
 #toasts{position:fixed;top:16px;right:16px;z-index:400;display:flex;flex-direction:column;gap:8px}
 .toast{background:var(--surf);border:1px solid var(--bord);border-left:3px solid var(--brand);border-radius:9px;padding:11px 16px;font-size:12.5px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.16);animation:tin .2s ease}
@@ -680,6 +691,10 @@ function renderDetalheReuniao(){
     h+='<div class="dsec">Participantes</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">'+
        m.participantes.map(function(p){return'<span class="chip chip-neutral">'+esc(p)+'</span>';}).join('')+'</div>';
   }
+  h+='<div class="dsec">Ata da reunião</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">'+
+     '<button class="btn btn-p" onclick="gerarATA(\''+m.id+'\',false)">&#128196; Gerar ATA (Word)</button>'+
+     (can('editarReuniao')?'<button class="btn btn-g" onclick="gerarATA(\''+m.id+'\',true)">&#8682; Gerar e salvar no SharePoint</button>':'')+'</div>';
+  h+='<div class="dsec">Arquivos da reunião</div><div id="fa-Reunioes-'+m.id+'" data-nome="'+esc(m.titulo_editado||m.titulo)+'"></div>';
   if(m.resumo){h+='<div class="dsec">Resumo</div><div class="dtext">'+esc(m.resumo)+'</div>';}
   if(m.action_items){h+='<div class="dsec">Action Items</div><div class="dtext">'+esc(m.action_items)+'</div>';}
   if(pode){
@@ -692,6 +707,7 @@ function renderDetalheReuniao(){
   }
   h+='</div>';
   d.innerHTML=h;
+  renderArquivos('Reunioes',m.id);
 }
 async function mudarStatusReuniao(status){
   var r=await sb.from('reunioes').update({status:status}).eq('id',_reuniaoAberta);
@@ -863,10 +879,12 @@ function arvore(tasks,paiId,projId){
       (t.aguardando?'<div style="font-size:10px;color:var(--muted);margin-top:2px">&#8987; Aguardando: '+esc(t.aguardando)+'</div>':'')+
       (t.depende_de?'<div style="font-size:10px;color:var(--muted);margin-top:2px">&#128279; Depende de: '+esc(t.depende_de)+'</div>':'')+
       '</div>'+
-      (can('excluirAtividade')?'<button class="btn btn-r" style="font-size:10px;padding:3px 9px;flex-shrink:0" onclick="event.stopPropagation();excluirAtividade(\''+t.id+'\')">&#215;</button>':'')+
+      '<button class="btn btn-g" style="font-size:10px;padding:3px 9px;flex-shrink:0" title="Arquivos" onclick="event.stopPropagation();toggleArquivos(\'Atividades\',\''+t.id+'\')">&#128206;</button>'+
+      (can('excluirAtividade')?'<button class="btn btn-r" style="font-size:10px;padding:3px 9px;flex-shrink:0;margin-left:4px" onclick="event.stopPropagation();excluirAtividade(\''+t.id+'\')">&#215;</button>':'')+
       '</div>';
     var kids=subs.length?'<div class="tchildren" id="tc-'+t.id+'" style="display:'+(exp?'block':'none')+'">'+arvore(tasks,t.id,projId)+'</div>':'';
-    return'<div class="'+(isRoot?'tnode tnode-root':'tnode')+'">'+row+kids+'</div>';
+    var farea='<div id="fa-Atividades-'+t.id+'" data-nome="'+esc(t.nome)+'" style="display:none;padding:10px 14px;background:var(--surf2);border-top:1px solid var(--bord)"></div>';
+    return'<div class="'+(isRoot?'tnode tnode-root':'tnode')+'">'+row+farea+kids+'</div>';
   }).join('');
 }
 function cliqueTask(e,id,projId,temSubs){
@@ -1059,6 +1077,190 @@ function renderPicker(cid){
   inp.onblur=function(){setTimeout(fechar,150);};
   box.onclick=function(){inp.focus();};
   box.appendChild(inp);c.appendChild(box);c.appendChild(dd);
+}
+
+// ═══ ARQUIVOS (SharePoint) ════════════════════════════════════════════
+function toggleArquivos(tipo,id){
+  var fa=document.getElementById('fa-'+tipo+'-'+id);
+  if(!fa)return;
+  if(fa.style.display==='none'){fa.style.display='block';renderArquivos(tipo,id);}
+  else fa.style.display='none';
+}
+function wfile(path,qs,opts){
+  var q=Object.keys(qs).map(function(k){return k+'='+encodeURIComponent(qs[k]);}).join('&');
+  opts=opts||{};
+  return fetch(WORKER+path+'?'+q,{
+    method:'POST',
+    headers:Object.assign({'Authorization':'Bearer '+S.session.access_token},opts.headers||{}),
+    body:opts.body||JSON.stringify({})
+  }).then(function(r){return r.json();});
+}
+function fmtSize(b){if(!b)return'';if(b<1024)return b+' B';if(b<1048576)return Math.round(b/1024)+' KB';return(b/1048576).toFixed(1)+' MB';}
+function renderArquivos(tipo,id){
+  var c=document.getElementById('fa-'+tipo+'-'+id);
+  if(!c)return;
+  var nomeEnt=c.dataset.nome||'';
+  c.innerHTML='<div style="font-size:11px;color:var(--muted)">Carregando arquivos...</div>';
+  wfile('/v2/arquivos/list',{pasta:tipo+'/'+id,nome_entidade:nomeEnt}).then(function(d){
+    c.innerHTML='';
+    if(d.error){var e=document.createElement('div');e.style='font-size:11px;color:var(--red)';e.textContent='Erro: '+d.error;c.appendChild(e);return;}
+    var files=d.files||[];
+    files.forEach(function(f){
+      var item=document.createElement('div');item.className='file-item';
+      var ic=document.createElement('span');ic.textContent='\uD83D\uDCC4';
+      var nm=document.createElement('span');nm.className='file-name';nm.title=f.name;nm.textContent=f.name;
+      var mt=document.createElement('span');mt.className='file-meta';mt.textContent=fmtSize(f.size)+(f.modified?' \u00b7 '+f.modified:'');
+      var dl=document.createElement('a');dl.className='file-dl';dl.href=f.download_url||f.web_url;dl.target='_blank';dl.textContent='\u2913 Baixar';
+      item.appendChild(ic);item.appendChild(nm);item.appendChild(mt);item.appendChild(dl);
+      if(can('excluirAtividade')){
+        var rm=document.createElement('button');rm.className='file-rm';rm.textContent='\u2715';rm.title='Remover (com backup)';
+        rm.onclick=function(){
+          if(!confirm('Remover "'+f.name+'"? Um backup será mantido no SharePoint.'))return;
+          wfile('/v2/arquivos/delete',{pasta:tipo+'/'+id,nome_entidade:nomeEnt,file_id:f.id,filename:f.name}).then(function(r){
+            if(r.success){toast('Arquivo removido (backup salvo)');renderArquivos(tipo,id);}
+            else toast('Erro: '+(r.error||''),true);
+          });
+        };
+        item.appendChild(rm);
+      }
+      c.appendChild(item);
+    });
+    if(!files.length){
+      var vazio=document.createElement('div');vazio.style='font-size:11px;color:var(--muted);margin-bottom:4px';
+      vazio.textContent='Nenhum arquivo ainda.';c.appendChild(vazio);
+    }
+    if(can('criarAtividade')){
+      var uz=document.createElement('div');uz.className='upload-zone';
+      uz.textContent='Clique ou arraste arquivos para anexar (até 45MB)';
+      var fi=document.createElement('input');fi.type='file';fi.multiple=true;fi.style.display='none';
+      uz.onclick=function(){fi.click();};
+      uz.ondragover=function(e){e.preventDefault();uz.classList.add('drag');};
+      uz.ondragleave=function(){uz.classList.remove('drag');};
+      uz.ondrop=function(e){e.preventDefault();uz.classList.remove('drag');enviarArquivos(Array.from(e.dataTransfer.files),tipo,id,nomeEnt);};
+      fi.onchange=function(e){enviarArquivos(Array.from(e.target.files),tipo,id,nomeEnt);};
+      var prog=document.createElement('div');prog.className='up-prog';prog.id='up-'+tipo+'-'+id;
+      c.appendChild(uz);c.appendChild(fi);c.appendChild(prog);
+    }
+  });
+}
+function enviarArquivos(files,tipo,id,nomeEnt){
+  if(!files.length)return;
+  var prog=document.getElementById('up-'+tipo+'-'+id);
+  var done=0,errs=[];
+  if(prog)prog.textContent='Enviando '+files.length+' arquivo(s)...';
+  files.forEach(function(f){
+    if(f.size>45*1024*1024){done++;errs.push(f.name+' (>45MB)');return;}
+    wfile('/v2/arquivos/upload',{pasta:tipo+'/'+id,nome_entidade:nomeEnt,filename:f.name},{body:f,headers:{'Content-Type':'application/octet-stream'}}).then(function(r){
+      done++;
+      if(!r.success)errs.push(f.name);
+      if(done===files.length){
+        if(prog)prog.textContent=errs.length?'Erro em: '+errs.join(', '):'';
+        if(!errs.length)toast(files.length+' arquivo(s) enviado(s)');
+        renderArquivos(tipo,id);
+      }
+    }).catch(function(){done++;errs.push(f.name);if(done===files.length)renderArquivos(tipo,id);});
+  });
+}
+
+// ═══ ATA (.docx) ══════════════════════════════════════════════════════
+function loadDocx(cb){
+  if(window.docx)return cb(true);
+  var s=document.createElement('script');
+  s.src='https://unpkg.com/docx@8.5.0/build/index.umd.js';
+  s.onload=function(){cb(!!window.docx);};
+  s.onerror=function(){cb(false);};
+  document.head.appendChild(s);
+}
+function dadosATA(id){
+  var m=S.reunioes.find(function(x){return x.id===id;});
+  if(!m)return null;
+  var proj=m.projeto_id?S.projetos.find(function(p){return p.id===m.projeto_id;}):null;
+  var ativs=proj?S.atividades.filter(function(a){return a.projeto_id===proj.id&&a.status!=='Concluída';}):[];
+  return{m:m,proj:proj,ativs:ativs,titulo:m.titulo_editado||m.titulo};
+}
+function gerarATA(id,salvarSP){
+  var d=dadosATA(id);
+  if(!d)return;
+  toast('Gerando ATA...');
+  loadDocx(function(temDocx){
+    if(temDocx)gerarATAdocx(d,salvarSP);
+    else gerarATAdoc(d,salvarSP);
+  });
+}
+function gerarATAdocx(d,salvarSP){
+  var dx=window.docx;
+  function h1(t){return new dx.Paragraph({children:[new dx.TextRun({text:t,bold:true,size:32,color:'0E6B5A'})],spacing:{after:200}});}
+  function h2(t){return new dx.Paragraph({children:[new dx.TextRun({text:t.toUpperCase(),bold:true,size:20,color:'0E6B5A'})],spacing:{before:280,after:120}});}
+  function p(t,opts){opts=opts||{};return new dx.Paragraph({children:[new dx.TextRun({text:t,size:22,bold:!!opts.bold})],spacing:{after:opts.after!=null?opts.after:100}});}
+  var kids=[
+    new dx.Paragraph({children:[new dx.TextRun({text:'GRUPO HOLSA',bold:true,size:24,color:'0E6B5A'}),new dx.TextRun({text:'  ·  Central de Inteligência',size:20,color:'666666'})],spacing:{after:60}}),
+    new dx.Paragraph({children:[new dx.TextRun({text:'ATA DE REUNIÃO',bold:true,size:40})],spacing:{after:240}}),
+    h1(d.titulo),
+    p('Data: '+fmtDateTime(d.m.data),{}),
+    p('Status: '+d.m.status,{}),
+  ];
+  if(d.proj)kids.push(p('Projeto: '+d.proj.nome+(d.proj.area?' ('+d.proj.area+')':''),{}));
+  if((d.m.participantes||[]).length){
+    kids.push(h2('Participantes'));
+    d.m.participantes.forEach(function(pt){kids.push(new dx.Paragraph({children:[new dx.TextRun({text:pt,size:22})],bullet:{level:0}}));});
+  }
+  if(d.m.resumo){kids.push(h2('Resumo / Pauta'));kids.push(p(d.m.resumo,{after:120}));}
+  if(d.m.action_items){kids.push(h2('Decisões e Action Items'));kids.push(p(d.m.action_items,{after:120}));}
+  if(d.ativs.length){
+    kids.push(h2('Atividades em aberto do projeto'));
+    var rows=[new dx.TableRow({children:['Atividade','Responsável','Status','Prazo'].map(function(c){
+      return new dx.TableCell({children:[new dx.Paragraph({children:[new dx.TextRun({text:c,bold:true,size:20})]})],shading:{fill:'E2EFE9'}});
+    })})];
+    d.ativs.forEach(function(a){
+      rows.push(new dx.TableRow({children:[a.nome,a.responsavel||'—',a.status,a.prazo?fmtDate(a.prazo):'—'].map(function(c){
+        return new dx.TableCell({children:[new dx.Paragraph({children:[new dx.TextRun({text:String(c),size:20})]})]});
+      })}));
+    });
+    kids.push(new dx.Table({rows:rows,width:{size:100,type:dx.WidthType.PERCENTAGE}}));
+  }
+  kids.push(h2('Assinaturas'));
+  kids.push(p(' ',{after:240}));
+  kids.push(p('_________________________________            _________________________________',{after:60}));
+  kids.push(p('Responsável                                                        Participante',{after:200}));
+  kids.push(new dx.Paragraph({children:[new dx.TextRun({text:'Documento gerado pela Central de Inteligência HOLSA em '+new Date().toLocaleString('pt-BR'),size:16,color:'999999',italics:true}),],spacing:{before:300}}));
+  var doc=new dx.Document({sections:[{children:kids}]});
+  dx.Packer.toBlob(doc).then(function(blob){
+    var nome='ATA-'+d.titulo.replace(/[^a-zA-Z0-9À-ú ]/g,'').slice(0,40).trim().replace(/ /g,'_')+'-'+(d.m.data||'').slice(0,10)+'.docx';
+    finalizarATA(blob,nome,d,salvarSP);
+  });
+}
+function gerarATAdoc(d,salvarSP){
+  // Fallback: HTML → .doc (Word abre e edita normalmente)
+  var css='body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#1a201c}h1{font-size:16pt;color:#0e6b5a}h2{font-size:11pt;color:#0e6b5a;text-transform:uppercase;letter-spacing:1px;margin-top:18pt}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:5pt;font-size:10pt}th{background:#e2efe9}';
+  var b='<h1>ATA DE REUNIÃO — '+esc(d.titulo)+'</h1>';
+  b+='<p><b>GRUPO HOLSA</b> · Central de Inteligência</p>';
+  b+='<p>Data: '+fmtDateTime(d.m.data)+' · Status: '+esc(d.m.status)+(d.proj?' · Projeto: '+esc(d.proj.nome):'')+'</p>';
+  if((d.m.participantes||[]).length)b+='<h2>Participantes</h2><ul>'+d.m.participantes.map(function(p){return'<li>'+esc(p)+'</li>';}).join('')+'</ul>';
+  if(d.m.resumo)b+='<h2>Resumo / Pauta</h2><p>'+esc(d.m.resumo).replace(/\n/g,'<br>')+'</p>';
+  if(d.m.action_items)b+='<h2>Decisões e Action Items</h2><p>'+esc(d.m.action_items).replace(/\n/g,'<br>')+'</p>';
+  if(d.ativs.length){
+    b+='<h2>Atividades em aberto do projeto</h2><table><tr><th>Atividade</th><th>Responsável</th><th>Status</th><th>Prazo</th></tr>';
+    d.ativs.forEach(function(a){b+='<tr><td>'+esc(a.nome)+'</td><td>'+esc(a.responsavel||'—')+'</td><td>'+esc(a.status)+'</td><td>'+(a.prazo?fmtDate(a.prazo):'—')+'</td></tr>';});
+    b+='</table>';
+  }
+  b+='<h2>Assinaturas</h2><br><p>_________________________________ &nbsp;&nbsp;&nbsp; _________________________________</p><p>Responsável &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Participante</p>';
+  b+='<p style="color:#999;font-size:8pt;font-style:italic">Documento gerado pela Central de Inteligência HOLSA em '+new Date().toLocaleString('pt-BR')+'</p>';
+  var docHtml='<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>'+css+'</style></head><body>'+b+'</body></html>';
+  var blob=new Blob(['\ufeff'+docHtml],{type:'application/msword'});
+  var nome='ATA-'+d.titulo.replace(/[^a-zA-Z0-9À-ú ]/g,'').slice(0,40).trim().replace(/ /g,'_')+'-'+(d.m.data||'').slice(0,10)+'.doc';
+  finalizarATA(blob,nome,d,salvarSP);
+}
+function finalizarATA(blob,nome,d,salvarSP){
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=nome;a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},4000);
+  toast('ATA baixada: '+nome);
+  if(salvarSP){
+    wfile('/v2/arquivos/upload',{pasta:'Reunioes/'+d.m.id,nome_entidade:d.titulo,filename:nome},{body:blob,headers:{'Content-Type':'application/octet-stream'}}).then(function(r){
+      if(r.success){toast('ATA salva no SharePoint');renderArquivos('Reunioes',d.m.id);}
+      else toast('Erro ao salvar no SharePoint: '+(r.error||''),true);
+    });
+  }
 }
 
 // ═══ HISTÓRICO ════════════════════════════════════════════════════════
