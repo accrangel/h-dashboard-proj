@@ -221,6 +221,11 @@ button{font-family:inherit}
 .dr-sec:first-child{margin-top:0}
 .dr-read{font-size:13px;line-height:1.55;color:var(--text)}
 .dr-meta{font-size:10.5px;color:var(--muted);line-height:1.7}
+.dr-grid{display:grid;grid-template-columns:88px 1fr;gap:6px 10px;align-items:start;font-size:12.5px}
+.dr-k{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase;padding-top:2px}
+.dr-v{line-height:1.5;min-width:0}
+.dr-pencil{background:var(--surf2);border:1px solid var(--bord);border-radius:7px;font-size:13px;cursor:pointer;padding:5px 10px;color:var(--muted);flex-shrink:0}
+.dr-pencil:hover{border-color:var(--brand);color:var(--brand)}
 .st-chip{font-size:11px;font-weight:700;border-radius:6px;padding:5px 11px;cursor:pointer;border:1.5px solid transparent;opacity:.55}
 .st-chip.on{opacity:1;border-color:currentColor}
 @media(max-width:920px){.drawer{width:100vw;right:-100vw}}
@@ -468,8 +473,16 @@ async function iniciar(){
   go('geral');
 }
 
+function tokenAtual(){
+  return sb.auth.getSession().then(function(r){
+    if(r.data.session){S.session=r.data.session;return r.data.session.access_token;}
+    return'';
+  });
+}
 function wfetch(path,body){
-  return fetch(WORKER+path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.session.access_token},body:JSON.stringify(body||{})}).then(function(r){return r.json();});
+  return tokenAtual().then(function(tk){
+    return fetch(WORKER+path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk},body:JSON.stringify(body||{})}).then(function(r){return r.json();});
+  });
 }
 
 async function carregarDados(){
@@ -980,64 +993,71 @@ async function removerMembro(pid,nome){
 }
 
 // ═══ DRAWER DE ATIVIDADE (ver/criar/editar) ══════════════════════════
-var _drTask=null,_drProj=null;
-function abrirDrawer(taskId,projId){
+var _drTask=null,_drProj=null,_drMode='view';
+function abrirDrawer(taskId,projId,modo){
   _drTask=taskId;_drProj=projId;
+  _drMode=modo||(taskId?'view':'edit');
+  if(_drMode==='edit'&&!can('editarAtividade'))_drMode='view';
   _modalAberto=true;
   var t=taskId?S.atividades.find(function(x){return x.id===taskId;}):null;
   var proj=S.projetos.find(function(x){return x.id===projId;});
-  var edit=can('editarAtividade');
   var membros=(proj&&proj.membros)||[];
-  document.getElementById('dr-titulo').textContent=t?(edit?'Editar atividade':'Detalhes da atividade'):'Nova atividade';
+  var titulos={view:'Atividade',edit:taskId?'Editar atividade':'Nova atividade'};
+  var head=document.querySelector('#drawer .drawer-h');
+  head.innerHTML='<div class="drawer-t" id="dr-titulo">'+titulos[_drMode]+'</div>'+
+    (_drMode==='view'&&can('editarAtividade')?'<button class="dr-pencil" title="Editar" onclick="abrirDrawer(_drTask,_drProj,\'edit\')">&#9998; Editar</button>':'')+
+    '<button class="drawer-x" onclick="fecharDrawer()">&#215;</button>';
   var b='';
-  if(edit){
+  if(_drMode==='edit'){
     b+='<div class="dr-sec">Nome</div><input class="fi" id="dr-nome" value="'+esc(t?t.nome:'')+'">';
     b+='<div class="dr-sec">Status</div><div style="display:flex;gap:6px;flex-wrap:wrap" id="dr-status">'+
       ['Não iniciada','Em andamento','Concluída','Bloqueada','Aguardando'].map(function(s){
         var cls={'Concluída':'t-conc','Em andamento':'t-acomp','Bloqueada':'t-bloc','Aguardando':'t-ag','Não iniciada':'t-ni'}[s];
         return'<span class="tag '+cls+' st-chip'+(((t&&t.status)||'Não iniciada')===s?' on':'')+'" data-s="'+s+'" onclick="drStatus(this)">'+s+'</span>';
       }).join('')+'</div>';
-    b+='<div class="dr-sec">Prazo</div><input class="fi" type="date" id="dr-prazo" value="'+(t&&t.prazo?t.prazo:'')+'">';
+    b+='<div class="frow" style="margin-top:12px"><div><div class="dr-sec" style="margin-top:0">Prazo</div><input class="fi" type="date" id="dr-prazo" value="'+(t&&t.prazo?t.prazo:'')+'"></div>'+
+       '<div><div class="dr-sec" style="margin-top:0">Sub-atividade de</div><select class="fi" id="dr-pai"></select></div></div>';
     b+='<div class="dr-sec">Responsável</div><div id="dr-resp"></div>';
     b+='<div class="dr-sec">Participantes</div><div id="dr-part"></div>';
-    var outras=S.atividades.filter(function(x){return x.projeto_id===projId&&x.id!==taskId;});
-    b+='<div class="dr-sec">Sub-atividade de</div><select class="fi" id="dr-pai"><option value="">Atividade raiz</option>'+
-       outras.map(function(o){return'<option value="'+o.id+'"'+((t&&t.pai_id)===o.id?' selected':'')+'>'+esc(o.nome)+'</option>';}).join('')+'</select>';
-    b+='<div class="dr-sec">Depende de</div><select class="fi" id="dr-dep"><option value="">Nenhuma</option>'+
-       outras.map(function(o){return'<option'+((t&&t.depende_de)===o.nome?' selected':'')+'>'+esc(o.nome)+'</option>';}).join('')+'</select>';
-    b+='<div class="dr-sec">Aguardando o quê?</div><input class="fi" id="dr-ag" value="'+esc(t&&t.aguardando?t.aguardando:'')+'">';
+    b+='<div class="frow" style="margin-top:12px"><div><div class="dr-sec" style="margin-top:0">Depende de</div><select class="fi" id="dr-dep"></select></div>'+
+       '<div><div class="dr-sec" style="margin-top:0">Aguardando o quê?</div><input class="fi" id="dr-ag" value="'+esc(t&&t.aguardando?t.aguardando:'')+'"></div></div>';
     b+='<div class="dr-sec">Observações</div><textarea class="fta" id="dr-obs" style="height:80px">'+esc(t&&t.observacoes?t.observacoes:'')+'</textarea>';
   }else if(t){
     var ind=indicador(t);
-    b+='<div class="dr-sec">Nome</div><div class="dr-read">'+esc(t.nome)+'</div>';
-    b+='<div class="dr-sec">Situação</div><div class="dr-read" style="display:flex;gap:8px;align-items:center"><span class="ti '+ind.cls+'"></span>'+tagStatus(t.status)+
-       (prazoVencido(t)&&t.status!=='Concluída'?'<span style="font-size:11px;color:var(--red)">vencida há '+diasAtraso(t)+' dias</span>':'')+'</div>';
-    if(t.prazo)b+='<div class="dr-sec">Prazo</div><div class="dr-read">'+fmtDate(t.prazo)+'</div>';
-    if(t.responsavel)b+='<div class="dr-sec">Responsável</div><div class="dr-read"><span class="chip chip-resp">&#128100; '+esc(t.responsavel)+'</span></div>';
-    if((t.participantes||[]).length)b+='<div class="dr-sec">Participantes</div><div class="dr-read" style="display:flex;flex-wrap:wrap;gap:5px">'+t.participantes.map(function(n){return'<span class="chip chip-neutral">'+esc(n)+'</span>';}).join('')+'</div>';
-    if(t.pai_id){var pai=S.atividades.find(function(x){return x.id===t.pai_id;});if(pai)b+='<div class="dr-sec">Sub-atividade de</div><div class="dr-read">'+esc(pai.nome)+'</div>';}
-    if(t.depende_de)b+='<div class="dr-sec">Depende de</div><div class="dr-read">'+esc(t.depende_de)+'</div>';
-    if(t.aguardando)b+='<div class="dr-sec">Aguardando</div><div class="dr-read">'+esc(t.aguardando)+'</div>';
+    b+='<div style="font-size:15px;font-weight:800;line-height:1.35;margin-bottom:12px">'+esc(t.nome)+'</div>';
+    b+='<div class="dr-grid">';
+    b+='<div class="dr-k">Situação</div><div class="dr-v" style="display:flex;gap:7px;align-items:center;flex-wrap:wrap"><span class="ti '+ind.cls+'" title="'+ind.title+'"></span>'+tagStatus(t.status)+
+       (prazoVencido(t)&&t.status!=='Concluída'?'<span style="font-size:11px;color:var(--red);font-weight:700">vencida há '+diasAtraso(t)+'d</span>':'')+'</div>';
+    if(t.prazo)b+='<div class="dr-k">Prazo</div><div class="dr-v">'+fmtDate(t.prazo)+'</div>';
+    if(t.responsavel)b+='<div class="dr-k">Resp.</div><div class="dr-v"><span class="chip chip-resp">&#128100; '+esc(t.responsavel)+'</span></div>';
+    if((t.participantes||[]).length)b+='<div class="dr-k">Equipe</div><div class="dr-v" style="display:flex;flex-wrap:wrap;gap:4px">'+t.participantes.map(function(n){return'<span class="chip chip-neutral">'+esc(n)+'</span>';}).join('')+'</div>';
+    if(t.pai_id){var pai=S.atividades.find(function(x){return x.id===t.pai_id;});if(pai)b+='<div class="dr-k">Parte de</div><div class="dr-v">'+esc(pai.nome)+'</div>';}
+    if(t.depende_de)b+='<div class="dr-k">Depende</div><div class="dr-v">'+esc(t.depende_de)+'</div>';
+    if(t.aguardando)b+='<div class="dr-k">Aguarda</div><div class="dr-v">'+esc(t.aguardando)+'</div>';
+    b+='</div>';
     if(t.observacoes)b+='<div class="dr-sec">Observações</div><div class="dr-read">'+fmtTexto(t.observacoes)+'</div>';
   }
   if(t){
     b+='<div class="dr-sec">Arquivos</div><div id="fa-Atividades-'+t.id+'" data-nome="'+esc(t.nome)+'"></div>';
-    b+='<div class="dr-sec">Registro</div><div class="dr-meta">'+
+    if(_drMode==='view')b+='<div class="dr-sec">Registro</div><div class="dr-meta">'+
        (t.criado_por?'Criada por '+esc(t.criado_por)+' em '+fmtDateTime(t.criado_em)+'<br>':'')+
        'Última atualização: '+fmtDateTime(t.atualizado_em)+'</div>';
   }
   document.getElementById('dr-body').innerHTML=b;
   var f='';
-  if(edit){
+  if(_drMode==='edit'){
     f='<span class="m-msg" id="dr-msg" style="margin:0;flex:1;text-align:left"></span>';
-    if(t&&can('excluirAtividade'))f+='<button class="btn btn-r" onclick="excluirAtividade(\''+t.id+'\')">Excluir</button>';
-    f+='<button class="btn btn-g" onclick="fecharDrawer()">Cancelar</button>';
+    if(t&&can('excluirAtividade'))f+='<button class="btn btn-r" onclick="excluirAtividade(\''+(t?t.id:'')+'\')">Excluir</button>';
+    f+='<button class="btn btn-g" onclick="'+(t?'abrirDrawer(_drTask,_drProj,\'view\')':'fecharDrawer()')+'">Cancelar</button>';
     f+='<button class="btn btn-p" onclick="salvarDrawer()">Salvar</button>';
   }else{
-    f='<span style="flex:1;font-size:11px;color:var(--muted)">Modo consulta — somente leitura</span><button class="btn btn-g" onclick="fecharDrawer()">Fechar</button>';
+    f='<span style="flex:1;font-size:11px;color:var(--muted)">'+(can('editarAtividade')?'':'Modo consulta — somente leitura')+'</span><button class="btn btn-g" onclick="fecharDrawer()">Fechar</button>';
   }
   document.getElementById('dr-foot').innerHTML=f;
-  if(edit){
+  if(_drMode==='edit'){
+    var outras=S.atividades.filter(function(x){return x.projeto_id===projId&&x.id!==taskId;});
+    document.getElementById('dr-pai').innerHTML='<option value="">Atividade raiz</option>'+outras.map(function(o){return'<option value="'+o.id+'"'+((t&&t.pai_id)===o.id?' selected':'')+'>'+esc(o.nome)+'</option>';}).join('');
+    document.getElementById('dr-dep').innerHTML='<option value="">Nenhuma</option>'+outras.map(function(o){return'<option'+((t&&t.depende_de)===o.nome?' selected':'')+'>'+esc(o.nome)+'</option>';}).join('');
     criarPicker('dr-resp',t&&t.responsavel?[t.responsavel]:[],{single:true,placeholder:'Responsável...',prioridade:membros});
     criarPicker('dr-part',t&&t.participantes?t.participantes.slice():[],{placeholder:'Participantes...',prioridade:membros});
   }
@@ -1086,7 +1106,8 @@ async function salvarDrawer(){
     r=await sb.from('atividades').insert(rec);
   }
   if(r.error){msg.textContent='Erro: '+r.error.message;}
-  else{fecharDrawer();toast(_drTask?'Atividade atualizada':'Atividade criada');}
+  else if(_drTask){toast('Atividade atualizada');setTimeout(function(){if(_drTask)abrirDrawer(_drTask,_drProj,'view');},350);}
+  else{fecharDrawer();toast('Atividade criada');}
 }
 async function excluirAtividade(id){
   if(!confirm('Excluir esta atividade (e sub-atividades)?'))return;
@@ -1174,11 +1195,13 @@ function renderPicker(cid){
 function wfile(path,qs,opts){
   var q=Object.keys(qs).map(function(k){return k+'='+encodeURIComponent(qs[k]);}).join('&');
   opts=opts||{};
-  return fetch(WORKER+path+'?'+q,{
-    method:'POST',
-    headers:Object.assign({'Authorization':'Bearer '+S.session.access_token},opts.headers||{}),
-    body:opts.body||JSON.stringify({})
-  }).then(function(r){return r.json();});
+  return tokenAtual().then(function(tk){
+    return fetch(WORKER+path+'?'+q,{
+      method:'POST',
+      headers:Object.assign({'Authorization':'Bearer '+tk},opts.headers||{}),
+      body:opts.body||JSON.stringify({})
+    }).then(function(r){return r.json();});
+  });
 }
 function fmtSize(b){if(!b)return'';if(b<1024)return b+' B';if(b<1048576)return Math.round(b/1024)+' KB';return(b/1048576).toFixed(1)+' MB';}
 function renderArquivos(tipo,id){
