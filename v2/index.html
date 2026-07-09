@@ -88,7 +88,6 @@ button{font-family:inherit}
 
 /* KPI */
 .kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.kgrid6{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
 .kpi{background:var(--surf);border:1px solid var(--bord);border-radius:11px;padding:14px;cursor:pointer;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:.14s}
 .kpi:hover{border-color:var(--brand)}
 .kpi::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:var(--kc,var(--brand))}
@@ -206,6 +205,24 @@ button{font-family:inherit}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--brand);color:var(--brand)}
 .up-prog{font-size:11px;color:var(--brand);margin-top:5px;min-height:14px}
 
+/* GRÁFICOS DA VISÃO GERAL */
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:920px){.ggrid{grid-template-columns:1fr}}
+.gcard{background:var(--surf);border:1px solid var(--bord);border-radius:11px;box-shadow:var(--shadow);padding:14px 16px;min-width:0}
+.gleg{display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
+.gleg-i{display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;border-radius:6px;padding:3px 6px;margin:0 -6px}
+.gleg-i:hover{background:var(--surf2)}
+.gleg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.gleg-n{margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums}
+.gbar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px}
+.gbar-lbl{min-width:110px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gbar-track{flex:1;height:14px;background:var(--surf2);border-radius:7px;overflow:hidden;display:flex}
+.gbar-n{min-width:52px;text-align:right;font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.venc-i{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--bord);cursor:pointer;font-size:12px}
+.venc-i:last-child{border-bottom:none}
+.venc-i:hover{background:var(--surf2)}
+.venc-d{font-size:10px;font-weight:800;border-radius:5px;padding:3px 7px;white-space:nowrap;flex-shrink:0}
+
 /* DRAWER (painel lateral de atividade) */
 .drawer-ov{display:none;position:fixed;inset:0;background:rgba(10,16,13,.28);z-index:140}
 .drawer-ov.open{display:block}
@@ -272,7 +289,6 @@ button{font-family:inherit}
   .side.open{left:0}
   .burger{display:block}
   .kgrid{grid-template-columns:repeat(2,1fr)}
-  .kgrid6{grid-template-columns:repeat(3,1fr)}
   .frow{grid-template-columns:1fr}
   .body{padding:14px}
   .btn{min-height:40px}
@@ -614,58 +630,133 @@ function tagStatus(s){var c={'Concluída':'t-conc','Em andamento':'t-acomp','Em 
 // ═══ VISÃO GERAL ══════════════════════════════════════════════════════
 function kCard(label,color,val,sub,click){return'<div class="kpi" style="--kc:var(--'+color+')" onclick="'+(click||'')+'"><div class="kpi-v">'+val+'</div><div class="kpi-l">'+label+'</div>'+(sub?'<div class="kpi-s">'+sub+'</div>':'')+'</div>';}
 
+function donutSVG(dados,centro,sub){
+  var total=dados.reduce(function(s,d){return s+d.val;},0);
+  var r=52,c=2*Math.PI*r,off=0,segs='';
+  if(total>0)dados.forEach(function(d){
+    if(!d.val)return;
+    var len=d.val/total*c;
+    segs+='<circle r="'+r+'" cx="65" cy="65" fill="none" stroke="'+d.cor+'" stroke-width="20" stroke-dasharray="'+len.toFixed(2)+' '+(c-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 65 65)"/>';
+    off+=len;
+  });
+  else segs='<circle r="'+r+'" cx="65" cy="65" fill="none" stroke="var(--surf2)" stroke-width="20"/>';
+  return'<svg width="130" height="130" viewBox="0 0 130 130" style="flex-shrink:0">'+segs+
+    '<text x="65" y="62" text-anchor="middle" style="font-size:26px;font-weight:800;fill:var(--text)">'+centro+'</text>'+
+    '<text x="65" y="78" text-anchor="middle" style="font-size:9px;fill:var(--muted);letter-spacing:1px">'+sub+'</text></svg>';
+}
+
 function rGeral(){
   var now=new Date();
   var rTotal=S.reunioes.length;
   var rSemana=S.reunioes.filter(function(m){return m.data&&(now-new Date(m.data))/86400000<=7;}).length;
   var rConc=S.reunioes.filter(function(m){return(m.status||'').toLowerCase().indexOf('conclu')>=0;}).length;
   var rSem=S.reunioes.filter(function(m){return!m.projeto_id;}).length;
-  var and=S.atividades.filter(function(a){return a.status==='Em andamento';}).length;
-  var conc=S.atividades.filter(function(a){return a.status==='Concluída';}).length;
+  var stCount={};['Em andamento','Concluída','Não iniciada','Bloqueada','Aguardando'].forEach(function(s){stCount[s]=0;});
+  S.atividades.forEach(function(a){if(stCount[a.status]!=null)stCount[a.status]++;});
   var atras=S.atividades.filter(function(a){return prazoVencido(a)&&a.status!=='Concluída';});
-  var bloq=S.atividades.filter(function(a){return a.status==='Bloqueada'||a.status==='Aguardando';});
+  var conc=stCount['Concluída'];
+  var abertas=S.atividades.length-conc;
   var sla=S.atividades.length?Math.round(conc/S.atividades.length*100):0;
-  var wl={};S.atividades.forEach(function(a){if(a.responsavel&&a.status!=='Concluída')wl[a.responsavel]=(wl[a.responsavel]||0)+1;});
-  var wlTop=Object.keys(wl).map(function(k){return[k,wl[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+  var pAtv=S.projetos.filter(function(p){return p.status==='Ativo';}).length;
+  var pPau=S.projetos.filter(function(p){return p.status==='Pausado';}).length;
+  var pCon=S.projetos.filter(function(p){return p.status==='Concluído';}).length;
 
-  var h='<div class="sec-t">Reuniões</div><div class="kgrid">';
-  h+=kCard('Total','brand',rTotal,'no workspace',"goReunioes('all')");
+  var h='';
+  // ── alerta de atrasadas (compacto) ──
+  if(atras.length){
+    h+='<div class="card" style="border-left:3px solid var(--red)"><div class="card-b" style="padding:11px 16px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="font-size:12px;font-weight:800;color:var(--red)">&#9888; '+atras.length+' atividade(s) atrasada(s)</span>';
+    atras.slice(0,3).forEach(function(a){h+='<span style="font-size:11px;color:var(--muted)">'+esc(a.nome.slice(0,32))+' <b style="color:var(--red)">'+diasAtraso(a)+'d</b></span>';});
+    h+='<button class="btn btn-r" style="font-size:10px;padding:4px 10px;margin-left:auto" onclick="goAtividades(\'__atrasadas\')">Ver todas</button></div></div></div>';
+  }
+  // ── KPIs reuniões ──
+  h+='<div class="sec-t">Reuniões</div><div class="kgrid">';
+  h+=kCard('Total','blue',rTotal,'no workspace',"goReunioes('all')");
   h+=kCard('Esta semana','blue',rSemana,'últimos 7 dias',"goReunioes('week')");
   h+=kCard('Concluídas','green',rConc,(rTotal?Math.round(rConc/rTotal*100):0)+'% do total',"goReunioes('concluidas')");
   h+=kCard('Sem projeto','yellow',rSem,'aguardando alocação',"goReunioes('sem')");
   h+='</div>';
-  var projAtivos=S.projetos.filter(function(p){return p.status==='Ativo';}).length;
+  // ── KPIs projetos & atividades (enxutos) ──
   h+='<div class="sec-t">Projetos &amp; Atividades</div><div class="kgrid">';
-  h+=kCard('Projetos ativos','brand',projAtivos,'de '+S.projetos.length+' no total',"go('projetos')");
-  h+=kCard('Atividades','brand',S.atividades.length,conc+' concluídas · '+(S.atividades.length-conc)+' abertas',"go('projetos')");
-  h+=kCard('Em andamento','blue',and,'',"goAtividades('Em andamento')");
-  h+=kCard('Concluídas','green',conc,'',"goAtividades('Concluída')");
-  h+='</div><div class="kgrid">';
-  h+=kCard('Atrasadas','red',atras.length,'',"goAtividades('__atrasadas')");
-  h+=kCard('Bloqueadas','orange',bloq.length,'',"goAtividades('Bloqueada')");
-  h+=kCard('SLA','brand',sla+'%','concluídas / total','');
-  h+=kCard('Pessoas','muted',wlTop.length,'com pendências','');
+  h+=kCard('Projetos','brand',S.projetos.length,pAtv+' ativos'+(pPau?' · '+pPau+' pausados':'')+(pCon?' · '+pCon+' concluídos':''),"go('projetos')");
+  h+=kCard('Atividades','brand',S.atividades.length,abertas+' abertas · '+conc+' concluídas',"go('projetos')");
+  h+=kCard('Atrasadas','red',atras.length,'exigem ação',"goAtividades('__atrasadas')");
+  h+=kCard('SLA','green',sla+'%','concluídas / total','');
   h+='</div>';
 
-  if(atras.length){
-    h+='<div class="card" style="border-left:3px solid var(--red)"><div class="card-b">';
-    h+='<div class="sec-t" style="color:var(--red)">&#9888; '+atras.length+' atividade(s) atrasada(s)</div>';
-    atras.slice(0,6).forEach(function(a){
-      h+='<div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--bord)">'+
-        '<span class="tag t-bloc" style="white-space:nowrap">'+diasAtraso(a)+' dias</span>'+
-        '<div style="flex:1"><div style="font-size:12.5px;font-weight:700">'+esc(a.nome)+'</div>'+
-        '<div style="font-size:11px;color:var(--muted)">'+(a.responsavel?'Resp: <b>'+esc(a.responsavel)+'</b> · ':'')+esc(projNome(a.projeto_id)||'—')+'</div></div></div>';
-    });
-    h+='</div></div>';
-  }
-  if(wlTop.length){
-    h+='<div class="card"><div class="card-b"><div class="sec-t">Workload por responsável</div>';
-    wlTop.forEach(function(w){
-      var pct=Math.min(100,w[1]*18);
-      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="font-size:12px;font-weight:700;min-width:120px">'+esc(w[0])+'</div><div class="prog"><div style="width:'+pct+'%"></div></div><div style="font-size:11px;color:var(--muted);min-width:20px;text-align:right">'+w[1]+'</div></div>';
-    });
-    h+='</div></div>';
-  }
+  // ── GRÁFICOS ──
+  h+='<div class="ggrid">';
+
+  // 1. Donut de status
+  var cores={'Em andamento':'var(--blue)','Concluída':'var(--green)','Não iniciada':'#98a29b','Bloqueada':'var(--red)','Aguardando':'var(--orange)'};
+  var dados=Object.keys(stCount).map(function(s){return{label:s,val:stCount[s],cor:cores[s]};});
+  h+='<div class="gcard"><div class="sec-t">Status das atividades</div><div style="display:flex;gap:16px;align-items:center">';
+  h+=donutSVG(dados,S.atividades.length,'ATIVIDADES');
+  h+='<div class="gleg">'+dados.map(function(d){
+    return'<div class="gleg-i" onclick="goAtividades(\''+d.label+'\')"><span class="gleg-dot" style="background:'+d.cor+'"></span>'+d.label+'<span class="gleg-n">'+d.val+'</span></div>';
+  }).join('')+'</div></div></div>';
+
+  // 2. Progresso por área
+  var areas={};
+  S.projetos.forEach(function(p){
+    if(!p.area)return;
+    var ts=S.atividades.filter(function(a){return a.projeto_id===p.id;});
+    if(!areas[p.area])areas[p.area]={total:0,conc:0,atras:0};
+    areas[p.area].total+=ts.length;
+    areas[p.area].conc+=ts.filter(function(a){return a.status==='Concluída';}).length;
+    areas[p.area].atras+=ts.filter(function(a){return prazoVencido(a)&&a.status!=='Concluída';}).length;
+  });
+  h+='<div class="gcard"><div class="sec-t">Progresso por área</div>';
+  var areaKeys=Object.keys(areas);
+  if(!areaKeys.length)h+='<div style="font-size:12px;color:var(--muted)">Sem projetos com área definida.</div>';
+  areaKeys.forEach(function(a){
+    var d=areas[a];var pct=d.total?Math.round(d.conc/d.total*100):0;var pctA=d.total?Math.round(d.atras/d.total*100):0;
+    h+='<div class="gbar-row"><span class="gbar-lbl" title="'+esc(a)+'">'+esc(a)+'</span>'+
+       '<div class="gbar-track"><div style="width:'+pct+'%;background:var(--green)"></div><div style="width:'+pctA+'%;background:var(--red)"></div></div>'+
+       '<span class="gbar-n">'+d.conc+'/'+d.total+'</span></div>';
+  });
+  h+='<div style="font-size:10px;color:var(--muted);margin-top:4px"><span style="color:var(--green)">&#9632;</span> concluídas &nbsp;<span style="color:var(--red)">&#9632;</span> atrasadas</div></div>';
+
+  // 3. Workload por responsável (abertas + atrasadas)
+  var wl={};
+  S.atividades.forEach(function(a){
+    if(!a.responsavel||a.status==='Concluída')return;
+    if(!wl[a.responsavel])wl[a.responsavel]={abertas:0,atras:0};
+    wl[a.responsavel].abertas++;
+    if(prazoVencido(a))wl[a.responsavel].atras++;
+  });
+  var wlTop=Object.keys(wl).map(function(k){return[k,wl[k]];}).sort(function(a,b){return b[1].abertas-a[1].abertas;}).slice(0,6);
+  var wlMax=wlTop.length?wlTop[0][1].abertas:1;
+  h+='<div class="gcard"><div class="sec-t">Workload por responsável</div>';
+  if(!wlTop.length)h+='<div style="font-size:12px;color:var(--muted)">Nenhuma atividade aberta com responsável.</div>';
+  wlTop.forEach(function(x){
+    var nome=x[0],d=x[1];
+    var wOk=Math.round((d.abertas-d.atras)/wlMax*100);
+    var wAt=Math.round(d.atras/wlMax*100);
+    h+='<div class="gbar-row"><span class="gbar-lbl" title="'+esc(nome)+'">'+esc(nome)+'</span>'+
+       '<div class="gbar-track"><div style="width:'+wOk+'%;background:var(--blue)"></div><div style="width:'+wAt+'%;background:var(--red)"></div></div>'+
+       '<span class="gbar-n">'+d.abertas+(d.atras?' ('+d.atras+'&#9888;)':'')+'</span></div>';
+  });
+  h+='<div style="font-size:10px;color:var(--muted);margin-top:4px"><span style="color:var(--blue)">&#9632;</span> no prazo &nbsp;<span style="color:var(--red)">&#9632;</span> atrasadas</div></div>';
+
+  // 4. Vencendo nos próximos 7 dias
+  var hoje=new Date().toISOString().slice(0,10);
+  var lim=new Date(Date.now()+7*86400000).toISOString().slice(0,10);
+  var venc=S.atividades.filter(function(a){return a.prazo&&a.status!=='Concluída'&&a.prazo>=hoje&&a.prazo<=lim;})
+    .sort(function(a,b){return a.prazo<b.prazo?-1:1;}).slice(0,6);
+  h+='<div class="gcard"><div class="sec-t">Vencendo nos próximos 7 dias</div>';
+  if(!venc.length)h+='<div style="font-size:12px;color:var(--muted)">Nenhum prazo nos próximos 7 dias. &#9989;</div>';
+  venc.forEach(function(a){
+    var dias=Math.ceil((new Date(a.prazo+'T00:00:00')-new Date(hoje+'T00:00:00'))/86400000);
+    var cor=dias<=1?'background:var(--red-bg);color:var(--red)':dias<=3?'background:var(--yellow-bg);color:var(--yellow)':'background:var(--blue-bg);color:var(--blue)';
+    h+='<div class="venc-i" onclick="abrirDrawer(\''+a.id+'\',\''+a.projeto_id+'\')">'+
+       '<span class="venc-d" style="'+cor+'">'+(dias===0?'HOJE':dias===1?'AMANHÃ':dias+' dias')+'</span>'+
+       '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">'+esc(a.nome)+'</span>'+
+       (a.responsavel?'<span style="font-size:10px;color:var(--muted);white-space:nowrap">'+esc(a.responsavel)+'</span>':'')+'</div>';
+  });
+  h+='</div>';
+
+  h+='</div>';
   document.getElementById('body').innerHTML=h;
 }
 
