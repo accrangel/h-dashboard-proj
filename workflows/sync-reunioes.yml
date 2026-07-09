@@ -1,1 +1,18 @@
+name: Sync Reuniões (Plaud → Supabase)
 
+on:
+  schedule:
+    - cron: '0 * * * *'   # a cada hora (também mantém o Supabase free sempre ativo)
+  workflow_dispatch:        # permite rodar manualmente na aba Actions
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar sync no Cloudflare Worker
+        run: |
+          resp=$(curl -s -X POST "https://holsa-notion-proxy.holsa.workers.dev/v2/sync-cron" \
+            -H "Content-Type: application/json" \
+            -d "{\"secret\":\"${{ secrets.SYNC_SECRET }}\"}")
+          echo "Resposta: $resp"
+          echo "$resp" | grep -q '"success":true' || (echo "Sync falhou" && exit 1)
