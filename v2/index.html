@@ -230,6 +230,27 @@ button{font-family:inherit}
 .st-chip.on{opacity:1;border-color:currentColor}
 @media(max-width:920px){.drawer{width:100vw;right:-100vw}}
 
+/* MULTI-SELECT DE ÁREAS */
+.ms{position:relative;display:inline-block;min-width:170px}
+.ms-btn{display:flex;align-items:center;gap:6px;width:100%;background:var(--surf);border:1px solid var(--bord);border-radius:8px;padding:6px 10px;font-size:11.5px;color:var(--text);cursor:pointer;text-align:left}
+.ms-btn:hover{border-color:var(--brand)}
+.ms-btn.open{border-color:var(--brand);outline:1.5px solid var(--brand)}
+.ms-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.ms-more{font-size:9.5px;color:var(--muted);letter-spacing:.5px;white-space:nowrap;text-transform:uppercase}
+.ms-car{font-size:9px;color:var(--muted)}
+.ms-dd{position:absolute;top:calc(100% + 4px);left:0;min-width:210px;background:var(--surf);border:1px solid var(--bord);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:180;display:none;overflow:hidden}
+.ms-dd.open{display:block}
+.ms-q{margin:8px;width:calc(100% - 16px);background:var(--surf2);border:1px solid var(--bord);border-radius:16px;padding:6px 12px;font-size:11.5px;color:var(--text)}
+.ms-q:focus{outline:none;border-color:var(--brand)}
+.ms-list{max-height:210px;overflow-y:auto}
+.ms-op{display:flex;align-items:center;gap:9px;padding:9px 12px;font-size:12px;cursor:pointer;border-top:1px solid var(--bord)}
+.ms-op:hover{background:var(--surf2)}
+.ms-op.sel{color:var(--brand);font-weight:700}
+.ms-cb{width:16px;height:16px;border:1.5px solid var(--bord2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:#fff}
+.ms-op.sel .ms-cb{background:var(--brand);border-color:var(--brand)}
+.ms-tick{margin-left:auto;color:var(--brand);font-size:12px;display:none}
+.ms-op.sel .ms-tick{display:inline}
+
 /* TOAST */
 #toasts{position:fixed;top:16px;right:16px;z-index:400;display:flex;flex-direction:column;gap:8px}
 .toast{background:var(--surf);border:1px solid var(--bord);border-left:3px solid var(--brand);border-radius:9px;padding:11px 16px;font-size:12.5px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.16);animation:tin .2s ease}
@@ -462,10 +483,12 @@ async function iniciar(){
   if(!S.profile){document.getElementById('body').innerHTML='<div class="empty">Perfil não encontrado. Recarregue a página.</div>';return;}
   if(!S.profile.ativo){document.getElementById('body').innerHTML='<div class="empty">Seu acesso está desativado. Fale com o administrador.</div>';return;}
   document.getElementById('su-name').textContent=S.profile.nome||S.profile.email;
-  document.getElementById('su-role').textContent=S.profile.papel+(S.profile.area?' · '+S.profile.area:'');
+  var _ar=(S.profile.areas&&S.profile.areas.length)?S.profile.areas.join(', '):(S.profile.area||'');
+  document.getElementById('su-role').textContent=S.profile.papel+(_ar?' · '+_ar:'');
+  document.getElementById('su-role').title=_ar;
   if(can('gerirUsuarios'))document.getElementById('nav-usuarios').style.display='flex';
   // sync do department em segundo plano
-  wfetch('/v2/perfil-sync',{}).then(function(d){if(d&&d.area&&d.area!==S.profile.area){S.profile.area=d.area;document.getElementById('su-role').textContent=S.profile.papel+' · '+d.area;}}).catch(function(){});
+  wfetch('/v2/perfil-sync',{}).then(function(d){if(d&&d.area&&d.area!==S.profile.area){S.profile.area=d.area;}}).catch(function(){});
   // pessoas do tenant em segundo plano
   wfetch('/v2/pessoas',{}).then(function(d){if(d&&d.pessoas)S.pessoas=d.pessoas;}).catch(function(){});
   await carregarDados();
@@ -1379,6 +1402,66 @@ function finalizarATA(blob,nome,d,salvarSP){
   }
 }
 
+// ═══ MULTI-SELECT DE ÁREAS ════════════════════════════════════════════
+var _msAberto=null;
+document.addEventListener('click',function(e){
+  if(_msAberto&&!_msAberto.contains(e.target)){
+    _msAberto.querySelector('.ms-dd').classList.remove('open');
+    _msAberto.querySelector('.ms-btn').classList.remove('open');
+    _msAberto=null;
+  }
+});
+function criarMultiArea(containerId,selecionadas,onChange){
+  var c=document.getElementById(containerId);
+  if(!c)return;
+  var sel=(selecionadas||[]).slice();
+  c.innerHTML='';c.className='ms';
+  var btn=document.createElement('button');btn.className='ms-btn';btn.type='button';
+  var dd=document.createElement('div');dd.className='ms-dd';
+  function rotulo(){
+    if(!sel.length)return'<span class="ms-lbl" style="color:var(--muted);font-weight:400">Nenhuma área</span><span class="ms-car">&#9660;</span>';
+    var extra=sel.length>1?'<span class="ms-more">&amp; '+(sel.length-1)+' mais</span>':'';
+    return'<span class="ms-lbl">'+esc(sel[0])+'</span>'+extra+'<span class="ms-car">&#9660;</span>';
+  }
+  function render(filtro){
+    btn.innerHTML=rotulo();
+    btn.title=sel.length?sel.join(', '):'Nenhuma área autorizada';
+    list.innerHTML='';
+    AREAS.filter(function(a){return!filtro||a.toLowerCase().indexOf(filtro)>=0;}).forEach(function(a){
+      var on=sel.indexOf(a)>=0;
+      var op=document.createElement('div');op.className='ms-op'+(on?' sel':'');
+      op.innerHTML='<span class="ms-cb">'+(on?'&#10003;':'')+'</span><span>'+esc(a)+'</span><span class="ms-tick">&#10003;</span>';
+      op.onclick=function(ev){
+        ev.stopPropagation();
+        var i=sel.indexOf(a);
+        if(i>=0)sel.splice(i,1);else sel.push(a);
+        render(filtro);
+        onChange(sel.slice());
+      };
+      list.appendChild(op);
+    });
+  }
+  var q=document.createElement('input');q.className='ms-q';q.placeholder='Buscar...';
+  q.onclick=function(e){e.stopPropagation();};
+  q.oninput=function(){render(q.value.trim().toLowerCase());};
+  var list=document.createElement('div');list.className='ms-list';
+  dd.appendChild(q);dd.appendChild(list);
+  btn.onclick=function(e){
+    e.stopPropagation();
+    var abrindo=!dd.classList.contains('open');
+    if(_msAberto&&_msAberto!==c){
+      _msAberto.querySelector('.ms-dd').classList.remove('open');
+      _msAberto.querySelector('.ms-btn').classList.remove('open');
+    }
+    dd.classList.toggle('open',abrindo);
+    btn.classList.toggle('open',abrindo);
+    _msAberto=abrindo?c:null;
+    if(abrindo){q.value='';render('');q.focus();}
+  };
+  render('');
+  c.appendChild(btn);c.appendChild(dd);
+}
+
 // ═══ HISTÓRICO ════════════════════════════════════════════════════════
 function rHistorico(){
   var h='<div class="filters">'+
@@ -1457,19 +1540,26 @@ function rUsuarios(){
   var h='<div class="card"><div class="card-b">';
   h+='<div class="sec-h"><div class="sec-t" style="margin:0">Usuários que já acessaram</div>'+
      '<button class="btn btn-g" onclick="migrarV1()">&#8681; Migrar dados da v1 (Notion)</button></div>';
-  h+='<table class="utable"><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Área</th><th>Ativo</th></tr>';
+  h+='<table class="utable"><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Áreas visíveis</th><th>Ativo</th></tr>';
   S.perfis.forEach(function(p){
-    h+='<tr><td>'+esc(p.nome||'—')+'</td><td style="color:var(--muted)">'+esc(p.email)+'</td>'+
+    var admGes=p.papel==='Admin'||p.papel==='Gestor';
+    h+='<tr><td>'+esc(p.nome||'—')+(p.area?'<div style="font-size:9.5px;color:var(--muted)">Depto: '+esc(p.area)+'</div>':'')+'</td>'+
+      '<td style="color:var(--muted)">'+esc(p.email)+'</td>'+
       '<td><select class="fsel" style="font-size:11px;padding:4px 8px" onchange="mudarPerfil(\''+p.id+'\',\'papel\',this.value)">'+
       ['Admin','Gestor','Editor','Consulta'].map(function(r){return'<option'+(p.papel===r?' selected':'')+'>'+r+'</option>';}).join('')+'</select></td>'+
-      '<td><select class="fsel" style="font-size:11px;padding:4px 8px" onchange="mudarPerfil(\''+p.id+'\',\'area\',this.value)">'+
-      '<option value=""'+(!p.area?' selected':'')+'>—</option>'+AREAS.map(function(a){return'<option'+(p.area===a?' selected':'')+'>'+a+'</option>';}).join('')+'</select></td>'+
+      '<td>'+(admGes?'<span style="font-size:11px;color:var(--muted)">Todas (papel '+p.papel+')</span>':'<div id="msa-'+p.id+'"></div>')+'</td>'+
       '<td><input type="checkbox" '+(p.ativo?'checked':'')+' onchange="mudarPerfil(\''+p.id+'\',\'ativo\',this.checked)"></td></tr>';
   });
   h+='</table>';
-  h+='<div style="font-size:11px;color:var(--muted);margin-top:12px">Novos usuários entram como <b>Consulta</b> no primeiro login. A área sincroniza automaticamente do campo Departamento do Microsoft 365.</div>';
+  h+='<div style="font-size:11px;color:var(--muted);margin-top:12px">Novos usuários entram como <b>Consulta</b> no primeiro login, vendo apenas o próprio departamento (sincronizado do Microsoft 365). Selecione múltiplas áreas para ampliar a visualização de Editores e Consultas. Admin e Gestor sempre veem todas as áreas.</div>';
   h+='</div></div>';
   document.getElementById('body').innerHTML=h;
+  S.perfis.forEach(function(p){
+    if(p.papel==='Admin'||p.papel==='Gestor')return;
+    criarMultiArea('msa-'+p.id,p.areas||[],function(novas){
+      mudarPerfil(p.id,'areas',novas);
+    });
+  });
 }
 async function mudarPerfil(id,campo,valor){
   var patch={};patch[campo]=valor;
