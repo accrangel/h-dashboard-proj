@@ -1146,7 +1146,7 @@ function abrirDrawer(taskId,projId,modo){
     b+='<div class="dr-sec">Participantes</div><div id="dr-part"></div>';
     b+='<div class="frow" style="margin-top:12px"><div><div class="dr-sec" style="margin-top:0">Depende de</div><select class="fi" id="dr-dep"></select></div>'+
        '<div><div class="dr-sec" style="margin-top:0">Aguardando o quê?</div><input class="fi" id="dr-ag" value="'+esc(t&&t.aguardando?t.aguardando:'')+'"></div></div>';
-    b+='<div class="dr-sec">Observações</div><textarea class="fta" id="dr-obs" style="height:80px">'+esc(t&&t.observacoes?t.observacoes:'')+'</textarea>';
+    b+='<div class="dr-sec">Observações e atualizações</div><textarea class="fta" id="dr-obs" style="height:80px">'+esc(t&&t.observacoes?t.observacoes:'')+'</textarea>';
   }else if(t){
     var ind=indicador(t);
     b+='<div style="font-size:15px;font-weight:800;line-height:1.35;margin-bottom:12px">'+esc(t.nome)+'</div>';
@@ -1160,7 +1160,11 @@ function abrirDrawer(taskId,projId,modo){
     if(t.depende_de)b+='<div class="dr-k">Depende</div><div class="dr-v">'+esc(t.depende_de)+'</div>';
     if(t.aguardando)b+='<div class="dr-k">Aguarda</div><div class="dr-v">'+esc(t.aguardando)+'</div>';
     b+='</div>';
-    if(t.observacoes)b+='<div class="dr-sec">Observações</div><div class="dr-read">'+fmtTexto(t.observacoes)+'</div>';
+    b+='<div class="dr-sec" style="display:flex;align-items:center;gap:8px">Observações e atualizações'+
+       '<button class="btn btn-g" style="font-size:9.5px;padding:3px 9px;letter-spacing:0" onclick="toggleHistAtividade(\''+t.id+'\')">&#128337; Histórico</button></div>';
+    if(t.observacoes)b+='<div class="dr-read">'+fmtTexto(t.observacoes)+'</div>';
+    else b+='<div style="font-size:11px;color:var(--muted)">Sem observações registradas.</div>';
+    b+='<div id="dr-hist" style="display:none;margin-top:8px"></div>';
   }
   if(t){
     b+='<div class="dr-sec">Arquivos</div><div id="fa-Atividades-'+t.id+'" data-nome="'+esc(t.nome)+'"></div>';
@@ -1187,9 +1191,40 @@ function abrirDrawer(taskId,projId,modo){
     criarPicker('dr-part',t&&t.participantes?t.participantes.slice():[],{placeholder:'Participantes...',prioridade:membros});
   }
   if(t)renderArquivos('Atividades',t.id);
+  _histAberto=false;
   window._drStamp=t?t.atualizado_em:'';
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawer-ov').classList.add('open');
+}
+var _histAberto=false;
+function toggleHistAtividade(taskId){
+  var c=document.getElementById('dr-hist');
+  if(!c)return;
+  _histAberto=!_histAberto;
+  c.style.display=_histAberto?'block':'none';
+  if(!_histAberto)return;
+  c.innerHTML='<div style="font-size:11px;color:var(--muted)">Carregando histórico...</div>';
+  sb.from('historico').select('*').eq('entidade_id',taskId).order('criado_em',{ascending:false}).limit(80).then(function(r){
+    if(r.error){c.innerHTML='<div style="font-size:11px;color:var(--red)">Erro: '+esc(r.error.message)+'</div>';return;}
+    var itens=r.data||[];
+    if(!itens.length){c.innerHTML='<div style="font-size:11px;color:var(--muted)">Nenhuma alteração registrada.</div>';return;}
+    var nomes={observacoes:'Observações',status:'Status',prazo:'Prazo',responsavel:'Responsável',participantes:'Participantes',nome:'Nome',aguardando:'Aguardando',depende_de:'Dependência','Criação':'Criação','Arquivo adicionado':'Arquivo adicionado','Arquivo removido':'Arquivo removido'};
+    var corta=function(s){s=s||'';return s.length>140?s.slice(0,140)+'…':s;};
+    c.innerHTML='<div style="background:var(--surf2);border:1px solid var(--bord);border-radius:8px;padding:10px 12px;max-height:260px;overflow-y:auto">'+
+      itens.map(function(x){
+        var campo=nomes[x.campo]||x.campo;
+        var mudanca='';
+        if(x.campo==='Criação')mudanca='<span style="color:var(--green)">Atividade criada</span>';
+        else if(x.valor_anterior&&x.valor_novo)mudanca='<span style="color:var(--muted);text-decoration:line-through" title="'+esc(x.valor_anterior)+'">'+esc(corta(x.valor_anterior))+'</span> &#8594; <span title="'+esc(x.valor_novo)+'">'+esc(corta(x.valor_novo))+'</span>';
+        else if(x.valor_novo)mudanca='<span title="'+esc(x.valor_novo)+'">'+esc(corta(x.valor_novo))+'</span>';
+        else if(x.valor_anterior)mudanca='<span style="color:var(--muted);text-decoration:line-through">'+esc(corta(x.valor_anterior))+'</span> (removido)';
+        return'<div style="padding:7px 0;border-bottom:1px solid var(--bord);font-size:11.5px">'+
+          '<div style="display:flex;gap:8px;align-items:center;margin-bottom:2px"><b>'+esc(campo)+'</b>'+
+          '<span style="margin-left:auto;font-size:10px;color:var(--muted);white-space:nowrap">'+esc(x.alterado_por)+' · '+fmtDateTime(x.criado_em)+'</span></div>'+
+          '<div style="line-height:1.5">'+mudanca+'</div></div>';
+      }).join('')+'</div>';
+    var last=c.querySelector('div>div:last-child');if(last)last.style.borderBottom='none';
+  });
 }
 function drStatus(el){
   document.querySelectorAll('#dr-status .st-chip').forEach(function(c){c.classList.remove('on');});
