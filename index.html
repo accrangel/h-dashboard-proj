@@ -1631,7 +1631,8 @@ function rKanban(){
     '<div id="kbf-resp"></div>'+
     '<input class="finput" id="kbf-q" placeholder="Buscar atividade..." oninput="setKbF(\'q\',this.value)" value="'+esc(_kbFiltro.q)+'">'+
     (kbTemFiltro()?'<button class="btn btn-g" onclick="kbLimparFiltros()" title="Remover todos os filtros">&#10005; Limpar filtros</button>':'')+
-    (can('criarAtividade')?'<button class="btn btn-p" style="margin-left:auto" onclick="kbNovaAtividade()">+ Atividade</button>':'')+
+    (can('criarProjeto')?'<button class="btn btn-g" style="margin-left:auto" onclick="abrirProjetoModal()">+ Projeto</button>':'')+
+    (can('criarAtividade')?'<button class="btn btn-p"'+(can('criarProjeto')?'':' style="margin-left:auto"')+' onclick="kbNovaAtividade()">+ Atividade</button>':'')+
   '</div>';
   if(_isTouch&&can('editarAtividade'))h+='<div style="font-size:11px;color:var(--muted);margin-bottom:8px">&#128241; No celular, toque no card e mude o status pelos botões.</div>';
   h+='<div class="kb-wrap"><div class="kb-cols" id="kb-cols"></div></div>';
