@@ -1163,6 +1163,13 @@ function abrirDrawer(taskId,projId,modo){
     '<button class="drawer-x" onclick="fecharDrawer()">&#215;</button>';
   var b='';
   if(_drMode==='edit'){
+    var precisaProj=!taskId&&!projId;
+    if(precisaProj){
+      var projsSel=S.projetos.filter(function(p){return p.status==='Ativo';});
+      if(!projsSel.length)projsSel=S.projetos;
+      b+='<div class="dr-sec">Projeto *</div><select class="fi" id="dr-proj-sel" onchange="drTrocaProjeto(this.value)"><option value="">Selecione o projeto...</option>'+
+         projsSel.map(function(p){return'<option value="'+p.id+'">'+esc(p.nome)+(p.area?' ('+esc(p.area)+')':'')+'</option>';}).join('')+'</select>';
+    }
     b+='<div class="dr-sec">Nome</div><input class="fi" id="dr-nome" value="'+esc(t?t.nome:'')+'">';
     b+='<div class="dr-sec">Status</div><div style="display:flex;gap:6px;flex-wrap:wrap" id="dr-status">'+
       ['Não iniciada','Em andamento','Concluída','Bloqueada','Aguardando'].map(function(s){
@@ -1255,6 +1262,18 @@ function toggleHistAtividade(taskId){
     var last=c.querySelector('div>div:last-child');if(last)last.style.borderBottom='none';
   });
 }
+function drTrocaProjeto(pid){
+  _drProj=pid;
+  var proj=S.projetos.find(function(x){return x.id===pid;});
+  var membros=(proj&&proj.membros)||[];
+  var outras=S.atividades.filter(function(x){return x.projeto_id===pid;});
+  var paiSel=document.getElementById('dr-pai');
+  var depSel=document.getElementById('dr-dep');
+  if(paiSel)paiSel.innerHTML='<option value="">Atividade raiz</option>'+outras.map(function(o){return'<option value="'+o.id+'">'+esc(o.nome)+'</option>';}).join('');
+  if(depSel)depSel.innerHTML='<option value="">Nenhuma</option>'+outras.map(function(o){return'<option>'+esc(o.nome)+'</option>';}).join('');
+  criarPicker('dr-resp',[],{single:true,placeholder:'Responsável...',prioridade:membros});
+  criarPicker('dr-part',[],{placeholder:'Participantes...',prioridade:membros});
+}
 function drStatus(el){
   document.querySelectorAll('#dr-status .st-chip').forEach(function(c){c.classList.remove('on');});
   el.classList.add('on');
@@ -1269,6 +1288,11 @@ async function salvarDrawer(){
   var nome=document.getElementById('dr-nome').value.trim();
   var msg=document.getElementById('dr-msg');
   if(!nome){msg.textContent='Nome obrigatório.';return;}
+  var selProj=document.getElementById('dr-proj-sel');
+  if(selProj){
+    if(!selProj.value){msg.textContent='Selecione o projeto.';return;}
+    _drProj=selProj.value;
+  }
   msg.textContent='Salvando...';
   var stEl=document.querySelector('#dr-status .st-chip.on');
   var rec={
@@ -1589,7 +1613,7 @@ function caminhoAtividade(a,incluirSelf){
   partes.forEach(function(p){if(incluirSelf||!p.self)out.push(p);});
   return out;
 }
-var _kbFiltro={proj:'',area:'',resp:'',q:''};
+var _kbFiltro={proj:[],area:[],resp:[],q:'',meus:false};
 var _kbDrag=null;
 var _kbCols=['Não iniciada','Em andamento','Aguardando','Bloqueada','Concluída'];
 var _kbCores={'Não iniciada':'#98a29b','Em andamento':'var(--blue)','Aguardando':'var(--orange)','Bloqueada':'var(--red)','Concluída':'var(--green)'};
@@ -1598,46 +1622,39 @@ function rKanban(){
   var resps={};
   S.atividades.forEach(function(a){if(a.responsavel)resps[a.responsavel]=1;});
   var h='<div class="filters">'+
-    '<select class="fsel" id="kbf-proj" onchange="setKbF(\'proj\',this.value)"><option value="">Todos os projetos</option>'+
-      S.projetos.map(function(p){return'<option value="'+p.id+'"'+(_kbFiltro.proj===p.id?' selected':'')+'>'+esc(p.nome)+'</option>';}).join('')+'</select>'+
-    '<select class="fsel" id="kbf-area" onchange="setKbF(\'area\',this.value)"><option value="">Todas as áreas</option>'+
-      AREAS.map(function(a){return'<option'+(_kbFiltro.area===a?' selected':'')+'>'+a+'</option>';}).join('')+'</select>'+
-    '<select class="fsel" id="kbf-resp" onchange="setKbF(\'resp\',this.value)"><option value="">Todos os responsáveis</option>'+
-      Object.keys(resps).sort().map(function(r){return'<option'+(_kbFiltro.resp===r?' selected':'')+'>'+esc(r)+'</option>';}).join('')+'</select>'+
+    '<button class="btn '+(_kbFiltro.meus?'btn-p':'btn-g')+'" onclick="kbToggleMeus()" title="Só atividades que sou responsável ou participante">&#128100; Meus</button>'+
+    '<div id="kbf-proj"></div>'+
+    '<div id="kbf-area"></div>'+
+    '<div id="kbf-resp"></div>'+
     '<input class="finput" id="kbf-q" placeholder="Buscar atividade..." oninput="setKbF(\'q\',this.value)" value="'+esc(_kbFiltro.q)+'">'+
     (can('criarAtividade')?'<button class="btn btn-p" style="margin-left:auto" onclick="kbNovaAtividade()">+ Atividade</button>':'')+
   '</div>';
   if(_isTouch&&can('editarAtividade'))h+='<div style="font-size:11px;color:var(--muted);margin-bottom:8px">&#128241; No celular, toque no card e mude o status pelos botões.</div>';
   h+='<div class="kb-wrap"><div class="kb-cols" id="kb-cols"></div></div>';
   document.getElementById('body').innerHTML=h;
+  criarMulti('kbf-proj',S.projetos.map(function(p){return{value:p.id,label:p.nome};}),_kbFiltro.proj,function(v){_kbFiltro.proj=v;renderKbCols();},'Todos os projetos');
+  criarMulti('kbf-area',AREAS,_kbFiltro.area,function(v){_kbFiltro.area=v;renderKbCols();},'Todas as áreas');
+  criarMulti('kbf-resp',Object.keys(resps).sort(),_kbFiltro.resp,function(v){_kbFiltro.resp=v;renderKbCols();},'Todos os responsáveis');
   renderKbCols();
 }
 function setKbF(k,v){_kbFiltro[k]=v;renderKbCols();}
+function kbToggleMeus(){_kbFiltro.meus=!_kbFiltro.meus;rKanban();}
 function kbNovaAtividade(){
-  var pid=_kbFiltro.proj;
-  if(!pid){
-    // sem projeto no filtro: escolher um (ativos primeiro)
-    var ativos=S.projetos.filter(function(p){return p.status==='Ativo';});
-    var lista=ativos.length?ativos:S.projetos;
-    if(!lista.length){toast('Crie um projeto antes de adicionar atividades.',true);return;}
-    if(lista.length===1){pid=lista[0].id;}
-    else{
-      var nomes=lista.map(function(p,i){return(i+1)+'. '+p.nome;}).join('\n');
-      var esc2=prompt('Em qual projeto criar a atividade? Digite o número:\n\n'+nomes);
-      if(!esc2)return;
-      var idx=parseInt(esc2,10)-1;
-      if(isNaN(idx)||!lista[idx]){toast('Opção inválida.',true);return;}
-      pid=lista[idx].id;
-    }
-  }
-  abrirDrawer(null,pid);
+  if(!S.projetos.length){toast('Crie um projeto antes de adicionar atividades.',true);return;}
+  // com projeto no filtro: já abre nele; sem filtro: drawer mostra o seletor de projeto
+  abrirDrawer(null,_kbFiltro.proj||null);
 }
 function kbFiltradas(){
   var q=_kbFiltro.q.toLowerCase();
+  var meuNome=S.profile.nome||S.profile.email;
   return S.atividades.filter(function(a){
-    if(_kbFiltro.proj&&a.projeto_id!==_kbFiltro.proj)return false;
-    if(_kbFiltro.resp&&a.responsavel!==_kbFiltro.resp&&(a.participantes||[]).indexOf(_kbFiltro.resp)<0)return false;
-    if(_kbFiltro.area){var p=S.projetos.find(function(x){return x.id===a.projeto_id;});if(!p||p.area!==_kbFiltro.area)return false;}
+    if(_kbFiltro.proj.length&&_kbFiltro.proj.indexOf(a.projeto_id)<0)return false;
+    if(_kbFiltro.resp.length){
+      var bate=_kbFiltro.resp.some(function(r){return a.responsavel===r||(a.participantes||[]).indexOf(r)>=0;});
+      if(!bate)return false;
+    }
+    if(_kbFiltro.area.length){var p=S.projetos.find(function(x){return x.id===a.projeto_id;});if(!p||_kbFiltro.area.indexOf(p.area)<0)return false;}
+    if(_kbFiltro.meus){if(a.responsavel!==meuNome&&(a.participantes||[]).indexOf(meuNome)<0)return false;}
     if(q&&a.nome.toLowerCase().indexOf(q)<0)return false;
     return true;
   });
@@ -1750,30 +1767,35 @@ document.addEventListener('click',function(e){
     _msAberto=null;
   }
 });
-function criarMultiArea(containerId,selecionadas,onChange){
+// Componente genérico de multi-seleção com checkboxes e busca.
+// opcoes: array de {value,label} ou array de strings. onChange recebe os values selecionados.
+function criarMulti(containerId,opcoes,selecionadas,onChange,vazioLbl){
   var c=document.getElementById(containerId);
   if(!c)return;
+  var itens=opcoes.map(function(o){return typeof o==='string'?{value:o,label:o}:o;});
   var sel=(selecionadas||[]).slice();
+  vazioLbl=vazioLbl||'Todos';
   c.innerHTML='';c.className='ms';
   var btn=document.createElement('button');btn.className='ms-btn';btn.type='button';
   var dd=document.createElement('div');dd.className='ms-dd';
+  function lblDe(v){var it=itens.find(function(x){return x.value===v;});return it?it.label:v;}
   function rotulo(){
-    if(!sel.length)return'<span class="ms-lbl" style="color:var(--muted);font-weight:400">Nenhuma área</span><span class="ms-car">&#9660;</span>';
+    if(!sel.length)return'<span class="ms-lbl" style="color:var(--muted);font-weight:400">'+esc(vazioLbl)+'</span><span class="ms-car">&#9660;</span>';
     var extra=sel.length>1?'<span class="ms-more">&amp; '+(sel.length-1)+' mais</span>':'';
-    return'<span class="ms-lbl">'+esc(sel[0])+'</span>'+extra+'<span class="ms-car">&#9660;</span>';
+    return'<span class="ms-lbl">'+esc(lblDe(sel[0]))+'</span>'+extra+'<span class="ms-car">&#9660;</span>';
   }
   function render(filtro){
     btn.innerHTML=rotulo();
-    btn.title=sel.length?sel.join(', '):'Nenhuma área autorizada';
+    btn.title=sel.length?sel.map(lblDe).join(', '):vazioLbl;
     list.innerHTML='';
-    AREAS.filter(function(a){return!filtro||a.toLowerCase().indexOf(filtro)>=0;}).forEach(function(a){
-      var on=sel.indexOf(a)>=0;
+    itens.filter(function(it){return!filtro||it.label.toLowerCase().indexOf(filtro)>=0;}).forEach(function(it){
+      var on=sel.indexOf(it.value)>=0;
       var op=document.createElement('div');op.className='ms-op'+(on?' sel':'');
-      op.innerHTML='<span class="ms-cb">'+(on?'&#10003;':'')+'</span><span>'+esc(a)+'</span><span class="ms-tick">&#10003;</span>';
+      op.innerHTML='<span class="ms-cb">'+(on?'&#10003;':'')+'</span><span>'+esc(it.label)+'</span><span class="ms-tick">&#10003;</span>';
       op.onclick=function(ev){
         ev.stopPropagation();
-        var i=sel.indexOf(a);
-        if(i>=0)sel.splice(i,1);else sel.push(a);
+        var i=sel.indexOf(it.value);
+        if(i>=0)sel.splice(i,1);else sel.push(it.value);
         render(filtro);
         onChange(sel.slice());
       };
@@ -1799,6 +1821,10 @@ function criarMultiArea(containerId,selecionadas,onChange){
   };
   render('');
   c.appendChild(btn);c.appendChild(dd);
+}
+// Wrapper mantido para a tela Usuários (áreas)
+function criarMultiArea(containerId,selecionadas,onChange){
+  criarMulti(containerId,AREAS,selecionadas,onChange,'Nenhuma área');
 }
 
 // ═══ HISTÓRICO ════════════════════════════════════════════════════════
