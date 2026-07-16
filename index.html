@@ -240,6 +240,13 @@ button{font-family:inherit}
 .kb-cn{font-size:12.5px;font-weight:700;line-height:1.35;margin-bottom:5px}
 .kb-cm{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 .kb-parent{font-size:9.5px;color:var(--muted);margin-bottom:3px}
+.kb-path{font-size:9px;color:var(--muted);margin-bottom:4px;line-height:1.4;display:flex;flex-wrap:wrap;align-items:center;gap:2px}
+.kb-path b{color:var(--brand);font-weight:800}
+.kb-path .sep{opacity:.5;margin:0 1px}
+.kb-projhead{display:flex;align-items:center;gap:6px;padding:6px 8px;margin:6px 4px 3px;background:var(--brand-soft);border-radius:6px;position:sticky;left:0}
+.kb-projhead .pn{font-size:10px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kb-projhead .pa{font-size:8.5px;color:var(--muted);margin-left:auto;white-space:nowrap}
+.kb-card{border-left-width:3px}
 .kb-empty{font-size:11px;color:var(--muted);text-align:center;padding:14px 8px;border:1px dashed var(--bord2);border-radius:8px;margin:4px}
 @media(max-width:920px){.kb-col{width:230px}}
 
@@ -1565,6 +1572,23 @@ function finalizarATA(blob,nome,d,salvarSP){
 }
 
 // ═══ KANBAN ═══════════════════════════════════════════════════════════
+// Caminho: Projeto > Atividade pai > ... > (atividade atual implícita)
+function caminhoAtividade(a,incluirSelf){
+  var partes=[];
+  var atual=a;
+  var guard=0;
+  while(atual&&guard<12){
+    partes.unshift({nome:atual.nome,id:atual.id,self:atual.id===a.id});
+    if(!atual.pai_id)break;
+    atual=S.atividades.find(function(x){return x.id===atual.pai_id;});
+    guard++;
+  }
+  var proj=S.projetos.find(function(p){return p.id===a.projeto_id;});
+  var out=[];
+  if(proj)out.push({nome:proj.nome,proj:true});
+  partes.forEach(function(p){if(incluirSelf||!p.self)out.push(p);});
+  return out;
+}
 var _kbFiltro={proj:'',area:'',resp:'',q:''};
 var _kbDrag=null;
 var _kbCols=['Não iniciada','Em andamento','Aguardando','Bloqueada','Concluída'];
@@ -1581,6 +1605,7 @@ function rKanban(){
     '<select class="fsel" id="kbf-resp" onchange="setKbF(\'resp\',this.value)"><option value="">Todos os responsáveis</option>'+
       Object.keys(resps).sort().map(function(r){return'<option'+(_kbFiltro.resp===r?' selected':'')+'>'+esc(r)+'</option>';}).join('')+'</select>'+
     '<input class="finput" id="kbf-q" placeholder="Buscar atividade..." oninput="setKbF(\'q\',this.value)" value="'+esc(_kbFiltro.q)+'">'+
+    (can('criarAtividade')?'<button class="btn btn-p" style="margin-left:auto" onclick="kbNovaAtividade()">+ Atividade</button>':'')+
   '</div>';
   if(_isTouch&&can('editarAtividade'))h+='<div style="font-size:11px;color:var(--muted);margin-bottom:8px">&#128241; No celular, toque no card e mude o status pelos botões.</div>';
   h+='<div class="kb-wrap"><div class="kb-cols" id="kb-cols"></div></div>';
@@ -1588,6 +1613,25 @@ function rKanban(){
   renderKbCols();
 }
 function setKbF(k,v){_kbFiltro[k]=v;renderKbCols();}
+function kbNovaAtividade(){
+  var pid=_kbFiltro.proj;
+  if(!pid){
+    // sem projeto no filtro: escolher um (ativos primeiro)
+    var ativos=S.projetos.filter(function(p){return p.status==='Ativo';});
+    var lista=ativos.length?ativos:S.projetos;
+    if(!lista.length){toast('Crie um projeto antes de adicionar atividades.',true);return;}
+    if(lista.length===1){pid=lista[0].id;}
+    else{
+      var nomes=lista.map(function(p,i){return(i+1)+'. '+p.nome;}).join('\n');
+      var esc2=prompt('Em qual projeto criar a atividade? Digite o número:\n\n'+nomes);
+      if(!esc2)return;
+      var idx=parseInt(esc2,10)-1;
+      if(isNaN(idx)||!lista[idx]){toast('Opção inválida.',true);return;}
+      pid=lista[idx].id;
+    }
+  }
+  abrirDrawer(null,pid);
+}
 function kbFiltradas(){
   var q=_kbFiltro.q.toLowerCase();
   return S.atividades.filter(function(a){
@@ -1602,10 +1646,29 @@ function renderKbCols(){
   var cont=document.getElementById('kb-cols');if(!cont)return;
   var ats=kbFiltradas();
   var pode=can('editarAtividade');
+  // ordem dos projetos: por nome, estável (para o agrupamento ficar consistente entre colunas)
+  var projOrder={};
+  S.projetos.slice().sort(function(a,b){return a.nome<b.nome?-1:1;}).forEach(function(p,i){projOrder[p.id]=i;});
   cont.innerHTML=_kbCols.map(function(st){
     var cards=ats.filter(function(a){return a.status===st;})
-      .sort(function(a,b){return(a.kanban_pos||0)-(b.kanban_pos||0);});
-    var body=cards.map(function(a){return kbCard(a,pode);}).join('')||'<div class="kb-empty">Nenhuma atividade</div>';
+      .sort(function(a,b){
+        var pa=projOrder[a.projeto_id]||0,pb=projOrder[b.projeto_id]||0;
+        if(pa!==pb)return pa-pb;
+        return(a.kanban_pos||0)-(b.kanban_pos||0);
+      });
+    var body='';
+    if(!cards.length)body='<div class="kb-empty">Nenhuma atividade</div>';
+    else{
+      var projAtual=null;
+      cards.forEach(function(a){
+        if(a.projeto_id!==projAtual){
+          projAtual=a.projeto_id;
+          var p=S.projetos.find(function(x){return x.id===a.projeto_id;});
+          if(p)body+='<div class="kb-projhead"><span class="pn" title="'+esc(p.nome)+'">&#128193; '+esc(p.nome)+'</span>'+(p.area?'<span class="pa">'+esc(p.area)+'</span>':'')+'</div>';
+        }
+        body+=kbCard(a,pode);
+      });
+    }
     return'<div class="kb-col" data-st="'+esc(st)+'" ondragover="kbOver(event)" ondragleave="kbLeave(event)" ondrop="kbDrop(event,\''+esc(st)+'\')">'+
       '<div class="kb-ch"><span class="kb-cdot" style="background:'+_kbCores[st]+'"></span><span class="kb-ctit">'+st+'</span><span class="kb-cnt">'+cards.length+'</span></div>'+
       '<div class="kb-list" data-st="'+esc(st)+'">'+body+'</div></div>';
@@ -1613,18 +1676,19 @@ function renderKbCols(){
 }
 function kbCard(a,pode){
   var ind=indicador(a);
-  var proj=S.projetos.find(function(p){return p.id===a.projeto_id;});
-  var pai=a.pai_id?S.atividades.find(function(x){return x.id===a.pai_id;}):null;
   var atras=prazoVencido(a)&&a.status!=='Concluída';
+  // breadcrumb: só a hierarquia de atividades pai (o projeto já é o cabeçalho do grupo)
+  var cadeia=caminhoAtividade(a,false).filter(function(x){return!x.proj;});
+  var bc='';
+  if(cadeia.length)bc='<div class="kb-path">'+cadeia.map(function(x){return esc(x.nome);}).join(' <span class="sep">&#8250;</span> ')+' <span class="sep">&#8250;</span></div>';
   return'<div class="kb-card" style="--kc:'+ind.cls.replace('ti-','').replace('green','var(--green)').replace('yellow','var(--yellow)').replace('orange','var(--orange)').replace('red','var(--red)').replace('gray','#98a29b').replace('blue','var(--blue)')+'"'+
     ' draggable="'+((pode&&!_isTouch)?'true':'false')+'" data-id="'+a.id+'" data-proj="'+a.projeto_id+'"'+
     ' ondragstart="kbStart(event,\''+a.id+'\')" ondragend="kbEnd(event)"'+
     ' onclick="if(!_kbMoved)abrirDrawer(\''+a.id+'\',\''+a.projeto_id+'\')">'+
-    (pai?'<div class="kb-parent">&#8627; '+esc(pai.nome)+'</div>':'')+
+    bc+
     '<div class="kb-cn">'+esc(a.nome)+'</div>'+
     '<div class="kb-cm">'+
       '<span class="ti '+ind.cls+'" title="'+ind.title+'"></span>'+
-      (proj?'<span class="tag t-ni" style="font-size:9px">'+esc(proj.nome.slice(0,18))+'</span>':'')+
       (a.responsavel?'<span class="chip chip-resp" style="font-size:10px">&#128100; '+esc(a.responsavel)+'</span>':'')+
       (a.prazo?'<span style="font-size:10px;color:'+(atras?'var(--red)':'var(--muted)')+'">&#128197; '+fmtDate(a.prazo)+'</span>':'')+
     '</div></div>';
