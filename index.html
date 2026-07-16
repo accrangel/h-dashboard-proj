@@ -285,6 +285,9 @@ button{font-family:inherit}
 .ms-dd{position:absolute;top:calc(100% + 4px);left:0;min-width:210px;background:var(--surf);border:1px solid var(--bord);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:180;display:none;overflow:hidden}
 .ms-dd.open{display:block}
 .ms-q{margin:8px;width:calc(100% - 16px);background:var(--surf2);border:1px solid var(--bord);border-radius:16px;padding:6px 12px;font-size:11.5px;color:var(--text)}
+.ms-acts{display:flex;gap:6px;padding:0 8px 8px;border-bottom:1px solid var(--bord)}
+.ms-act{flex:1;font-size:10.5px;font-weight:700;padding:5px 0;border:1px solid var(--bord);border-radius:6px;background:var(--surf2);color:var(--muted);cursor:pointer}
+.ms-act:hover{border-color:var(--brand);color:var(--brand)}
 .ms-q:focus{outline:none;border-color:var(--brand)}
 .ms-list{max-height:210px;overflow-y:auto}
 .ms-op{display:flex;align-items:center;gap:9px;padding:9px 12px;font-size:12px;cursor:pointer;border-top:1px solid var(--bord)}
@@ -1627,6 +1630,7 @@ function rKanban(){
     '<div id="kbf-area"></div>'+
     '<div id="kbf-resp"></div>'+
     '<input class="finput" id="kbf-q" placeholder="Buscar atividade..." oninput="setKbF(\'q\',this.value)" value="'+esc(_kbFiltro.q)+'">'+
+    (kbTemFiltro()?'<button class="btn btn-g" onclick="kbLimparFiltros()" title="Remover todos os filtros">&#10005; Limpar filtros</button>':'')+
     (can('criarAtividade')?'<button class="btn btn-p" style="margin-left:auto" onclick="kbNovaAtividade()">+ Atividade</button>':'')+
   '</div>';
   if(_isTouch&&can('editarAtividade'))h+='<div style="font-size:11px;color:var(--muted);margin-bottom:8px">&#128241; No celular, toque no card e mude o status pelos botões.</div>';
@@ -1639,6 +1643,8 @@ function rKanban(){
 }
 function setKbF(k,v){_kbFiltro[k]=v;renderKbCols();}
 function kbToggleMeus(){_kbFiltro.meus=!_kbFiltro.meus;rKanban();}
+function kbTemFiltro(){return _kbFiltro.proj.length||_kbFiltro.area.length||_kbFiltro.resp.length||_kbFiltro.q||_kbFiltro.meus;}
+function kbLimparFiltros(){_kbFiltro={proj:[],area:[],resp:[],q:'',meus:false};rKanban();}
 function kbNovaAtividade(){
   if(!S.projetos.length){toast('Crie um projeto antes de adicionar atividades.',true);return;}
   // com projeto no filtro: já abre nele; sem filtro: drawer mostra o seletor de projeto
@@ -1805,8 +1811,14 @@ function criarMulti(containerId,opcoes,selecionadas,onChange,vazioLbl){
   var q=document.createElement('input');q.className='ms-q';q.placeholder='Buscar...';
   q.onclick=function(e){e.stopPropagation();};
   q.oninput=function(){render(q.value.trim().toLowerCase());};
+  var acts=document.createElement('div');acts.className='ms-acts';
+  var bTodos=document.createElement('button');bTodos.className='ms-act';bTodos.textContent='Selecionar todos';
+  bTodos.onclick=function(e){e.stopPropagation();sel=itens.map(function(it){return it.value;});render(q.value.trim().toLowerCase());onChange(sel.slice());};
+  var bLimpar=document.createElement('button');bLimpar.className='ms-act';bLimpar.textContent='Limpar';
+  bLimpar.onclick=function(e){e.stopPropagation();sel=[];render(q.value.trim().toLowerCase());onChange(sel.slice());};
+  acts.appendChild(bTodos);acts.appendChild(bLimpar);
   var list=document.createElement('div');list.className='ms-list';
-  dd.appendChild(q);dd.appendChild(list);
+  dd.appendChild(q);dd.appendChild(acts);dd.appendChild(list);
   btn.onclick=function(e){
     e.stopPropagation();
     var abrindo=!dd.classList.contains('open');
