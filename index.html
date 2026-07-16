@@ -223,6 +223,26 @@ button{font-family:inherit}
 .venc-i:hover{background:var(--surf2)}
 .venc-d{font-size:10px;font-weight:800;border-radius:5px;padding:3px 7px;white-space:nowrap;flex-shrink:0}
 
+/* KANBAN */
+.kb-wrap{overflow-x:auto;padding-bottom:8px}
+.kb-cols{display:flex;gap:10px;min-width:min-content}
+.kb-col{background:var(--surf2);border:1px solid var(--bord);border-radius:11px;width:270px;flex-shrink:0;display:flex;flex-direction:column;max-height:calc(100vh - 210px)}
+.kb-col.drop{border-color:var(--brand);background:var(--brand-soft)}
+.kb-ch{padding:11px 13px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bord);position:sticky;top:0;background:var(--surf2);border-radius:11px 11px 0 0;z-index:1}
+.kb-cdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.kb-ctit{font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+.kb-cnt{margin-left:auto;font-size:10px;font-weight:800;background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:1px 8px;color:var(--muted)}
+.kb-list{padding:8px;overflow-y:auto;flex:1;min-height:60px}
+.kb-card{background:var(--surf);border:1px solid var(--bord);border-radius:9px;padding:10px 11px;margin-bottom:7px;box-shadow:var(--shadow);cursor:pointer;border-left:3px solid var(--kc,var(--bord))}
+.kb-card:hover{border-color:var(--brand)}
+.kb-card.drag{opacity:.4}
+.kb-card[draggable=true]{cursor:grab}
+.kb-cn{font-size:12.5px;font-weight:700;line-height:1.35;margin-bottom:5px}
+.kb-cm{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.kb-parent{font-size:9.5px;color:var(--muted);margin-bottom:3px}
+.kb-empty{font-size:11px;color:var(--muted);text-align:center;padding:14px 8px;border:1px dashed var(--bord2);border-radius:8px;margin:4px}
+@media(max-width:920px){.kb-col{width:230px}}
+
 /* DRAWER (painel lateral de atividade) */
 .drawer-ov{display:none;position:fixed;inset:0;background:rgba(10,16,13,.28);z-index:140}
 .drawer-ov.open{display:block}
@@ -322,6 +342,7 @@ button{font-family:inherit}
     <div class="nav-i on" id="nav-geral" onclick="go('geral')">Visão Geral <span class="nav-badge" id="badge-alertas" style="display:none">0</span></div>
     <div class="nav-i" id="nav-reunioes" onclick="go('reunioes')">Reuniões</div>
     <div class="nav-i" id="nav-projetos" onclick="go('projetos')">Projetos</div>
+    <div class="nav-i" id="nav-kanban" onclick="go('kanban')">Kanban</div>
     <div class="nav-sec">Análise</div>
     <div class="nav-i" id="nav-historico" onclick="go('historico')">Histórico</div>
     <div class="nav-i" id="nav-ia" onclick="go('ia')">Assistente IA</div>
@@ -572,6 +593,7 @@ function aplicarEvento(tabela,payload){
     if(j>=0)arr.splice(j,1);
   }
   if(_modalAberto){_pendente=true;document.getElementById('upd-badge').style.display='block';return;}
+  if(_view==='kanban'){renderKbCols();return;}
   render();
 }
 function aplicarPendentes(){_pendente=false;document.getElementById('upd-badge').style.display='none';if(!_modalAberto)render();}
@@ -582,8 +604,8 @@ function go(v){
   document.querySelectorAll('.nav-i').forEach(function(e){e.classList.remove('on');});
   var n=document.getElementById('nav-'+v);if(n)n.classList.add('on');
   document.getElementById('side').classList.remove('open');
-  var titles={geral:'Visão Geral',reunioes:'Reuniões',projetos:'Projetos',historico:'Histórico de Alterações',ia:'Assistente IA',usuarios:'Usuários'};
-  var subs={geral:'Painel executivo · atualização ao vivo',reunioes:'Gravações e registros',projetos:'Gestão de projetos e atividades',historico:'Auditoria — quem alterou o quê',ia:'Chat com contexto total',usuarios:'Papéis, áreas e acessos'};
+  var titles={geral:'Visão Geral',reunioes:'Reuniões',projetos:'Projetos',kanban:'Kanban',historico:'Histórico de Alterações',ia:'Assistente IA',usuarios:'Usuários'};
+  var subs={geral:'Painel executivo · atualização ao vivo',reunioes:'Gravações e registros',projetos:'Gestão de projetos e atividades',kanban:'Quadro de atividades — arraste para mover',historico:'Auditoria — quem alterou o quê',ia:'Chat com contexto total',usuarios:'Papéis, áreas e acessos'};
   document.getElementById('top-t').textContent=titles[v]||v;
   document.getElementById('top-s').textContent=subs[v]||'';
   render();
@@ -599,7 +621,7 @@ function render(){
     usuarios:''
   };
   document.getElementById('top-r').innerHTML=acts[_view]||'';
-  var fns={geral:rGeral,reunioes:rReunioes,projetos:rProjetos,historico:rHistorico,ia:rIA,usuarios:rUsuarios};
+  var fns={geral:rGeral,reunioes:rReunioes,projetos:rProjetos,kanban:rKanban,historico:rHistorico,ia:rIA,usuarios:rUsuarios};
   if(fns[_view])fns[_view]();
   atualizarBadge();
 }
@@ -1540,6 +1562,119 @@ function finalizarATA(blob,nome,d,salvarSP){
       else toast('Erro ao salvar no SharePoint: '+(r.error||''),true);
     });
   }
+}
+
+// ═══ KANBAN ═══════════════════════════════════════════════════════════
+var _kbFiltro={proj:'',area:'',resp:'',q:''};
+var _kbDrag=null;
+var _kbCols=['Não iniciada','Em andamento','Aguardando','Bloqueada','Concluída'];
+var _kbCores={'Não iniciada':'#98a29b','Em andamento':'var(--blue)','Aguardando':'var(--orange)','Bloqueada':'var(--red)','Concluída':'var(--green)'};
+
+function rKanban(){
+  var resps={};
+  S.atividades.forEach(function(a){if(a.responsavel)resps[a.responsavel]=1;});
+  var h='<div class="filters">'+
+    '<select class="fsel" id="kbf-proj" onchange="setKbF(\'proj\',this.value)"><option value="">Todos os projetos</option>'+
+      S.projetos.map(function(p){return'<option value="'+p.id+'"'+(_kbFiltro.proj===p.id?' selected':'')+'>'+esc(p.nome)+'</option>';}).join('')+'</select>'+
+    '<select class="fsel" id="kbf-area" onchange="setKbF(\'area\',this.value)"><option value="">Todas as áreas</option>'+
+      AREAS.map(function(a){return'<option'+(_kbFiltro.area===a?' selected':'')+'>'+a+'</option>';}).join('')+'</select>'+
+    '<select class="fsel" id="kbf-resp" onchange="setKbF(\'resp\',this.value)"><option value="">Todos os responsáveis</option>'+
+      Object.keys(resps).sort().map(function(r){return'<option'+(_kbFiltro.resp===r?' selected':'')+'>'+esc(r)+'</option>';}).join('')+'</select>'+
+    '<input class="finput" id="kbf-q" placeholder="Buscar atividade..." oninput="setKbF(\'q\',this.value)" value="'+esc(_kbFiltro.q)+'">'+
+  '</div>';
+  if(_isTouch&&can('editarAtividade'))h+='<div style="font-size:11px;color:var(--muted);margin-bottom:8px">&#128241; No celular, toque no card e mude o status pelos botões.</div>';
+  h+='<div class="kb-wrap"><div class="kb-cols" id="kb-cols"></div></div>';
+  document.getElementById('body').innerHTML=h;
+  renderKbCols();
+}
+function setKbF(k,v){_kbFiltro[k]=v;renderKbCols();}
+function kbFiltradas(){
+  var q=_kbFiltro.q.toLowerCase();
+  return S.atividades.filter(function(a){
+    if(_kbFiltro.proj&&a.projeto_id!==_kbFiltro.proj)return false;
+    if(_kbFiltro.resp&&a.responsavel!==_kbFiltro.resp&&(a.participantes||[]).indexOf(_kbFiltro.resp)<0)return false;
+    if(_kbFiltro.area){var p=S.projetos.find(function(x){return x.id===a.projeto_id;});if(!p||p.area!==_kbFiltro.area)return false;}
+    if(q&&a.nome.toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+}
+function renderKbCols(){
+  var cont=document.getElementById('kb-cols');if(!cont)return;
+  var ats=kbFiltradas();
+  var pode=can('editarAtividade');
+  cont.innerHTML=_kbCols.map(function(st){
+    var cards=ats.filter(function(a){return a.status===st;})
+      .sort(function(a,b){return(a.kanban_pos||0)-(b.kanban_pos||0);});
+    var body=cards.map(function(a){return kbCard(a,pode);}).join('')||'<div class="kb-empty">Nenhuma atividade</div>';
+    return'<div class="kb-col" data-st="'+esc(st)+'" ondragover="kbOver(event)" ondragleave="kbLeave(event)" ondrop="kbDrop(event,\''+esc(st)+'\')">'+
+      '<div class="kb-ch"><span class="kb-cdot" style="background:'+_kbCores[st]+'"></span><span class="kb-ctit">'+st+'</span><span class="kb-cnt">'+cards.length+'</span></div>'+
+      '<div class="kb-list" data-st="'+esc(st)+'">'+body+'</div></div>';
+  }).join('');
+}
+function kbCard(a,pode){
+  var ind=indicador(a);
+  var proj=S.projetos.find(function(p){return p.id===a.projeto_id;});
+  var pai=a.pai_id?S.atividades.find(function(x){return x.id===a.pai_id;}):null;
+  var atras=prazoVencido(a)&&a.status!=='Concluída';
+  return'<div class="kb-card" style="--kc:'+ind.cls.replace('ti-','').replace('green','var(--green)').replace('yellow','var(--yellow)').replace('orange','var(--orange)').replace('red','var(--red)').replace('gray','#98a29b').replace('blue','var(--blue)')+'"'+
+    ' draggable="'+((pode&&!_isTouch)?'true':'false')+'" data-id="'+a.id+'" data-proj="'+a.projeto_id+'"'+
+    ' ondragstart="kbStart(event,\''+a.id+'\')" ondragend="kbEnd(event)"'+
+    ' onclick="if(!_kbMoved)abrirDrawer(\''+a.id+'\',\''+a.projeto_id+'\')">'+
+    (pai?'<div class="kb-parent">&#8627; '+esc(pai.nome)+'</div>':'')+
+    '<div class="kb-cn">'+esc(a.nome)+'</div>'+
+    '<div class="kb-cm">'+
+      '<span class="ti '+ind.cls+'" title="'+ind.title+'"></span>'+
+      (proj?'<span class="tag t-ni" style="font-size:9px">'+esc(proj.nome.slice(0,18))+'</span>':'')+
+      (a.responsavel?'<span class="chip chip-resp" style="font-size:10px">&#128100; '+esc(a.responsavel)+'</span>':'')+
+      (a.prazo?'<span style="font-size:10px;color:'+(atras?'var(--red)':'var(--muted)')+'">&#128197; '+fmtDate(a.prazo)+'</span>':'')+
+    '</div></div>';
+}
+var _kbMoved=false;
+var _isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+function kbStart(e,id){
+  if(_isTouch){e.preventDefault();return;}
+  _kbDrag=id;_kbMoved=false;
+  e.dataTransfer.effectAllowed='move';
+  e.target.classList.add('drag');
+  _modalAberto=true; // segura o realtime durante o arraste
+}
+function kbEnd(e){
+  e.target.classList.remove('drag');
+  document.querySelectorAll('.kb-col').forEach(function(c){c.classList.remove('drop');});
+  _kbDrag=null;_modalAberto=false;
+  if(_pendente)aplicarPendentes();
+  setTimeout(function(){_kbMoved=false;},50);
+}
+function kbOver(e){e.preventDefault();var c=e.target.closest('.kb-col');if(c)c.classList.add('drop');}
+function kbLeave(e){var c=e.target.closest('.kb-col');if(c&&!c.contains(e.relatedTarget))c.classList.remove('drop');}
+async function kbDrop(e,novoStatus){
+  e.preventDefault();
+  var col=e.target.closest('.kb-col');if(col)col.classList.remove('drop');
+  if(!_kbDrag)return;
+  var a=S.atividades.find(function(x){return x.id===_kbDrag;});
+  if(!a)return;
+  _kbMoved=true;
+  // calcular posição: solto após o card sob o cursor
+  var list=col?col.querySelector('.kb-list'):null;
+  var cardsCol=S.atividades.filter(function(x){return x.status===novoStatus&&x.id!==a.id;}).sort(function(x,y){return(x.kanban_pos||0)-(y.kanban_pos||0);});
+  var novaPos;
+  var alvo=e.target.closest('.kb-card');
+  if(alvo&&alvo.dataset.id!==a.id){
+    var idxAlvo=cardsCol.findIndex(function(x){return x.id===alvo.dataset.id;});
+    var antes=cardsCol[idxAlvo-1];
+    novaPos=antes?((antes.kanban_pos||0)+(cardsCol[idxAlvo].kanban_pos||0))/2:(cardsCol[idxAlvo].kanban_pos||0)-1;
+  }else{
+    var ultimo=cardsCol[cardsCol.length-1];
+    novaPos=ultimo?(ultimo.kanban_pos||0)+1:Date.now()/1000;
+  }
+  var patch={kanban_pos:novaPos};
+  if(a.status!==novoStatus)patch.status=novoStatus;
+  // otimista
+  a.kanban_pos=novaPos;if(patch.status)a.status=novoStatus;
+  renderKbCols();
+  var r=await sb.from('atividades').update(patch).eq('id',a.id);
+  if(r.error){toast('Erro ao mover: '+r.error.message,true);carregarDados().then(renderKbCols);}
+  else if(patch.status)toast('Movido para "'+novoStatus+'"');
 }
 
 // ═══ MULTI-SELECT DE ÁREAS ════════════════════════════════════════════
