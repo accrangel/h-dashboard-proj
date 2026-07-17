@@ -1920,20 +1920,23 @@ function rUsuarios(){
      '<button class="btn btn-g" onclick="migrarV1()">&#8681; Migrar dados da v1 (Notion)</button></div>';
   h+='<table class="utable"><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Áreas visíveis</th><th>Ativo</th></tr>';
   S.perfis.forEach(function(p){
-    var admGes=p.papel==='Admin'||p.papel==='Gestor';
+    var soAdmin=p.papel==='Admin';
     h+='<tr><td>'+esc(p.nome||'—')+(p.area?'<div style="font-size:9.5px;color:var(--muted)">Depto: '+esc(p.area)+'</div>':'')+'</td>'+
       '<td style="color:var(--muted)">'+esc(p.email)+'</td>'+
       '<td><select class="fsel" style="font-size:11px;padding:4px 8px" onchange="mudarPerfil(\''+p.id+'\',\'papel\',this.value)">'+
       ['Admin','Gestor','Editor','Consulta'].map(function(r){return'<option'+(p.papel===r?' selected':'')+'>'+r+'</option>';}).join('')+'</select></td>'+
-      '<td>'+(admGes?'<span style="font-size:11px;color:var(--muted)">Todas (papel '+p.papel+')</span>':'<div id="msa-'+p.id+'"></div>')+'</td>'+
+      '<td>'+(soAdmin?'<span style="font-size:11px;color:var(--muted)">Todas (Admin)</span>':'<div id="msa-'+p.id+'"></div>')+'</td>'+
       '<td><input type="checkbox" '+(p.ativo?'checked':'')+' onchange="mudarPerfil(\''+p.id+'\',\'ativo\',this.checked)"></td></tr>';
   });
   h+='</table>';
-  h+='<div style="font-size:11px;color:var(--muted);margin-top:12px">Novos usuários entram como <b>Consulta</b> no primeiro login, vendo apenas o próprio departamento (sincronizado do Microsoft 365). Selecione múltiplas áreas para ampliar a visualização de Editores e Consultas. Admin e Gestor sempre veem todas as áreas.</div>';
+  h+='<div style="font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6">Novos usuários entram como <b>Consulta</b> no primeiro login, vendo apenas o próprio departamento (sincronizado do Microsoft 365).<br>'+
+     '<b>Admin</b>: acesso e gestão totais, todas as áreas.<br>'+
+     '<b>Gestor</b>: cria/edita projetos e exclui atividades <b>apenas nas áreas selecionadas</b> (exclusão de projeto continua só com Admin).<br>'+
+     '<b>Editor/Consulta</b>: enxergam apenas as áreas selecionadas. Selecione múltiplas áreas para ampliar o acesso.</div>';
   h+='</div></div>';
   document.getElementById('body').innerHTML=h;
   S.perfis.forEach(function(p){
-    if(p.papel==='Admin'||p.papel==='Gestor')return;
+    if(p.papel==='Admin')return;
     criarMultiArea('msa-'+p.id,p.areas||[],function(novas){
       mudarPerfil(p.id,'areas',novas);
     });
