@@ -41,15 +41,12 @@ button{font-family:inherit}
 
 /* SHELL */
 #app{display:none;grid-template-columns:228px 1fr;min-height:100vh;transition:grid-template-columns .2s}
-#app.side-min{grid-template-columns:46px 1fr}
-#app.side-min .side{overflow:hidden}
-#app.side-min .nav-sec,#app.side-min .nav-i,#app.side-min .pulse-row,#app.side-min .side-user{display:none}
-.side-toggle{position:static;width:26px;height:26px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s}
-.side-toggle:hover{background:rgba(255,255,255,.1);color:#fff}
-#app.side-min .side-logo{display:flex;align-items:center;justify-content:center;padding:12px 0}
-#app.side-min .side-name,#app.side-min .side-sub{display:none}
-#app.side-min .side-toggle{border-radius:8px;border-color:rgba(255,255,255,.2)}
-@media(max-width:920px){.side-toggle{display:none}}
+#app.side-min{grid-template-columns:0 1fr}
+#app.side-min .side{width:0;min-width:0;overflow:hidden;padding:0;border:none}
+.side-toggle{width:28px;height:28px;border-radius:7px;border:1px solid var(--bord);background:var(--surf2);color:var(--muted);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s}
+.side-toggle:hover{border-color:var(--brand);color:var(--brand)}
+#app.side-min .side-toggle-top{display:flex}
+@media(max-width:920px){.side-toggle,.side-toggle-top{display:none!important}}
 .side{background:var(--side);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow-y:auto;z-index:60}
 .side-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
 .logomark{width:32px;height:32px;background:var(--brand);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;margin-bottom:9px}
@@ -405,6 +402,7 @@ button{font-family:inherit}
   <div class="main">
     <div class="top">
       <button class="burger" onclick="document.getElementById('side').classList.toggle('open')">&#9776;</button>
+      <button class="side-toggle side-toggle-top" id="side-toggle-top" onclick="toggleSide()" title="Expandir menu" style="display:none">&#9654;</button>
       <div>
         <div class="top-t" id="top-t">Visão Geral</div>
         <div class="top-s" id="top-s">Painel executivo</div>
@@ -2325,11 +2323,15 @@ setTheme(localStorage.getItem('holsa_theme')||'claro');
 function toggleSide(){
   var min=document.getElementById('app').classList.toggle('side-min');
   document.getElementById('side-toggle').innerHTML=min?'&#9654;':'&#9664;';
+  var top=document.getElementById('side-toggle-top');
+  if(top)top.style.display=min?'flex':'none';
   localStorage.setItem('holsa_side',min?'min':'full');
 }
 if(localStorage.getItem('holsa_side')==='min'&&window.innerWidth>920){
   document.getElementById('app').classList.add('side-min');
   document.getElementById('side-toggle').innerHTML='&#9654;';
+  var _st=document.getElementById('side-toggle-top');
+  if(_st)_st.style.display='flex';
 }
 sb.auth.getSession().then(function(r){
   if(r.data.session){S.session=r.data.session;iniciar();}
