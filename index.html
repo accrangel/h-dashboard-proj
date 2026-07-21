@@ -41,11 +41,14 @@ button{font-family:inherit}
 
 /* SHELL */
 #app{display:none;grid-template-columns:228px 1fr;min-height:100vh;transition:grid-template-columns .2s}
-#app.side-min{grid-template-columns:0 1fr}
-#app.side-min .side{width:0;min-width:0;overflow:hidden;padding:0}
-.side-toggle{position:fixed;left:228px;top:14px;z-index:70;width:26px;height:26px;border-radius:0 8px 8px 0;border:1px solid var(--bord);border-left:none;background:var(--surf);color:var(--muted);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:left .2s;box-shadow:var(--shadow)}
-.side-toggle:hover{color:var(--brand);border-color:var(--brand)}
-#app.side-min .side-toggle{left:0}
+#app.side-min{grid-template-columns:46px 1fr}
+#app.side-min .side{overflow:hidden}
+#app.side-min .nav-sec,#app.side-min .nav-i,#app.side-min .pulse-row,#app.side-min .side-user{display:none}
+.side-toggle{position:static;width:26px;height:26px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s}
+.side-toggle:hover{background:rgba(255,255,255,.1);color:#fff}
+#app.side-min .side-logo{display:flex;align-items:center;justify-content:center;padding:12px 0}
+#app.side-min .side-name,#app.side-min .side-sub{display:none}
+#app.side-min .side-toggle{border-radius:8px;border-color:rgba(255,255,255,.2)}
 @media(max-width:920px){.side-toggle{display:none}}
 .side{background:var(--side);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;overflow-y:auto;z-index:60}
 .side-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -367,10 +370,12 @@ button{font-family:inherit}
 </div>
 
 <div id="app">
-  <button class="side-toggle" id="side-toggle" onclick="toggleSide()" title="Minimizar/expandir menu">&#9664;</button>
   <div class="side" id="side">
     <div class="side-logo">
-      <div class="logomark">H</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div class="logomark">H</div>
+        <button class="side-toggle" id="side-toggle" onclick="toggleSide()" title="Minimizar/expandir menu">&#9664;</button>
+      </div>
       <div class="side-name">GRUPO HOLSA</div>
       <div class="side-sub">Central de Inteligência</div>
     </div>
