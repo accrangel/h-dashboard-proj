@@ -491,6 +491,37 @@ var sb=window.supabase.createClient(SUPA_URL,SUPA_ANON);
 // ═══ ESTADO ═══════════════════════════════════════════════════════════
 var S={session:null,user:null,profile:null,projetos:[],atividades:[],reunioes:[],historico:[],pessoas:[],perfis:[],aprovacoes:[]};
 var _view='geral';
+var _novosP={};  // IDs de projetos novos (criados depois do último acesso à Visão Geral)
+var _novosA={};  // IDs de atividades raiz novas (sem pai_id)
+function _chaveNovos(){return'holsa_seen_'+(S.user&&S.user.id?S.user.id:'anon');}
+function _marcarVisto(){
+  // Salva todos os IDs atuais como "vistos" — apaga o badge
+  var ids={p:{},a:{}};
+  S.projetos.forEach(function(p){ids.p[p.id]=1;});
+  S.atividades.filter(function(a){return!a.pai_id;}).forEach(function(a){ids.a[a.id]=1;});
+  localStorage.setItem(_chaveNovos(),JSON.stringify(ids));
+  _novosP={};_novosA={};
+  _atualizarBadgeNovos();
+}
+function _carregarNovos(){
+  // Compara estado atual com o que estava salvo quando o usuário viu por último
+  var raw=localStorage.getItem(_chaveNovos());
+  var vistos=raw?JSON.parse(raw):{p:{},a:{}};
+  _novosP={};_novosA={};
+  S.projetos.forEach(function(p){if(!vistos.p[p.id])_novosP[p.id]=1;});
+  S.atividades.filter(function(a){return!a.pai_id;}).forEach(function(a){if(!vistos.a[a.id])_novosA[a.id]=1;});
+  _atualizarBadgeNovos();
+}
+function _atualizarBadgeNovos(){
+  var nP=Object.keys(_novosP).length,nA=Object.keys(_novosA).length;
+  var b=document.getElementById('badge-alertas');if(!b)return;
+  if(!nP&&!nA){b.style.display='none';b.textContent='';return;}
+  var partes=[];
+  if(nP)partes.push(nP+'P');
+  if(nA)partes.push(nA+'A');
+  b.textContent=partes.join(' ');
+  b.style.display='inline';
+}
 var _projAberto=null;
 var _reuniaoAberta=null;
 var _treeExp={};
@@ -612,6 +643,7 @@ async function carregarDados(){
     sb.from('aprovacoes').select('*').order('criado_em',{ascending:false}).limit(200)
   ]);
   S.projetos=q[0].data||[];S.atividades=q[1].data||[];S.reunioes=q[2].data||[];S.historico=q[3].data||[];S.perfis=q[4].data||[];S.aprovacoes=q[5].data||[];
+  _carregarNovos();
 }
 
 // ═══ REALTIME ═════════════════════════════════════════════════════════
@@ -638,6 +670,17 @@ function aplicarEvento(tabela,payload){
   var arr=S[lista];
   if(payload.eventType==='INSERT'){
     if(!arr.some(function(x){return x.id===payload.new.id;}))arr.unshift(payload.new);
+    // Badge de novos: projeto ou atividade raiz criada por outra pessoa
+    if(tabela==='projetos'&&payload.new.id){
+      _novosP[payload.new.id]=1;_atualizarBadgeNovos();
+    }else if(tabela==='atividades'&&payload.new.id&&!payload.new.pai_id){
+      // Ignorar se eu mesmo criei (meu ID está em S.user.id; criado_por é nome, não ID)
+      // Comparar pelo nome do criador vs meu nome
+      var euNome=S.profile?S.profile.nome||S.profile.email:'';
+      if(!euNome||payload.new.criado_por!==euNome){
+        _novosA[payload.new.id]=1;_atualizarBadgeNovos();
+      }
+    }
   }else if(payload.eventType==='UPDATE'){
     var i=arr.findIndex(function(x){return x.id===payload.new.id;});
     if(i>=0)arr[i]=payload.new;else arr.unshift(payload.new);
@@ -654,6 +697,7 @@ function aplicarPendentes(){_pendente=false;document.getElementById('upd-badge')
 // ═══ NAVEGAÇÃO ════════════════════════════════════════════════════════
 function go(v){
   _view=v;
+  if(v==='geral')_marcarVisto();
   document.querySelectorAll('.nav-i').forEach(function(e){e.classList.remove('on');});
   var n=document.getElementById('nav-'+v);if(n)n.classList.add('on');
   document.getElementById('side').classList.remove('open');
@@ -682,11 +726,7 @@ function render(){
 
 function atualizarBadge(){
   var atrasadas=S.atividades.filter(function(a){return prazoVencido(a)&&a.status!=='Concluída';}).length;
-  var bloq=S.atividades.filter(function(a){return a.status==='Bloqueada'||a.status==='Aguardando';}).length;
-  var sem=S.reunioes.filter(function(m){return!m.projeto_id;}).length;
-  var n=atrasadas+bloq+sem;
-  var b=document.getElementById('badge-alertas');
-  b.textContent=n;b.style.display=n>0?'inline':'none';
+  // badge-alertas agora gerido por _atualizarBadgeNovos()
 }
 
 // ═══ LÓGICA DE ATIVIDADE ══════════════════════════════════════════════
