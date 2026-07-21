@@ -491,6 +491,7 @@ var sb=window.supabase.createClient(SUPA_URL,SUPA_ANON);
 // ═══ ESTADO ═══════════════════════════════════════════════════════════
 var S={session:null,user:null,profile:null,projetos:[],atividades:[],reunioes:[],historico:[],pessoas:[],perfis:[],aprovacoes:[]};
 var _view='geral';
+var _geralAreas=[];  // [] = todas; [area,...] = filtradas
 var _novosP={};  // IDs de projetos novos (criados depois do último acesso à Visão Geral)
 var _novosA={};  // IDs de atividades raiz novas (sem pai_id)
 function _chaveNovos(){return'holsa_seen_'+(S.user&&S.user.id?S.user.id:'anon');}
@@ -766,18 +767,30 @@ function rGeral(){
   var hoje=now.toISOString().slice(0,10);
   var lim7=new Date(Date.now()+7*86400000).toISOString().slice(0,10);
 
-  // ── Dados base ──
-  var atrasadas=S.atividades.filter(function(a){return prazoVencido(a)&&a.status!=='Concluída';});
-  var concluidas=S.atividades.filter(function(a){return a.status==='Concluída';});
-  var abertas=S.atividades.filter(function(a){return a.status!=='Concluída';});
-  var pAtv=S.projetos.filter(function(p){return p.status==='Ativo';});
-  var pCon=S.projetos.filter(function(p){return p.status==='Concluído';}).length;
-  var pPau=S.projetos.filter(function(p){return p.status==='Pausado';}).length;
-  var aprovPend=(S.aprovacoes||[]).filter(function(x){return x.status==='Pendente';});
+  // ── Filtro por área ──
+  var projFilt=_geralAreas.length
+    ? S.projetos.filter(function(p){return _geralAreas.indexOf(p.area||'')>=0;})
+    : S.projetos;
+  var projIds={};projFilt.forEach(function(p){projIds[p.id]=1;});
+  var atsFilt=_geralAreas.length
+    ? S.atividades.filter(function(a){return projIds[a.projeto_id];})
+    : S.atividades;
+  var reuFilt=_geralAreas.length
+    ? S.reunioes.filter(function(m){return !m.projeto_id||projIds[m.projeto_id];})
+    : S.reunioes;
+
+  // ── Dados base (sobre dados filtrados) ──
+  var atrasadas=atsFilt.filter(function(a){return prazoVencido(a)&&a.status!=='Concluída';});
+  var concluidas=atsFilt.filter(function(a){return a.status==='Concluída';});
+  var abertas=atsFilt.filter(function(a){return a.status!=='Concluída';});
+  var pAtv=projFilt.filter(function(p){return p.status==='Ativo';});
+  var pCon=projFilt.filter(function(p){return p.status==='Concluído';}).length;
+  var pPau=projFilt.filter(function(p){return p.status==='Pausado';}).length;
+  var aprovPend=(S.aprovacoes||[]).filter(function(x){return x.status==='Pendente'&&(!_geralAreas.length||_geralAreas.indexOf(x.area||'')>=0);});
 
   // Checklist: sub-tarefas agregadas de todas as atividades
   var ckTotal=0,ckFeitas=0;
-  S.atividades.forEach(function(a){var ck=a.checklist||[];ckTotal+=ck.length;ckFeitas+=ck.filter(function(c){return c.feito;}).length;});
+  atsFilt.forEach(function(a){var ck=a.checklist||[];ckTotal+=ck.length;ckFeitas+=ck.filter(function(c){return c.feito;}).length;});
 
   // Progresso real: inclui atividades E checklist
   var totalItens=S.atividades.length+ckTotal;
@@ -785,14 +798,22 @@ function rGeral(){
   var progresso=totalItens?Math.round(feitosItens/totalItens*100):0;
 
   // Reuniões
-  var rTotal=S.reunioes.length;
-  var rSemana=S.reunioes.filter(function(m2){return m2.data&&(now-new Date(m2.data))/86400000<=7;}).length;
+  var rTotal=reuFilt.length;
+  var rSemana=reuFilt.filter(function(m2){return m2.data&&(now-new Date(m2.data))/86400000<=7;}).length;
 
   // Status contagem (atividades sem checklist = atividades raiz)
   var stCount={'Em andamento':0,'Concluída':0,'Não iniciada':0,'Bloqueada':0,'Aguardando':0};
-  S.atividades.forEach(function(a){if(stCount[a.status]!=null)stCount[a.status]++;});
+  atsFilt.forEach(function(a){if(stCount[a.status]!=null)stCount[a.status]++;});
 
-  var h='';
+  // ── Seletor de área (discreto) ──
+  var labelFiltro=_geralAreas.length
+    ? _geralAreas.map(esc).join(', ')
+    : 'Todas as áreas';
+  var h='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">'+
+    '<span style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase">Visualizando:</span>'+
+    '<div id="gf-areas" style="min-width:160px;display:inline-block"></div>'+
+    (_geralAreas.length?'<button class="btn btn-g" style="font-size:10px;padding:3px 9px" onclick="_geralAreas=[];rGeral()">&#10005; Limpar</button>':'')+
+  '</div>';
 
   // ── ALERTAS CRÍTICOS (só quando há algo) ──
   var alertas=[];
@@ -840,9 +861,9 @@ function rGeral(){
 
   // G2: Progresso por área (barras triplas: concluídas + andamento + atrasadas)
   var areas={};
-  S.projetos.forEach(function(p){
+  projFilt.forEach(function(p){
     if(!p.area)return;
-    var ts=S.atividades.filter(function(a){return a.projeto_id===p.id;});
+    var ts=atsFilt.filter(function(a){return a.projeto_id===p.id;});
     if(!areas[p.area])areas[p.area]={total:0,conc:0,and:0,atras:0};
     areas[p.area].total+=ts.length;
     areas[p.area].conc+=ts.filter(function(a){return a.status==='Concluída';}).length;
@@ -871,7 +892,7 @@ function rGeral(){
 
   // G3: Workload por responsável
   var wl={};
-  S.atividades.forEach(function(a){
+  atsFilt.forEach(function(a){
     if(!a.responsavel||a.status==='Concluída')return;
     if(!wl[a.responsavel])wl[a.responsavel]={abertas:0,atras:0,ck:0,ckFt:0};
     wl[a.responsavel].abertas++;
@@ -895,7 +916,7 @@ function rGeral(){
   h+='<div style="font-size:10px;color:var(--muted);margin-top:4px"><span style="color:var(--blue)">▪</span> no prazo &nbsp;<span style="color:var(--red)">▪</span> atrasadas</div></div>';
 
   // G4: Vencendo nos próximos 7 dias (inclui checklist de responsável)
-  var venc=S.atividades.filter(function(a){return a.prazo&&a.status!=='Concluída'&&a.prazo>=hoje&&a.prazo<=lim7;})
+  var venc=atsFilt.filter(function(a){return a.prazo&&a.status!=='Concluída'&&a.prazo>=hoje&&a.prazo<=lim7;})
     .sort(function(a,b){return a.prazo<b.prazo?-1:1;}).slice(0,7);
   h+='<div class="gcard"><div class="sec-t">Vencendo nos próximos 7 dias</div>';
   if(!venc.length)h+='<div style="font-size:12px;color:var(--muted)">Nenhum prazo nos próximos 7 dias. ✅</div>';
@@ -914,6 +935,12 @@ function rGeral(){
 
   h+='</div>';
   document.getElementById('body').innerHTML=h;
+  // Montar o multi-select de áreas
+  if(AREAS.length>1){
+    criarMulti('gf-areas',AREAS,_geralAreas,function(novas){
+      _geralAreas=novas;rGeral();
+    },'Todas as áreas');
+  }
 }
 
 // ═══ NAVEGAÇÃO KPI ════════════════════════════════════════════════════
